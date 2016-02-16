@@ -1,17 +1,17 @@
 angular.module('omole.resources', [])
 
-.factory('graphSvc', ['$resource', 'configSvc', function ($resource, cfg) {
-    return $resource(cfg.dataServicesBaseURL + '/graphs/:id', {id: '@id'}, {
+.factory('graphSvc', ['$resource', function ($resource) {
+    return $resource('/app/r/graphs/:id', {id: '@id'}, {
         update: {method: 'PATCH'},
         save: {method: 'PUT'},
         insert: {method: 'POST'}
     });
 }])
 
-.factory('pathGroupsSvc', ['$resource', 'configSvc', function ($resource, cfg) {
-    return $resource(cfg.dataServicesBaseURL + '/paths/:id', {id: '@id'});
+.factory('pathGroupsSvc', ['$resource', function ($resource) {
+    return $resource('/app/r/paths/:id', {id: '@id'});
 }])
 
-.factory('nodeGroupsSvc', ['$resource', 'configSvc', function ($resource, cfg) {
-    return $resource(cfg.dataServicesBaseURL + '/nodegroups/:id', {id: '@id'});
+.factory('nodeGroupsSvc', ['$resource', function ($resource) {
+    return $resource('/app/r/nodegroups/:id', {id: '@id'});
 }]);

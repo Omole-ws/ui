@@ -1,6 +1,6 @@
 angular.module('ccengine')
-.factory('dataSvc', ['$q', '$http', 'configSvc', 'messagesSvc', 'eventsDeliverySvc', 'graphSvc', 'nodeGroupsSvc', 'pathGroupsSvc',
-    function ($q, $http, cfg, msgs, evs, gSvc, ngSvc, pgSvc) {
+.factory('dataSvc', ['$q', '$http', 'messagesSvc', 'eventsDeliverySvc', 'graphSvc', 'nodeGroupsSvc', 'pathGroupsSvc',
+    function ($q, $http, msgs, evs, gSvc, ngSvc, pgSvc) {
 
         // ===============================================================
         // Core data operations
@@ -208,11 +208,11 @@ angular.module('ccengine')
             groups: {value: []},
             paths: {value: []}
         });
-        $http.get(cfg.algoServicesBaseURL + '/').then(function (resp) {
+        $http.get('/app/t').then(function (resp) {
             _.merge(dataObj.algos, resp.data);
         });
-        Object.defineProperty(dataObj.algos, 'checkURL', {value: cfg.algoServicesBaseURL + '/cctask'});
-        Object.defineProperty(dataObj.algos, 'domain', {value: cfg.algoServicesBaseURL + '/'});
+        Object.defineProperty(dataObj.algos, 'checkURL', {value: '/app/t/cctask'});
+        Object.defineProperty(dataObj.algos, 'domain', {value: '/app/t/'});
         Object.defineProperty(dataObj.groups, 'add', {value: function (id) {
             var self = this;
             ngSvc.get({id: id}).$promise.then(function (resp) {

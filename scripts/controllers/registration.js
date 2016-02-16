@@ -1,6 +1,7 @@
 angular.module('ccengine')
 
 .controller('registerCtrl', ['$http', '$location', '$scope', 'messagesSvc', function ($http, $location, $scope, msgs) {
+    $http.get('/auth/check');
     $scope.doAuth = function () {
         $http.post('/auth/registration', {login: $scope.login, password: $scope.password})
         .then(function (resp) {

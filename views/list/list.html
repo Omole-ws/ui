@@ -16,7 +16,7 @@
         </div>
         <div class="list-group-item" ng-repeat="gi in graphinfos">
             <h4 ng-hide="editing === gi.id">
-                <a href="desk/operate/{{gi.id}}" ng-class="{'text-muted': !gi.info.label}">{{gi.info.label ?
+                <a href="/app/desk/{{gi.id}}" ng-class="{'text-muted': !gi.info.label}">{{gi.info.label ?
                     gi.info.label : 'No title'}}</a>
             </h4>
 
@@ -35,12 +35,8 @@
                     <li><a href="" ng-click="editing = gi.id; editGraph = {info: {label: gi.info.label}}">Edit</a>
                     </li>
                     <li><a href="" ng-click="removeGraph(gi)">Remove</a></li>
-                    <li><a href="" ng-click="showRaw = gi.id">Raw data</a></li>
                 </ul>
             </div>
-            <p ng-show="showRaw === gi.id">
-                <em>{{gi}}</em>
-            </p>
         </div>
     </div>
 </div>

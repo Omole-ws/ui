@@ -1,0 +1,57 @@
+                <li>
+                    <a href="" ng-click="back()">
+                        <i class="fa fa-angle-left fa-lg" data-toggle="tooltip" data-placement="bottom"
+                           title="List of graphs"></i>
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                        Modes <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ng-class="{active: mode === 'visual'}">
+                            <a href="" role="button" ng-click="setMode('visual');">Operate</a>
+                        </li>
+                        <li ng-class="{active: mode === 'editor'}">
+                            <a href="" role="button" ng-click="setMode('editor');">Editor</a>
+                        </li>
+                    </ul>
+                </li>
+                <!--                 <li ng-class="{active: mode === 'visual'}">
+                                    <a href="" ng-click="mode = 'visual';">Visual</a>
+                                </li>
+                                <li ng-class="{active: mode === 'editor'}">
+                                    <a href="" ng-click="mode = 'editor';">Node editor</a>
+                                </li>
+                                <li ng-class="{active: mode === 'matrix'}">
+                                    <a href="" ng-click="mode = 'matrix';">Link editor</a>
+                                </li>
+                 -->
+                <li class="dropdown">
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                        View <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ng-class="{active: showOpts}">
+                            <a href="" role="button" ng-click="toggleOpts();">
+                                Analize...
+                                <!-- <i class="fa fa-lg" ng-class="{'fa-angle-up': !showOpts, 'fa-angle-down': showOpts}"></i> -->
+                            </a>
+                        </li>
+                        <li class="dropdown-header">Layoyts:</li>
+                        <li ng-repeat="lo in layouts">
+                            <!-- <div class="radio"> -->
+                            <a href="" ng-click="changeLayout(lo.value)">
+                                <!-- <label> -->
+                                <input class="pull-right" type="radio" name="layout" readonly ng-value="lo.value">
+                                {{lo.name}}
+                                <!-- </label> -->
+                            </a>
+                            <!-- </div> -->
+                        </li>
+                        <!-- <li class="divider" role="separator"></li>
+                        <li>
+                            <a href="" ng-click="showOpts=true">Options&hellip;</a>
+                        </li> -->
+                    </ul>
+                </li>

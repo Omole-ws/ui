@@ -1,9 +1,16 @@
 angular.module('ccengine')
-.controller('graphOperationsCtrl', ['$interval', '$http', '$routeParams', '$scope', 'messagesSvc', 'dataSvc', 'contextSvc',
-function ($interval, $http, $routeParams, $scope, msgs, data, ctx) {
+.controller('deskCtrl', ['$interval', '$http', '$stateParams', '$scope', 'messagesSvc', 'dataSvc', 'contextSvc', '$state', 'eventsDeliverySvc',
+function ($interval, $http, $routeParams, $scope, msgs, data, ctx, $state, evs) {
     $scope.back = function () {
-        window.history.back();
+        $state.go('home');
     };
+
+    evs.subscribe('DESK_MODE_CHANGE', function (mode) {
+        $scope.mode = mode;
+    });
+    evs.subscribe('DESK_SHOW_OPTS_CHANGE', function (showOpts) {
+        $scope.showOpts = showOpts;
+    });
     $scope.mode = 'visual';
     data.setupDesk($routeParams.gid);
     $scope.ctx = ctx;
