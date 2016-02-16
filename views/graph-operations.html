@@ -1,0 +1,405 @@
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header pull-right">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#top-bar-oper" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="">CCEngine
+                <span style="color: #ffffff; background-color: #ffffff; padding: 2px" class="h6">
+                    <span style="background-color: #827717; padding: 0 2px;">R</span>
+                    <span style="background-color: #e65100; padding: 0 2px;">W</span>
+                    <span style="background-color: #2979ff; padding: 0 2px;">T</span>
+                    <span style="background-color: #00897b; padding: 0 2px; margin-right: 4px;">G</span>
+                </span>
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="top-bar-oper">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="" ng-click="back()">
+                        <i class="fa fa-angle-left fa-lg" data-toggle="tooltip" data-placement="bottom"
+                           title="Назад"></i>
+                        <!-- <span class="glyphicon glyphicon-chevron-left" data-toggle="tooltip" data-placement="bottom" title="Назад"></span> -->
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                        Modes <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ng-class="{active: mode === 'visual'}">
+                            <a href="" ng-click="mode = 'visual';">Visual</a>
+                        </li>
+                        <li ng-class="{active: mode === 'editor'}">
+                            <a href="" ng-click="mode = 'editor';">Node editor</a>
+                        </li>
+                    </ul>
+                </li>
+                <!--                 <li ng-class="{active: mode === 'visual'}">
+                                    <a href="" ng-click="mode = 'visual';">Visual</a>
+                                </li>
+                                <li ng-class="{active: mode === 'editor'}">
+                                    <a href="" ng-click="mode = 'editor';">Node editor</a>
+                                </li>
+                                <li ng-class="{active: mode === 'matrix'}">
+                                    <a href="" ng-click="mode = 'matrix';">Link editor</a>
+                                </li>
+                 -->
+                <li class="dropdown">
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                        View <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ng-class="{active: showOpts}">
+                            <a href="" ng-click="showOpts = !showOpts">
+                                Analize...
+                                <!-- <i class="fa fa-lg" ng-class="{'fa-angle-up': !showOpts, 'fa-angle-down': showOpts}"></i> -->
+                            </a>
+                        </li>
+                        <li class="dropdown-header">Layoyts:</li>
+                        <li ng-repeat="lo in layouts">
+                            <!-- <div class="radio"> -->
+                            <a href="" ng-click="changeLayout(lo.value)">
+                                <!-- <label> -->
+                                <input class="pull-right" type="radio" name="layout" readonly ng-value="lo.value">
+                                {{lo.name}}
+                                <!-- </label> -->
+                            </a>
+                            <!-- </div> -->
+                        </li>
+                        <!-- <li class="divider" role="separator"></li>
+                        <li>
+                            <a href="" ng-click="showOpts=true">Options&hellip;</a>
+                        </li> -->
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="pull-right err-plate" ng-show="msgs.nonEmpty" ng-controller="messagesCtrl">
+    <div ng-show="msgs.nonEmpty">
+        <div class="text-center">
+            <em>Messages:</em>
+            <button type="button" class="close pull-right" ng-click="msgs.clear()">
+                <!-- <span>&times;</span> -->
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <ul>
+            <li ng-class="{'bg-danger': m.l == 'err', 'bg-warning': m.l == 'wrn', 'bg-info': m.l == 'inf', 'bg-success': m.l == 'scs'}"
+                ng-repeat="m in msgs">
+                {{m.m}}
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div id="opts" class="small" ng-show="showOpts" ng-controller="graphOptsCtrl">
+    <h4>Analisys</h4>
+
+    <div class="panel-group" role="tablist" aria-multiselectable="true">
+        <!-- Zone view configuration -->
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" href="#zOptsCtl" aria-expanded="false"
+                       aria-controls="zOptsCtl"
+                       ng-click="zopened = !zopened;">
+                        Zones
+                    </a>
+                    <i class="fa fa-fw pull-right"
+                       ng-class="{'fa-angle-right': !zopened, 'fa-angle-down': zopened}"></i>
+                </h4>
+            </div>
+            <div id="zOptsCtl" class="panel-collapse collapse" role="tabpanel">
+                <div class="panel-body">
+
+                    <div ng-repeat="group in groups | filter: {type: 'ISLAND'} track by group.id">
+                        <div ng-class="{'bg-warning': group === ctx.groupBy}">
+                            {{group.info.label | limitTo: 15}} ...
+                            <a id="zInf-{{$index}}" tabindex="0" role="button" class="btn btn-link"
+                               data-toggle="popover" data-trigger="focus" title="Description"
+                               data-content="{{group.info.comment}}" ng-click="pop('#zInf-' + $index)">
+                                <i class="fa fa-info"></i>
+                            </a>
+                            <div class="btn-group pull-right" role="group">
+                                <button type="button" class="btn btn-link" data-toggle="tooltip" title="Group by"
+                                        ng-click="ctx.groupBy=group">
+                                    <i class="fa fa-object-group"></i>
+                                </button>
+                                <button type="button" class="btn btn-link" data-toggle="tooltip" title="Flash it">
+                                    <i class="fa fa-bolt"></i>
+                                </button>
+                                <button class="btn btn-link" type="button" data-toggle="collapse"
+                                        data-target="#z-{{$index}}" aria-expanded="false" aria-controls="z-{{$index}}"
+                                        data-toggle="tooltip" title="Customize">
+                                    <i class="fa fa-cog"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="collapse" id="z-{{$index}}">
+                            <div class="well">
+                                <div class="btn-group-vertical" data-toggle="buttons">
+                                    <label class="btn btn-default btn-xs active"
+                                           ng-repeat="(name, sg) in group.subGroups">
+                                        <input type="checkbox" autocomplete="off" checked> {{name}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- Levels view configuration -->
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" href="#lOptsCtl" aria-expanded="false"
+                       aria-controls="lOptsCtl"
+                       ng-click="lopened = !lopened;">
+                        Levels
+                    </a>
+                    <i class="fa fa-fw pull-right"
+                       ng-class="{'fa-angle-right': !zopened, 'fa-angle-down': zopened}"></i>
+                </h4>
+            </div>
+            <div id="lOptsCtl" class="panel-collapse collapse" role="tabpanel">
+                <div class="panel-body">
+
+                    <div ng-repeat="group in groups | filter: {type: '!ISLAND'} track by group.id">
+                        <div ng-class="{'bg-warning': group === ctx.groupBy}">
+                            {{group.info.label | limitTo: 15}} ...
+                            <a id="lInf-{{$index}}" tabindex="0" role="button" class="btn btn-link"
+                               data-toggle="popover" data-trigger="focus" title="Description"
+                               data-content="{{group.info.comment}}" ng-click="pop('#lInf-' + $index)">
+                                <i class="fa fa-info"></i>
+                            </a>
+                            <div class="btn-group pull-right" role="group">
+                                <button type="button" class="btn btn-link" data-toggle="tooltip" title="Group by"
+                                        ng-click="ctx.groupBy=group">
+                                    <i class="fa fa-object-group"></i>
+                                </button>
+                                <button type="button" class="btn btn-link" data-toggle="tooltip" title="Flash it">
+                                    <i class="fa fa-bolt"></i>
+                                </button>
+                                <button class="btn btn-link" type="button" data-toggle="collapse"
+                                        data-target="#l-{{$index}}" aria-expanded="false" aria-controls="l-{{$index}}"
+                                        data-toggle="tooltip" title="Customize">
+                                    <i class="fa fa-cog"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="collapse" id="l-{{$index}}">
+                            <div class="well">
+                                <div class="btn-group-vertical" data-toggle="buttons">
+                                    <label class="btn btn-default btn-xs active"
+                                           ng-repeat="(name, sg) in group.subGroups">
+                                        <input type="checkbox" autocomplete="off" checked> {{name}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- Bridges view configuration -->
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" href="#bOptsCtl"
+                       aria-expanded="false" aria-controls="bOptsCtl"
+                       ng-click="bopened = !bopened;">
+                        Bridges
+                    </a>
+                    <i class="fa fa-fw pull-right"
+                       ng-class="{'fa-angle-right': !bopened, 'fa-angle-down': bopened}"></i>
+                </h4>
+            </div>
+            <div id="bOptsCtl" class="panel-collapse collapse" role="tabpanel">
+                <div class="panel-body">
+
+                    <div ng-repeat="path in paths | filter: {type: 'BRIDGE'} track by $index">
+                        <ul>
+                            <li ng-repeat="subPath in path track by subPath.id">
+                                <a role="button" href="" ng-click="ctx.activePath = subPath;">
+                                    {{$index}}:&nbsp;{{subPath.info.label}}
+                                </a>
+                                <a id="bInf-{{$index}}" tabindex="0" role="button" class="btn btn-link"
+                                   data-toggle="popover" data-trigger="focus" title="Description"
+                                   data-content="{{subPath.info.comment}}" ng-click="pop('#bInf-b_super-' + $index)">
+                                    <i class="fa fa-info"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Paths view configuration -->
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" href="#pOptsCtl"
+                       aria-expanded="false" aria-controls="pOptsCtl"
+                       ng-click="popened = !popened;">
+                        Paths
+                    </a>
+                    <i class="fa fa-fw pull-right"
+                       ng-class="{'fa-angle-right': !popened, 'fa-angle-down': popened}"></i>
+                </h4>
+            </div>
+            <div id="pOptsCtl" class="panel-collapse collapse" role="tabpanel">
+                <div class="panel-body">
+
+                    <div ng-repeat="path in paths | filter: {type: '!BRIDGE'} track by $index">
+                        <div ng-class=""><!-- TODO: highlight by selection -->
+                            {{getNodeName(path[0].from)}}
+                            <i class="fa fa-long-arrow-right"></i>
+                            {{getNodeName(path[0].to)}} ...
+                            <button class="btn btn-link" type="button" data-toggle="collapse"
+                                    data-target="#p-{{$index}}" aria-expanded="false" aria-controls="p-{{$index}}"
+                                    data-toggle="tooltip" title="Variants...">
+                                <i class="fa fa-cog"></i>
+                            </button>
+                        </div>
+                        <div class="collapse" id="p-{{$index}}">
+                            <div class="well">
+                                <ul ng-init="p_super=$index;">
+                                    <li ng-repeat="subPath in path track by subPath.id">
+                                        <a role="button" href="" ng-click="ctx.activePath = subPath;">
+                                            {{$index}}:&nbsp;{{subPath.info.label}}
+                                        </a>
+                                        <a id="pInf-{{p_super}}-{{$index}}" tabindex="0" role="button"
+                                           class="btn btn-link"
+                                           data-toggle="popover" data-trigger="focus" title="Description"
+                                           data-content="{{subPath.info.comment}}"
+                                           ng-click="pop('#pInf-' + p_super + '-' + $index)">
+                                            <i class="fa fa-info"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="viz" ng-class="mode" ng-show="mode === 'visual' || mode === 'editor'" ng-controller="visualCtrl">
+</div>
+
+<div class="col-xs-3 col-lg-3" ng-show="mode === 'editor'">
+    <div ng-include="'views/graph-operations-node_editor.html'"></div>
+    <div ng-include="'views/graph-operations-link_editor.html'"></div>
+</div>
+
+<nav class="navbar navbar-default navbar-fixed-bottom">
+    <div class="container-fluid">
+        <!--         <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#bottom-bar-oper" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="">Graphs</a>
+                </div>
+         -->
+        <!-- <div id="bottom-bar-oper" class="collapse navbar-collapse"> -->
+        <ul class="nav navbar-nav">
+            <li class="dropdown">
+                <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button">Run&hellip;</a>
+                <ul class="dropdown-menu">
+                    <li ng-repeat="algo in algos">
+                        <a href="" ng-click="run(algo)">{{algo.name ? algo.name : algo.url}}</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+
+        <form name="levelSelectionForm" class="navbar-form navbar-left form-inline" ng-show="levelOps">
+            <div class="form-group">
+                <label class="radio-inline">
+                    <input type="radio" name="levelSelectionForm" value="READ" ng-model="kind">
+                    R
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="levelSelectionForm" value="WRITE" ng-model="kind">
+                    W
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="levelSelectionForm" value="TAKE" ng-model="kind">
+                    T
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="levelSelectionForm" value="GRANT" ng-model="kind">
+                    G
+                </label>
+            </div>
+            <button class="btn btn-danger" ng-click="levelOps = false; ctx.selStop();">Cancel</button>
+            <button class="btn btn-success" ng-click="levelOps = 'ready'; run(curAlgo);">
+                Launch
+            </button>
+        </form>
+
+        <form name="pathSelectionForm" class="navbar-form navbar-left form-inline" ng-show="pathOps">
+            <div class="form-group form-inline">
+                <label class="control-label">From</label>
+
+                <div class="">
+                    <p class="form-control-static">{{ctx.sel.n[0].info.label}}</p>
+                </div>
+            </div>
+            <div class="form-group form-inline">
+                <label class="control-label">To</label>
+
+                <div class="">
+                    <p class="form-control-static">{{ctx.sel.n[1].info.label}}</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="radio-inline">
+                    <input type="radio" name="pathSelectionForm" value="READ" ng-model="kind">
+                    R
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="pathSelectionForm" value="WRITE" ng-model="kind">
+                    W
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="pathSelectionForm" value="TAKE" ng-model="kind">
+                    T
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="pathSelectionForm" value="GRANT" ng-model="kind">
+                    G
+                </label>
+            </div>
+            <button class="btn btn-danger" ng-click="pathOps = false; ctx.selStop();">Cancel</button>
+            <button class="btn btn-success" ng-show="ctx.sel.n.length === 2"
+                    ng-click="pathOps = 'ready'; run(curAlgo); ctx.selStop();">
+                Launch
+            </button>
+        </form>
+        <!-- </div> -->
+    </div>
+</nav>

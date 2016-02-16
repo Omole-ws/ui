@@ -1,0 +1,46 @@
+<div class="row">
+    <div class="col-xs-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2 list-group ng-cloack">
+        <div class="list-group-item">
+            <div class="text-center">
+                <button class="btn btn-success btn-lg" ng-hide="where === 'top'"
+                        ng-click="where = 'top'; newGraph = {info:{}}">
+                    <i class="fa fa-plus"></i> New
+                </button>
+            </div>
+            <form class="form-inline" ng-show="where === 'top'">
+                <input type="text" class="form-control" ng-model="newGraph.info.label">
+                <button class="btn btn-danger" ng-click="where = newGraph = undefined">Cancel</button>
+                <button class="btn btn-success" ng-click="newGraphSave(newGraph); where = newGraph = undefined">Save
+                </button>
+            </form>
+        </div>
+        <div class="list-group-item" ng-repeat="gi in graphinfos">
+            <h4 ng-hide="editing === gi.id">
+                <a href="desk/operate/{{gi.id}}" ng-class="{'text-muted': !gi.info.label}">{{gi.info.label ?
+                    gi.info.label : 'No title'}}</a>
+            </h4>
+
+            <form class="form-inline" ng-show="editing === gi.id">
+                <input type="text" class="form-control" ng-model="editGraph.info.label">
+                <button class="btn btn-danger" ng-click="editing = editGraph = undefined">Cancel</button>
+                <button class="btn btn-success"
+                        ng-click="editGraphSave(gi, editGraph); editing = editGraph = undefined">Save
+                </button>
+            </form>
+            <div class="btn-group">
+                <button class="btn btn-link btn-sm" data-toggle="dropdown">
+                    Opts <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="" ng-click="editing = gi.id; editGraph = {info: {label: gi.info.label}}">Edit</a>
+                    </li>
+                    <li><a href="" ng-click="removeGraph(gi)">Remove</a></li>
+                    <li><a href="" ng-click="showRaw = gi.id">Raw data</a></li>
+                </ul>
+            </div>
+            <p ng-show="showRaw === gi.id">
+                <em>{{gi}}</em>
+            </p>
+        </div>
+    </div>
+</div>

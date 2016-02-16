@@ -1,0 +1,101 @@
+<h3>Assets:</h3>
+<div class="list-group ng-cloack" ng-controller="graphOperationsNECtrl">
+    <div class="list-group-item">
+        <div class="text-center">
+            <button class="btn btn-success" ng-hide="where === 'top'"
+                    ng-click="where = 'top'; newNode = {info: {}, active: 'SUBJECT'}">
+                <i class="fa fa-plus-square-o"></i> New
+            </button>
+        </div>
+        <form name="newNodeForm" class="form-inline" ng-show="where === 'top'">
+            <input type="text" class="form-control" placeholder="Name" ng-model="newNode.info.label">&nbsp;
+            <label class="radio-inline">
+                <input type="radio" name="newNodeForm" value="OBJECT" ng-model="newNode.active">
+                O
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="newNodeForm" value="SUBJECT" ng-model="newNode.active">
+                S
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="newNodeForm" value="SUBJECT_OR_OBJECT" ng-model="newNode.active">
+                S/O
+            </label>
+            <button class="btn btn-danger" ng-click="where = newNode = undefined;">Cancel</button>
+            <button class="btn btn-success" ng-click="newNodeSave(newNode); where = newNode = undefined;">Save</button>
+        </form>
+    </div>
+    <div class="list-group-item" ng-repeat="v in vs">
+        <div data-toggle="collapse" data-target="#raw_{{v.id}}" aria-expanded="false" aria-controls="raw_{{v.id}}">
+            <div class="btn-group" ng-hide="editing === v.id">
+                <span class="btn btn-link" data-toggle="dropdown" ng-class="{'text-muted': !v.info.label}">
+                    <img ng-src="img/{{v.active}}.png" width="24" height="24">
+                    <span class="h4">
+                        {{v.info.label ? v.info.label : 'No title'}}
+                        <small>
+                            <span ng-if="v.level !== undefined">Level: {{v.level}}</span>
+                            <span ng-if="v.zone !== undefined">Zone: {{v.zone}}</span>
+                        </small>
+                    </span>
+                    <i class="fa fa-caret-down"></i>
+                    <!-- <span class="caret"></span> -->
+                </span>
+                <ul class="dropdown-menu">
+                    <li><a href=""
+                           ng-click="editing = v.id; eNode = {id: v.id, info: {label: v.info.label}, active: v.active};">Edit</a>
+                    </li>
+                    <li><a href="" ng-click="removeNode(v)">Remove</a></li>
+                    <!-- <li><a href="" ng-click="showRawNode(v.id)">Raw data</a></li> -->
+                </ul>
+            </div>
+        </div>
+        <form class="form-inline" ng-show="editing === v.id">
+            <input type="text" class="form-control" placeholder="Name" ng-model="eNode.info.label">&nbsp;
+            <label class="radio-inline">
+                <input type="radio" name="newNodeForm" value="OBJECT" ng-model="eNode.active">
+                O
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="newNodeForm" value="SUBJECT" ng-model="eNode.active">
+                S
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="newNodeForm" value="SUBJECT_OR_OBJECT" ng-model="eNode.active">
+                S/O
+            </label>
+            <button class="btn btn-danger" ng-click="editing = eNode = undefined;">Cancel</button>
+            <button class="btn btn-success" ng-click="editNodeSave(v, eNode); editing = eNode = undefined;">Save
+            </button>
+        </form>
+        <div class="collapse" id="raw_{{v.id}}" ng-hide="editing === v.id">
+            <div class="well">
+                <em>{{v | prettyfyJSON}}</em>
+            </div>
+        </div>
+    </div>
+    <div class="list-group-item">
+        <div class="text-center">
+            <button class="btn btn-success" ng-hide="where === 'bottom'"
+                    ng-click="where = 'bottom'; newNode = {info: {}, active: 'SUBJECT'}">
+                <i class="fa fa-plus-square-o"></i> New
+            </button>
+        </div>
+        <form name="newNodeForm" class="form-inline" ng-show="where === 'bottom'">
+            <input type="text" class="form-control" placeholder="Name" ng-model="newNode.info.label">&nbsp;
+            <label class="radio-inline">
+                <input type="radio" name="newNodeForm" value="OBJECT" ng-model="newNode.active">
+                O
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="newNodeForm" value="SUBJECT" ng-model="newNode.active">
+                S
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="newNodeForm" value="SUBJECT_OR_OBJECT" ng-model="newNode.active">
+                S/O
+            </label>
+            <button class="btn btn-danger" ng-click="where = newNode = undefined;">Cancel</button>
+            <button class="btn btn-success" ng-click="newNodeSave(newNode); where = newNode = undefined;">Save</button>
+        </form>
+    </div>
+</div>
