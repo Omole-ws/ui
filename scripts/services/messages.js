@@ -23,7 +23,7 @@ angular.module('ccengine')
             return this.length - 1;
         }},
         clear: {value: function (idx) {
-            if (idx && idx < this.length) {
+            if (Number.isInteger(idx) && idx >= 0 && idx < this.length) {
                 this.splice(idx, 1);
                 if (this.length === 0) {
                     this.nonEmpty = false;

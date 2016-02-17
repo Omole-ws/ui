@@ -59,8 +59,10 @@ function ($http, evs, msgs, data, ctx, DEFAULT_STYLE, defNodeConverter, defEdgeC
                     // bb.y1 += newBB.h / 2;
                     // bb.y2 -= newBB.h / 2;
                     nAdd.positions(function (i, ele) {
-                        ebb = ele.boundingBox();
-                        return {x: bb.x1 + ebb.w, y: bb.y1 + ebb.h};
+                        var ebb = ele.boundingBox();
+                        var dx = 2 * ebb.w * (Math.random() + 0.25);
+                        var dy = 2 * ebb.h * (Math.random() + 0.25);
+                        return {x: bb.x1 + dx, y: bb.y1 + dy};
                         // return {x: bb.x1 + ele.outerWidth() / 2, y: bb.y1 + ele.outerHeight() / 2};
                     });
                 }

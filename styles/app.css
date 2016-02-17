@@ -1,5 +1,6 @@
 .container {
   margin-top: 55px;
+  margin-bottom: 55px;
 }
 
 .nav-input {
@@ -10,7 +11,7 @@
 
 .err-plate {
   position: absolute;
-  z-index: 999;
+  z-index: 99;
   top: 55px;
   right: 0px;
 }

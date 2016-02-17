@@ -58,8 +58,14 @@ function ($interval, $http, $routeParams, $scope, msgs, data, ctx, $state, evs) 
                 }
                 break;
         }
+        var raID = msgs.send('scs', 'Running algo ' + (algo.name ? algo.name : algo.url));
         $http.get(data.algos.domain + algo.url, {params: params, headers: {Accept: 'text/plain'}})
         .then(function (resp) {
+            if (resp.data.startsWith('Overload')) {
+                msgs.clear(raID);
+                msgs.send('wrn', 'Service overloaded');
+                return;
+            }
             var checker = $interval(function () {
                 if (algo.checkInProgress) {
                     return;
@@ -74,20 +80,27 @@ function ($interval, $http, $routeParams, $scope, msgs, data, ctx, $state, evs) 
                             case 'OUTPUT_PATHES':
                                 if (resp.data.length && resp.data.length > 1) {
                                     data.paths.add(resp.data.slice(1));
+                                } else {
+                                    msgs.send('err', 'Task has no solution');
                                 }
                                 break;
                         }
                         algo.running = false;
                         $interval.cancel(checker);
+                        msgs.clear(raID);
                     }
                 }, function (err) {
                     msgs.send('err', 'Error in checking status. Server: ' + err.statusText);
+                    msgs.clear(raID);
+                    $interval.cancel(checker);
                 })
                 .finally(function () {
                     algo.checkInProgress = false;
                 });
             }, 500, 0);
-        }, function () {
+        }, function (err) {
+            msgs.clear(raID);
+            msgs.send('err', 'Algo request failed. Server: ' + err.statusText);
             algo.running = false;
         });
     }

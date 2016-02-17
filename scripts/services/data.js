@@ -81,6 +81,7 @@ angular.module('ccengine')
                     });
                     self.nodesSort(self.nodes);
                     self.edgesSort(self.edges);
+                    $http.get('/app/t/ccgraphevict?gid=' + self.gid, {headers: {Accept: 'text/plain'}});
                     evs.notify('DATA_INSERT', {n: ev_data.nodes, e: ev_data.edges});
                 }, function (err) {
                     msgs.send('err', 'Some of inserts failed. Server: ' + err.statusText);
@@ -110,6 +111,7 @@ angular.module('ccengine')
                     });
                     self.nodesSort(self.nodes);
                     self.edgesSort(self.edges);
+                    $http.get('/app/t/ccgraphevict?gid=' + self.gid, {headers: {Accept: 'text/plain'}});
                     evs.notify('DATA_UPDATE', {n: ev_data.nodes, e: ev_data.edges});
                 }, function (err) {
                     msgs.send('err', 'Fail to update, Server: ' + err.statusText);
@@ -138,6 +140,7 @@ angular.module('ccengine')
                             });
                         }
                     });
+                    $http.get('/app/t/ccgraphevict?gid=' + self.gid, {headers: {Accept: 'text/plain'}});
                     evs.notify('DATA_REMOVE', {n: ev_data.nodes, e: ev_data.edges});
                 }, function (err) {
                     msgs.send('err', 'Fail to remove, Server: ' + err.statusText);
