@@ -3,9 +3,185 @@
 *
 */
 angular.module('ccengine')
-.controller('visualCtrl', ['$http', 'eventsDeliverySvc', 'messagesSvc', 'dataSvc', 'contextSvc',
+
+.value('DEFAULT_STYLE', [
+    {
+        selector: 'node',
+        style: {
+            shape: 'ellipse',
+            color: '#000000',
+            label: 'data(info.label)',
+            'background-color': '#546e7a',
+            'border-width': '1px',
+            'border-style': 'solid',
+            'border-color': '#ffffff'
+        }
+    },
+    {
+        selector: 'node[active="OBJECT"]',
+        style: {
+            'pie-size': '80%',
+            'pie-1-background-color': '#ffffff',
+            'pie-1-background-size': '100%'
+        }
+    },
+    {
+        selector: 'node[active="SUBJECT_OR_OBJECT"]',
+        style: {
+            'pie-size': '80%',
+            'pie-1-background-color': '#ffffff',
+            'pie-1-background-size': '50%'
+        }
+    },
+    {
+        selector: 'edge',
+        style: {
+            width: '3px',
+            'curve-style': 'bezier',
+            'target-arrow-shape': 'triangle-backcurve',
+            'target-arrow-fill': 'filled'
+        }
+    },
+    {
+        selector: 'edge[cclabel="READ"]',
+        style: {
+            'line-color': '#827717',
+            'line-style': 'solid',
+            'target-arrow-color': '#827717'
+        }
+    },
+    {
+        selector: 'edge[cclabel="WRITE"]',
+        style: {
+            'line-color': '#e65100',
+            'line-style': 'solid',
+            'target-arrow-color': '#e65100'
+        }
+    },
+    {
+        selector: 'edge[cclabel="TAKE"]',
+        style: {
+            'line-color': '#827717',
+            'line-style': 'dashed',
+            'target-arrow-color': '#827717'
+        }
+    },
+    {
+        selector: 'edge[cclabel="GRANT"]',
+        style: {
+            'line-color': '#e65100',
+            'line-style': 'dashed',
+            'target-arrow-color': '#e65100'
+        }
+    },
+    {
+        selector: '.dimmed',
+        style: {
+            opacity: 0.2
+        }
+    },
+    {
+        selector: '.highlighted',
+        style: {
+            'overlay-color': 'blue',
+            'overlay-opacity': 0.7
+        }
+    },
+    {
+        selector: '.highlighted.start',
+        style: {
+            'overlay-color': 'green'
+        }
+    },
+    {
+        selector: '.highlighted.end',
+        style: {
+            'overlay-color': 'red'
+        }
+    }
+])
+
+.value('defNodeConverter', function (opts, node) {
+    // ===============================================================
+    // node converter from storage format to cytoscape node
+    var converted = {
+        data: {
+            id: node.id,
+            label: node.info.label,
+            // label: node.info.label + '(' + node.level + ')',
+            // attr: node.info.atrib,
+            // status: node.info.status,
+            // active: node.active,
+            // level: node.level,
+            // zone: node.zone
+        // },
+        // scratch: {
+            src: node
+        },
+        position: {
+            x: 0,
+            y: 0
+        }
+    };
+    switch (node.active) {
+        case 'OBJECT':
+            converted.classes = 'object';
+            break;
+        case 'SUBJECT_OR_OBJECT':
+            converted.classes = 'subject-object';
+            break;
+    }
+    if (opts && opts.ifShowLevel) {
+        converted.data.label = node.info.label + '(' + node.level + ')';
+    }
+    return converted;
+    // -- End node converter
+})
+
+.value('defEdgeConverter', function (edge) {
+    // ===============================================================
+    // edge converter from storage format to cytoscape edge
+    var converted = {
+        data: {
+            id: edge.id,
+            // label: edge.info.label,
+            // attr: edge.info.atrib,
+            // status: edge.info.status,
+            // cclabel: edge.cclabel,
+            source: edge.source,
+            target: edge.target,
+        // },
+        // scratch: {
+            src: edge
+        }
+    };
+    switch (edge.cclabel) {
+        case 'R_ONLY':
+            converted.classes = 'r-only';
+            break;
+        case 'W_ONLY':
+            converted.classes = 'w-only';
+            break;
+        case 'READ':
+            converted.classes = 'read';
+            break;
+        case 'WRITE':
+            converted.classes = 'write';
+            break;
+        case 'TAKE':
+            converted.classes = 'take';
+            break;
+        case 'GRANT':
+            converted.classes = 'grant';
+            break;
+    }
+    return converted;
+    // -- End edge converter
+})
+
+.controller('visualCtrl', ['$interval', '$http', 'eventsDeliverySvc', 'messagesSvc', 'dataSvc', 'contextSvc',
 'DEFAULT_STYLE', 'defNodeConverter', 'defEdgeConverter',
-function ($http, evs, msgs, data, ctx, DEFAULT_STYLE, defNodeConverter, defEdgeConverter) {
+function ($interval, $http, evs, msgs, data, ctx, DEFAULT_STYLE, defNodeConverter, defEdgeConverter) {
     var nodeConverter = defNodeConverter.bind(null, {ifShowLevel: false});
     var edgeConverter = defEdgeConverter;
 
@@ -26,44 +202,56 @@ function ($http, evs, msgs, data, ctx, DEFAULT_STYLE, defNodeConverter, defEdgeC
 
     // ===============================================================
     // Data operations
-    function reload(data) {
+    function reload(data_toi) {
         cy.remove('*');
-        insert(data);
-        layout();
-        box = {w: cy.width(), h: cy.height(), l: cy.zoom()};
+        insert(data_toi);
+
+        cy.ready(function () {
+            if (data.gvattrs.zoom && data.gvattrs.pan) {
+                cy.viewport({zoom: data.gvattrs.zoom, pan: data.gvattrs.pan});
+            }
+            // layout();
+            box = {w: cy.width(), h: cy.height(), l: cy.zoom()};
+        });
     }
-    function insert(data) {
+    function insert(data_toi) {
         // cy.nodes().lock();
-        if (data) {
+        if (data_toi) {
             var nElems = 0;
             var toInsert = {};
-            if (data.n) {
-                toInsert.nodes = data.n.map(function (el) {
+            if (data_toi.n) {
+                toInsert.nodes = data_toi.n.map(function (el) {
                     ++nElems;
                     return nodeConverter(el);
                 });
             }
-            if (data.e) {
-                toInsert.edges = data.e.map(function (el) {
+            if (data_toi.e) {
+                toInsert.edges = data_toi.e.map(function (el) {
                     ++nElems;
                     return edgeConverter(el);
                 });
             }
             if (nElems > 0) {
                 var nAdd = cy.add(toInsert).nodes();
-                if (data.n) {
+                if (data_toi.n) {
                     var bb = cy.extent();
                     // var newBB = nAdd.boundingBox();
                     // bb.x1 += newBB.w / 2;
                     // bb.x2 -= newBB.w / 2;
                     // bb.y1 += newBB.h / 2;
                     // bb.y2 -= newBB.h / 2;
-                    nAdd.positions(function (i, ele) {
-                        var ebb = ele.boundingBox();
-                        var dx = 2 * ebb.w * (Math.random() + 0.25);
-                        var dy = 2 * ebb.h * (Math.random() + 0.25);
-                        return {x: bb.x1 + dx, y: bb.y1 + dy};
-                        // return {x: bb.x1 + ele.outerWidth() / 2, y: bb.y1 + ele.outerHeight() / 2};
+                    cy.ready(function () {
+                        nAdd.positions(function (i, ele) {
+                            if (data.gvattrs.positions[ele.id()]) {
+                                console.log(data.gvattrs.positions[ele.id()]);
+                                return data.gvattrs.positions[ele.id()];
+                            }
+                            var ebb = ele.boundingBox();
+                            var dx = 2 * ebb.w * (Math.random() + 0.25);
+                            var dy = 2 * ebb.h * (Math.random() + 0.25);
+                            return {x: bb.x1 + dx, y: bb.y1 + dy};
+                            // return {x: bb.x1 + ele.outerWidth() / 2, y: bb.y1 + ele.outerHeight() / 2};
+                        });
                     });
                 }
                 // cy.resize();
@@ -99,7 +287,12 @@ function ($http, evs, msgs, data, ctx, DEFAULT_STYLE, defNodeConverter, defEdgeC
     function remove(data) {
         if (data) {
             if (_.isArray(data.n) && data.n.length > 0) {
-                cy.nodes(data.n.map(function (n) {return '#' + n.id; }).join(',')).remove();
+                if (!data.e) {
+                    data.e = [];
+                }
+                var nodesToRemove = cy.nodes(data.n.map(function (n) {return '#' + n.id; }).join(','));
+                nodesToRemove.connectedEdges().remove();
+                nodesToRemove.remove();
                 // cy.nodes().filterFn(function (el) {
                 //     return data.n.indexOf(el.scratch('src')) >= 0;
                 // }).remove();
@@ -372,6 +565,8 @@ function ($http, evs, msgs, data, ctx, DEFAULT_STYLE, defNodeConverter, defEdgeC
     evs.subscribe('DATA_INSERT', insert);
     evs.subscribe('DATA_UPDATE', update);
     evs.subscribe('DATA_REMOVE', remove);
+    evs.subscribe('VIZ_APPLY_LAYOUT', layout);
+
     evs.subscribe('SELECTION_REQUEST', Selection.run);
     evs.subscribe('SELECTION_DISMISS', Selection.stop);
     // evs.subscribe('ZONES_CREATED', Zones.recreate);
@@ -391,6 +586,7 @@ function ($http, evs, msgs, data, ctx, DEFAULT_STYLE, defNodeConverter, defEdgeC
         motionBlur: true
     });
     var box = {};
+    var pendingSaveState = $interval(function () {}, 1, 1);
     cyElem.on('transitionend', function (ev) {
         // box = {w: cy.width(), h: cy.height(), l: cy.zoom()};
         var nbox = {w: cy.width(), h: cy.height(), l: cy.zoom()};
@@ -404,7 +600,25 @@ function ($http, evs, msgs, data, ctx, DEFAULT_STYLE, defNodeConverter, defEdgeC
         cy.zoom({level: nbox.l * delta, renderedPosition: {x: 0, y: 0}});
         cy.resize();
         box = nbox;
+        $interval.cancel(pendingSaveState);
+        pendingSaveState = $interval(function () {
+            data.gvattrs.save(cy.zoom(), cy.pan(),
+                _.fromPairs(cy.nodes().map(function (ele) {
+                    return [ele.id(), ele.position()];
+                }))
+            );
+        }, 2000, 1);
         // cy.fit();
+    });
+    cy.on('layoutstop pan zoom position', function (ev) {
+        $interval.cancel(pendingSaveState);
+        pendingSaveState = $interval(function () {
+            data.gvattrs.save(cy.zoom(), cy.pan(),
+                _.fromPairs(cy.nodes().map(function (ele) {
+                    return [ele.id(), ele.position()];
+                }))
+            );
+        }, 2000, 1);
     });
     $http.get('styles/graph-style.css').then(function (data) {
         cy.style(data.data).update();

@@ -18,6 +18,7 @@ function ($interval, $http, $routeParams, $scope, msgs, data, ctx, $state, evs) 
 
     $scope.curAlgo = null;
     $scope.run = taskRunner;
+    evs.subscribe('DESK_RUN_ALGO', taskRunner);
     function taskRunner(algo) {
         if (algo.running || $scope.levelOps === true || $scope.pathOps === true) {
             return;
@@ -64,6 +65,10 @@ function ($interval, $http, $routeParams, $scope, msgs, data, ctx, $state, evs) 
             if (resp.data.startsWith('Overload')) {
                 msgs.clear(raID);
                 msgs.send('wrn', 'Service overloaded');
+                return;
+            }
+            if (resp.data.startsWith('Done')) {
+                msgs.clear(raID);
                 return;
             }
             var checker = $interval(function () {

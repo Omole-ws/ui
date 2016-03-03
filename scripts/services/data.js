@@ -1,10 +1,11 @@
 angular.module('ccengine')
-.factory('dataSvc', ['$q', '$http', 'messagesSvc', 'eventsDeliverySvc', 'graphSvc', 'nodeGroupsSvc', 'pathGroupsSvc',
-    function ($q, $http, msgs, evs, gSvc, ngSvc, pgSvc) {
+.factory('dataSvc', ['$q', '$http', 'messagesSvc', 'eventsDeliverySvc', 'graphSvc', 'gvattrsSvc',
+     'nodeGroupsSvc', 'pathGroupsSvc',
+    function ($q, $http, msgs, evs, gSvc, gvattrsSvc, ngSvc, pgSvc) {
 
         // ===============================================================
         // Core data operations
-        var graph = {id: null, info: {}, nodes: [], edges: []};
+        // var graph = {id: null, info: {}, nodes: [], edges: []};
         function Data(gid) {
             Object.defineProperties(this, {
                 gid: {value: gid, writable: true},
@@ -52,16 +53,16 @@ angular.module('ccengine')
             var self = this;
             var mID = msgs.send('inf', 'Loading data...');
             this.reset();
-            gSvc.get({id: this.gid}).$promise.then((function (resp) {
+            return gSvc.get({id: this.gid}).$promise.then((function (resp) {
                 msgs.clear(mID);
                 _.merge(self.graph, resp);
                 self.nodesSort(self.nodes);
                 self.edgesSort(self.edges);
                 self.estampo = Date.now();
-                evs.notify('DATA_RELOAD', {n: self.nodes, e: self.edges});
             }).bind(this), function (err) {
                 msgs.clear(mID);
                 msgs.send('err', 'Failed to retrieve data. Server: ' + err.statusText);
+                return $q.reject(err);
             });
         };
         Data.prototype.insert = function (data) {
@@ -101,7 +102,7 @@ angular.module('ccengine')
                     ['nodes', 'edges'].forEach(function (name) {
                         if (_.isArray(resp[name])) {
                             self[name].forEach(function (el) {
-                                var upd = _.findWhere(resp[name], {id: el.id});
+                                var upd = _.find(resp[name], {id: el.id});
                                 if (upd) {
                                     _.merge(el, upd);
                                     ev_data[name].push(el);
@@ -130,9 +131,9 @@ angular.module('ccengine')
                     var ev_data = {nodes: [], edges: []};
                     ['nodes', 'edges'].forEach(function (name) {
                         if (_.isArray(resp[name])) {
-                            var ids = _.pluck(resp[name], 'id');
+                            var ids = _.map(resp[name], 'id');
                             _.remove(self[name], function (el) {
-                                if (_.contains(ids, el.id)) {
+                                if (_.includes(ids, el.id)) {
                                     ev_data[name].push(el);
                                     return true;
                                 }
@@ -153,11 +154,42 @@ angular.module('ccengine')
         // -- End of core data operation
 
         // ===============================================================
+        // GRAPH VISUAL ATTRIBUTES
+        function GVAttrs(gid) {
+            this.gid = gid;
+            var zoom;
+            var pan;
+            var positions;
+        }
+        GVAttrs.prototype.get = function () {
+            var self = this;
+            return gvattrsSvc.get({id: this.gid}).$promise.then(function (data) {
+                self.id = data.id;
+                self.zoom = data.zoom;
+                self.pan = data.pan;
+                self.positions = data.positions;
+            }, function (err) {
+                return gvattrsSvc.insert({gid: self.gid}).$promise.then(function (resp) {
+                    self.id = resp.id;
+                }, function (err) {
+                    return $q.reject(err);
+                });
+            });
+        };
+        GVAttrs.prototype.create = function (zoom, pan, positions) {
+            gvattrsSvc.insert({gid: this.gid, zoom: zoom, pan: pan, positions: positions});
+        };
+        GVAttrs.prototype.save = function (zoom, pan, positions) {
+            gvattrsSvc.save({id: this.id}, {gid: this.gid, zoom: zoom, pan: pan, positions: positions});
+        };
+        // ===============================================================
+
+        // ===============================================================
         // NODE GROUPS
         function NodeGroup(g) {
             _.assign(this, g);
             Object.defineProperties(this, {
-                subGroups: {value: _.invert(this.mappings, true)}
+                subGroups: {value: _.invertBy(this.mappings)}
             });
         }
         // -- End of NODE GROUPS
@@ -185,10 +217,15 @@ angular.module('ccengine')
         Object.defineProperties(dataObj, {
             setupDesk: {value: function (gid) {
                 this.gid = gid;
+                this.gvattrs = new GVAttrs(gid);
                 this.groups.splice(0, this.groups.length);
                 this.paths.splice(0, this.paths.length);
-                this.get();
+                var d = this.get();
+                var gva = this.gvattrs.get();
                 var self = this;
+                $q.all([d, gva]).then(function () {
+                    evs.notify('DATA_RELOAD', {n: self.nodes, e: self.edges});
+                });
                 // $q.all([this.nodes.$promise, this.edges.$promise]).then(function (resp) {
                 //     self.zones = new Zones(gid, self);
                 //     self.levels = new Levels(gid, self);
