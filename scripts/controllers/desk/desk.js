@@ -89,6 +89,9 @@ function ($interval, $http, $routeParams, $scope, msgs, data, ctx, $state, evs) 
                                     msgs.send('err', 'Task has no solution');
                                 }
                                 break;
+                            case 'OUTPUT_MESSAGE':
+                                msgs.send('scs', resp.data);
+                                break;
                         }
                         algo.running = false;
                         $interval.cancel(checker);
