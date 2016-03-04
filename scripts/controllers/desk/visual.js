@@ -287,23 +287,32 @@ function ($interval, $http, evs, msgs, data, ctx, DEFAULT_STYLE, defNodeConverte
             }
         }
     }
-    function remove(data) {
-        if (data) {
-            if (_.isArray(data.n) && data.n.length > 0) {
-                if (!data.e) {
-                    data.e = [];
+    function remove(data_tor) {
+        if (data_tor) {
+            if (_.isArray(data_tor.n) && data_tor.n.length > 0) {
+                if (!data_tor.e) {
+                    data_tor.e = [];
                 }
-                var nodesToRemove = cy.nodes(data.n.map(function (n) {return '#' + n.id; }).join(','));
-                nodesToRemove.connectedEdges().remove();
+                var nodesToRemove = cy.nodes(data_tor.n.map(function (n) {return '#' + n.id; }).join(','));
+                var etr = nodesToRemove.connectedEdges();
+                var detr = etr.map(function (ele) {
+                    var idx = _.findIndex(data.edges, {id: ele.id()});
+                    if (idx >= 0) {
+                        return data.edges[idx];
+                    } else {
+                        throw 'Assert there should be an edge!!';
+                    }
+                });
+                data.remove({e: detr});
                 nodesToRemove.remove();
                 // cy.nodes().filterFn(function (el) {
-                //     return data.n.indexOf(el.scratch('src')) >= 0;
+                //     return data_tor.n.indexOf(el.scratch('src')) >= 0;
                 // }).remove();
             }
-            if (_.isArray(data.e) && data.e.length > 0) {
-                cy.edges(data.e.map(function (e) {return '#' + e.id; }).join(',')).remove();
+            if (_.isArray(data_tor.e) && data_tor.e.length > 0) {
+                cy.edges(data_tor.e.map(function (e) {return '#' + e.id; }).join(',')).remove();
                 // cy.edges().filterFn(function (el) {
-                //     return data.e.indexOf(el.scratch('src')) >= 0;
+                //     return data_tor.e.indexOf(el.scratch('src')) >= 0;
                 // }).remove();
             }
             // cy.fit();
