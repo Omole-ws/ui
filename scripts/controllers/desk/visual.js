@@ -209,6 +209,8 @@ function ($interval, $http, evs, msgs, data, ctx, DEFAULT_STYLE, defNodeConverte
         cy.ready(function () {
             if (data.gvattrs.zoom && data.gvattrs.pan) {
                 cy.viewport({zoom: data.gvattrs.zoom, pan: data.gvattrs.pan});
+            } else {
+                cy.viewport({zoom:1, pan: {x: 0, y: 0}});
             }
             // layout();
             box = {w: cy.width(), h: cy.height(), l: cy.zoom()};
@@ -242,8 +244,7 @@ function ($interval, $http, evs, msgs, data, ctx, DEFAULT_STYLE, defNodeConverte
                     // bb.y2 -= newBB.h / 2;
                     cy.ready(function () {
                         nAdd.positions(function (i, ele) {
-                            if (data.gvattrs.positions[ele.id()]) {
-                                console.log(data.gvattrs.positions[ele.id()]);
+                            if (data.gvattrs && data.gvattrs.positions && data.gvattrs.positions[ele.id()]) {
                                 return data.gvattrs.positions[ele.id()];
                             }
                             var ebb = ele.boundingBox();
@@ -268,7 +269,9 @@ function ($interval, $http, evs, msgs, data, ctx, DEFAULT_STYLE, defNodeConverte
                     var nConverted = nodeConverter(n);
                     cyN.data(nConverted.data);
                     cyN.removeClass('object subject-object');
-                    cyN.addClass(nConverted.classes);
+                    if (nConverted.classes) {
+                        cyN.addClass(nConverted.classes);
+                    }
                 });
             }
             if (data.e) {

@@ -102,7 +102,7 @@ function ($interval, $http, $routeParams, $scope, msgs, data, ctx, $state, evs) 
                 .finally(function () {
                     algo.checkInProgress = false;
                 });
-            }, 500, 0);
+            }, 2000, 0);
         }, function (err) {
             msgs.clear(raID);
             msgs.send('err', 'Algo request failed. Server: ' + err.statusText);

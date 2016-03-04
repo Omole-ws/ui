@@ -1,6 +1,6 @@
 angular.module('ccengine')
-.controller('listCtrl', ['$rootScope', '$scope', 'messagesSvc', 'graphSvc', 'list',
-function ($rootScope, $scope, msgs, graphSvc, list) {
+.controller('listCtrl', ['$location', '$rootScope', '$scope', 'messagesSvc', 'graphSvc', 'list',
+function ($location, $rootScope, $scope, msgs, graphSvc, list) {
     // get list of GraphInfo structures
     // $scope.clearErrors = ctx.clearErrors.bind(ctx);
     // $scope.clearErrors = function () {
@@ -13,7 +13,8 @@ function ($rootScope, $scope, msgs, graphSvc, list) {
         data.nodes = [];
         data.edges = [];
         var gr = graphSvc.insert({username: $rootScope.username}, data).$promise.then(function (ok) {
-            $scope.graphinfos = graphSvc.query({username: $rootScope.username});
+            $location.url('/app/desk/' + ok.id);
+            // $scope.graphinfos = graphSvc.query({username: $rootScope.username});
         }, function (err) {
             msgs.send('err', 'Failed to create new graph. Server: ' + err.statusText);
         }).finally(function () {
