@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html ng-app="ccengine" ng-controller="rootCtrl">
+<html ng-app="ccengine" ng-controller="rootCtrl" ng-cloak>
 
 <head>
     <meta charset="UTF-8">
     <base href="/">
     <link rel="shortcut icon" href="/favicon.ico"/>
     <!--Import bootstrap.css-->
+    <link type="text/css" rel="stylesheet" href="assets/css/angular-csp.css" media="screen,projection"/>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap.min.css" media="screen,projection"/>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-theme.min.css" media="screen,projection"/>
     <link type="text/css" rel="stylesheet" href="styles/app.css" media="screen,projection"/>
     <link type="text/css" rel="stylesheet" href="assets/css/font-awesome.min.css"/>
     <!-- <link type="image/x-icon" rel="icon" href="img/favicon.ico"> -->
-    <title>CC Engine</title>
+    <title>Omole</title>
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
@@ -62,7 +63,7 @@
             <ul class="nav navbar-nav" ui-view="menu">
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown">
+                <li class="dropdown" ng-show="username">
                     <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                         User {{username}} <span class="caret"></span>
                     </a>
@@ -85,9 +86,10 @@
 <script type="text/javascript" src="assets/js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="assets/js/angular.min.js"></script>
+<!-- <script type="text/javascript" src="assets/js/angular-cookies.min.js"></script> -->
+<script type="text/javascript" src="assets/js/angular-ui-router.js"></script>
 <script type="text/javascript" src="assets/js/angular-resource.min.js"></script>
 <script type="text/javascript" src="assets/js/angular-animate.min.js"></script>
-<script type="text/javascript" src="assets/js/angular-ui-router.js"></script>
 <script type="text/javascript" src="scripts/bs-add.js"></script>
 <script type="text/javascript" src="assets/js/cytoscape.js"></script>
 <script type="text/javascript" src="scripts/ccengine.js"></script>

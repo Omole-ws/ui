@@ -1,4 +1,4 @@
-// angular.module('ccengine', ['ui.router', 'ngRoute', 'ngResource', 'ccengine.resources'])
+// angular.module('ccengine', ['ngResource', 'ngCookies', 'ui.router', 'omole.resources'])
 angular.module('ccengine', ['ngResource', 'ui.router', 'omole.resources'])
 
 .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider',
@@ -10,9 +10,9 @@ angular.module('ccengine', ['ngResource', 'ui.router', 'omole.resources'])
         url: '/app',
         resolve:{
             list: function ($rootScope, messagesSvc, graphSvc) {
-                var mID = messagesSvc.send('inf', 'Loading data...');
                 // $rootScope.username = 'aa';
                 var list = $rootScope.username_promise.then(function (uname) {
+                    var mID = messagesSvc.send('inf', 'Loading data...');
                     var l = graphSvc.query({username: $rootScope.username});
                     l.$promise.then(function () {
                         // messagesSvc.clear(mID);
@@ -80,41 +80,50 @@ angular.module('ccengine', ['ngResource', 'ui.router', 'omole.resources'])
 
     $locationProvider.html5Mode (true);
     $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-    delete $httpProvider.defaults.headers.common['X-XSRF-TOKEN'];
-    // delete $httpProvider.defaults.headers.common['X-Requested-With'];
-    // $httpProvider.defaults.useXDomain = true;
+    $httpProvider.interceptors.push(function ($q) {
+        return {
+            response: function (resp) {
+                var hdrs = resp.headers();
+                if (hdrs['x-xsrf-token']) {
+                    $httpProvider.defaults.headers.common['x-xsrf-token'] = hdrs['x-xsrf-token'];
+                }
+                return resp;
+            },
+            responseError: function (resp) {
+                var hdrs = resp.headers();
+                if (hdrs['x-xsrf-token']) {
+                    $httpProvider.defaults.headers.common['x-xsrf-token'] = hdrs['x-xsrf-token'];
+                }
+                return $q.reject(resp);
+            }
+        };
+    });
+    $httpProvider.defaults.useXDomain = true;
 }])
 
-.run(function ($rootScope, $urlRouter, $state, $http) {
-    $rootScope.$on('$locationChangeSuccess', function (ev, to) {
-        // ev.preventDefault();
-        console.log('Interceptor!!!');
-        // if (to !== '/app/login' && to !== '/app/registration') {
-        //     if (!$rootScope.user) {
-        //         ev.preventDefault();
-        //         $state.go('login');
-        //     } else {
-        //         $http.get('/auth/check').then(function (resp) {
-        //             $rootScope.user = resp.data;
-        //         }, function (err) {
-        //             // messagesSvc.send('err', 'Auth failed. Server: ' + err.statusText);
-        //             $state.go('login');
-        //         });
-        //     }
-        // }
-        // $urlRouter.sync();
-    });
+// .run(function ($rootScope, $urlRouter, $http, $cookies, $q, $state) {
+.run(function ($rootScope, $urlRouter, $http, $q, $state) {
     $rootScope.$on('$stateChangeStart', function (ev, toState, toParams, fromState, fromParams) {
         // ev.preventDefault();
         console.log('Interceptor2!!! from: ' + fromState.name + ' to: ' + toState.name);
-        if (toState.name !== 'login' && toState.name !== 'registration') {
-            $rootScope.username_promise = $http.get('/auth/check').then(function (resp) {
-                $rootScope.username = resp.data;
-            }, function (err) {
-                // messagesSvc.send('err', 'Auth failed. Server: ' + err.statusText);
-                $state.go('login');
-            });
+        if ((toState.name === 'login' || toState.name === 'registration') && _.isString($rootScope.username)) {
+            $state.go('home');
+            return;
         }
+        if (toState.name === 'registration') {
+            return;
+        }
+        $rootScope.username_promise = $http.get('/auth/check').then(function (resp) {
+            $rootScope.username = resp.data;
+            return $q.resolve($rootScope.username);
+        }, function (err) {
+            // messagesSvc.send('err', 'Auth failed. Server: ' + err.statusText);
+            $rootScope.username = undefined;
+            // $cookies.remove('SESSION');
+            // delete $http.defaults.headers.common['x-xsrf-token'];
+            $state.go('login');
+            return $q.reject(undefined);
+        });
         // $urlRouter.sync();
     });
 })

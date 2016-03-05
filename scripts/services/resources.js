@@ -8,6 +8,13 @@ angular.module('omole.resources', [])
     });
 }])
 
+.service('gvattrsSvc', ['$resource', function ($resource) {
+    return $resource('/app/r/vizattrs/:id', {id: '@id'}, {
+        insert: {method: 'POST'},
+        save: {method: 'PUT'}
+    });
+}])
+
 .factory('pathGroupsSvc', ['$resource', function ($resource) {
     return $resource('/app/r/paths/:id', {id: '@id'});
 }])

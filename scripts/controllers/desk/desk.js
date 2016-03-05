@@ -18,6 +18,7 @@ function ($interval, $http, $routeParams, $scope, msgs, data, ctx, $state, evs) 
 
     $scope.curAlgo = null;
     $scope.run = taskRunner;
+    evs.subscribe('DESK_RUN_ALGO', taskRunner);
     function taskRunner(algo) {
         if (algo.running || $scope.levelOps === true || $scope.pathOps === true) {
             return;
@@ -58,12 +59,16 @@ function ($interval, $http, $routeParams, $scope, msgs, data, ctx, $state, evs) 
                 }
                 break;
         }
-        var raID = msgs.send('scs', 'Running algo ' + (algo.name ? algo.name : algo.url));
+        var raID = msgs.send('inf', 'Running algo ' + (algo.name ? algo.name : algo.url));
         $http.get(data.algos.domain + algo.url, {params: params, headers: {Accept: 'text/plain'}})
         .then(function (resp) {
             if (resp.data.startsWith('Overload')) {
                 msgs.clear(raID);
                 msgs.send('wrn', 'Service overloaded');
+                return;
+            }
+            if (resp.data.startsWith('Done')) {
+                msgs.clear(raID);
                 return;
             }
             var checker = $interval(function () {
@@ -84,10 +89,18 @@ function ($interval, $http, $routeParams, $scope, msgs, data, ctx, $state, evs) 
                                     msgs.send('err', 'Task has no solution');
                                 }
                                 break;
+                            case 'OUTPUT_MESSAGE':
+                                msgs.send('scs', resp.data[1]);
+                                break;
                         }
                         algo.running = false;
                         $interval.cancel(checker);
                         msgs.clear(raID);
+                    } else if (resp.data[0].startsWith('Error executing task')) {
+                        algo.running = false;
+                        $interval.cancel(checker);
+                        msgs.clear(raID);
+                        msgs.send('err', resp.data[1]);
                     }
                 }, function (err) {
                     msgs.send('err', 'Error in checking status. Server: ' + err.statusText);
@@ -97,7 +110,7 @@ function ($interval, $http, $routeParams, $scope, msgs, data, ctx, $state, evs) 
                 .finally(function () {
                     algo.checkInProgress = false;
                 });
-            }, 500, 0);
+            }, 2000, 0);
         }, function (err) {
             msgs.clear(raID);
             msgs.send('err', 'Algo request failed. Server: ' + err.statusText);
