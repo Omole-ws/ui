@@ -59,7 +59,7 @@ function ($interval, $http, $routeParams, $scope, msgs, data, ctx, $state, evs) 
                 }
                 break;
         }
-        var raID = msgs.send('scs', 'Running algo ' + (algo.name ? algo.name : algo.url));
+        var raID = msgs.send('inf', 'Running algo ' + (algo.name ? algo.name : algo.url));
         $http.get(data.algos.domain + algo.url, {params: params, headers: {Accept: 'text/plain'}})
         .then(function (resp) {
             if (resp.data.startsWith('Overload')) {
@@ -90,12 +90,17 @@ function ($interval, $http, $routeParams, $scope, msgs, data, ctx, $state, evs) 
                                 }
                                 break;
                             case 'OUTPUT_MESSAGE':
-                                msgs.send('scs', resp.data);
+                                msgs.send('scs', resp.data[1]);
                                 break;
                         }
                         algo.running = false;
                         $interval.cancel(checker);
                         msgs.clear(raID);
+                    } else if (resp.data[0].startsWith('Error executing task')) {
+                        algo.running = false;
+                        $interval.cancel(checker);
+                        msgs.clear(raID);
+                        msgs.send('err', resp.data[1]);
                     }
                 }, function (err) {
                     msgs.send('err', 'Error in checking status. Server: ' + err.statusText);
