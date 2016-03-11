@@ -114,7 +114,7 @@ angular.module('ccengine', ['ngResource', 'ui.router', 'omole.resources'])
             return;
         }
         $rootScope.username_promise = $http.get('/auth/check').then(function (resp) {
-            $rootScope.username = resp.data;
+            $rootScope.username = resp.data.username;
             return $q.resolve($rootScope.username);
         }, function (err) {
             // messagesSvc.send('err', 'Auth failed. Server: ' + err.statusText);
