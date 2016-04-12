@@ -1,0 +1,124 @@
+node {
+  shape: ellipse;
+  color: #000000;
+  label: data(label);
+  text-valign: top;
+  text-halign: center;
+  background-color: #546e7a;
+  border-width: 0px;
+}
+
+.group {
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+  label: data(label);
+  text-valign: top;
+  text-halign: center;
+  background-color: #eceff1;
+  border-width: 1;
+  border-color: #000000;
+  border-style: dotted;
+}
+.zone {
+  background-color: #eceff1;
+}
+
+.level {
+  background-color: #fff9c4; /* yellow lighten-4 */
+}
+
+edge {
+  width: 1px;
+  curve-style: bezier;
+  target-arrow-shape: triangle;
+  target-arrow-fill: hollow;
+}
+
+.object {
+  pie-size: 80%;
+  pie-1-background-color: #ffffff;
+  pie-1-background-size: 100%;
+}
+
+.subject-object {
+  pie-size: 80%;
+  pie-1-background-color: #ffffff;
+  pie-1-background-size: 50%;
+}
+
+.r-only {
+  line-color: #827717;
+  target-arrow-color: #827717;
+  target-arrow-shape: triangle-tee;
+}
+
+.w-only {
+  line-color: #e65100;
+  target-arrow-color: #e65100;
+  target-arrow-shape: triangle-tee;
+}
+
+.read {
+  line-color: #827717;
+  target-arrow-color: #827717;
+}
+
+.write {
+  line-color: #e65100;
+  target-arrow-color: #e65100;
+}
+
+.take {
+  line-color: #2979ff; /*blue accent-3*/
+  target-arrow-color: #2979ff;
+}
+
+.grant {
+  line-color: #00897b; /*teal darken-1*/
+  target-arrow-color: #00897b;
+}
+
+
+:selected {
+  border-width: 5px;
+  border-color: black;
+  border-style: double;
+}
+
+.sel-start:selected {
+  border-color: green;
+}
+
+.sel-end:selected {
+  border-color: red;
+}
+
+.dim {
+  opacity: 0.2;
+}
+.group.dim {
+  opacity: 1;
+}
+.hl {
+  opacity: 1;
+  /*line-style: dotted;*/
+}
+.hl-active {
+  opacity: 1;
+  line-style: dashed;
+}
+/*edge.take.hl-active, edge.grant.hl-active {
+  width: 4px;
+}
+edge.read.hl-active, edge.write.hl-active {
+  width: 2px;
+}
+*/
+.hl-start {
+  background-color: green;
+}
+.hl-end {
+  background-color: red;
+}

@@ -1,0 +1,33 @@
+.ui.middle.aligned.center.aligned.grid
+  .row
+    .column
+      h2.ui.orange.image.header
+        img.image(src=logo)
+        .content Log-in to your account
+      //- .ui.segment
+      form.ui.large.attached.form.stacked.segment(onSubmit=loginTo)
+        .field
+          .ui.left.icon.input(class=error? 'error' : '')
+            i.user.icon
+            input(type="text" name="login" placeholder="Login" onChange=changeField('login'))
+        .field
+          .ui.left.icon.input(class=error? 'error' : '')
+            i.lock.icon
+            input(type="password" name="password" placeholder="Password" onChange=changeField('password'))
+        input.ui.fluid.large.orange.submit.button(type="submit", value="Login")
+      if error
+        .ui.bottom.attached.error.message
+          i.ui.close.icon(onClick=clearError)
+          =error
+  
+  .ui.horizontal.divider NEW TO US ?
+
+  .two.column.very.relaxed.row
+    .column
+      button.ui.blue.fluid.massive.button(onClick=loginTo('demo', 'demo')) Try DEMO
+    .ui.vertical.divider OR
+    .column
+      .ui.olive.message
+        | If You need data persistance
+        br
+        a(href="#!/registration") Sign Up
