@@ -1,0 +1,39 @@
+# parser: 'babel-eslint'
+root: true
+env:
+  browser: true
+  node: false
+extends: 'eslint:recommended'
+parserOptions:
+  ecmaFeatures:
+    experimentalObjectRestSpread: true
+    jsx: true
+  sourceType: module
+plugins:
+  - react
+rules:
+  indent:
+    - error
+    - 4
+    - SwitchCase: 1
+
+  linebreak-style:
+    - error
+    - unix
+  quotes:
+    - warn
+    - single
+    - avoid-escape
+  semi:
+    - error
+    - never
+  no-extra-parens:
+    - warn
+    - all
+  no-useless-constructor:
+    - warn
+  no-var:
+    - warn
+  jsx-quotes:
+    - warn
+    - prefer-double
