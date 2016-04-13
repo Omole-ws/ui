@@ -15,6 +15,13 @@ class ListView extends React.Component {
         this.state = {}
     }
 
+    static propTypes = {
+        list:           React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+        isFetching:     React.PropTypes.bool.isRequired,
+        fetchGraphList: React.PropTypes.func.isRequired,
+        changeCSRF:     React.PropTypes.func.isRequired
+    }
+
     componentWillMount() {
         if (!this.props.isFetching) {
             this.props.fetchGraphList()

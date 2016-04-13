@@ -16,14 +16,13 @@ export default class Desk extends React.Component {
         this._cy = null
     }
 
-    componentWillReceiveProps(nextProps) {
-        // if (!nextProps.isFetching && this.props.isFetching) {
-            // this._cy.load(nextProps.graph)
-        // }
+    static propTypes = {
+        isFetching: React.PropTypes.bool.isRequired,
+        graph: React.PropTypes.object.isRequired
     }
 
     shouldComponentUpdate(nextProps) {
-        if (nextProps.isFetching != this.props.isFetching) {
+        if (nextProps.isFetching !== this.props.isFetching) {
             return true
         }
         return false

@@ -7,7 +7,7 @@ export const router = (store = { path: '#!/', prevPath: '#!/' }, action) => {
             return {
                 ...store,
                 path: action.payload,
-                prevPath: store.path == '/login' || store.path == '/registration' ? '/' : store.path
+                prevPath: store.path === '/login' || store.path === '/registration' ? '/' : store.path
             }
 
         default:

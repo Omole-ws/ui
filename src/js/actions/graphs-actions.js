@@ -17,15 +17,15 @@ export const fetchGraphsList = () => {
             headers
         })
         .then((response) => {
-            if(response.status != 200) {
-                if (response.status == 403) {
+            if(response.status !== 200) {
+                if (response.status === 403) {
                     new Promise(() => page.redirect('#!/login'))
                 }
                 return Promise.reject(response.statusText)
             }
-            let csrf = response.headers.get('x-xsrf-token')
+            const csrf = response.headers.get('x-xsrf-token')
             if (csrf) {
-                dispatch(Action.changeCsrf(csrf))
+                dispatch(Action.changeCSRF(csrf))
             }
             return response.json()
         })
@@ -52,15 +52,15 @@ export const fetchGraph = (gid) => {
             headers
         })
         .then(response => {
-            if(response.status != 200) {
-                if (response.status == 403) {
+            if(response.status !== 200) {
+                if (response.status === 403) {
                     new Promise(() => page.redirect('#!/login'))
                 }
                 return Promise.reject(response.statusText)
             }
-            let csrf = response.headers.get('x-xsrf-token')
+            const csrf = response.headers.get('x-xsrf-token')
             if (csrf) {
-                dispatch(Action.changeCsrf(csrf))
+                dispatch(Action.changeCSRF(csrf))
             }
             return response.json()
         })

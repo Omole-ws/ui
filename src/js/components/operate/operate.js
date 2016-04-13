@@ -11,15 +11,21 @@ import Desk from './desk'
 
 class Operating extends React.Component {
 
+    static propTypes = {
+        gid:        React.PropTypes.string.isRequired,
+        graph:      React.PropTypes.object.isRequired,
+        fetchGraph: React.PropTypes.func.isRequired
+    }
+
     componentWillMount() {
-        if (this.props.graph == undefined || !this.props.graph.isFetching) {
+        if (this.props.graph === undefined || !this.props.graph.isFetching) {
             this.props.fetchGraph(this.props.gid, this.props.graph ? this.props.graph.lastUpdated : null )
         }
         this.setState({isFetching: true})
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.gid != nextProps.gid) {
+        if (this.props.gid !== nextProps.gid) {
             this.props.fetchGraph(nextProps.gid)
             this.setState({isFetching: true})
         }

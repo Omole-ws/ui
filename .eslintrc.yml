@@ -1,24 +1,28 @@
+root: true
 env:
   browser: false
   node: true
   commonjs: false
   es6: true
-extends: 'eslint:recommended'
+extends:
+  - eslint:recommended
 parserOptions:
   ecmaFeatures:
-    experimentalObjectRestSpread: true
+    experimentalObjectRestSpread: false
     jsx: false
   sourceType: module
 rules:
   indent:
     - error
     - 4
+    - SwitchCase: 1
   linebreak-style:
     - error
     - unix
   quotes:
-    - error
+    - warn
     - single
+    - avoid-escape
   semi:
     - error
     - never

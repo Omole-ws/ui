@@ -14,7 +14,11 @@ import NavProfile from './nav-profile'
 export default class Nav extends React.Component {
 
     createGraph() {
-        console.log('NEW GRAPH CREATE')
+        // console.log('NEW GRAPH CREATE')
+    }
+
+    static propTypes = {
+        mode: React.PropTypes.string.isRequired
     }
 
     computeChildren(mode) {
@@ -23,11 +27,11 @@ export default class Nav extends React.Component {
             case Mode.LOGIN:
             case Mode.REGISTRATION:
                 menu = [
-                    <a key="1" className={`orange item${mode == Mode.LOGIN ? ' active' : ''}`} href="#!/login">
+                    <a key="1" className={`orange item${mode === Mode.LOGIN ? ' active' : ''}`} href="#!/login">
                         Sign In
                     </a>
                     ,
-                    <a key="2" className={`orange item${mode == Mode.REGISTRATION ? ' active' : ''}`} href="#!/registration">
+                    <a key="2" className={`orange item${mode === Mode.REGISTRATION ? ' active' : ''}`} href="#!/registration">
                         Registration
                     </a>
                 ]
@@ -64,13 +68,13 @@ export default class Nav extends React.Component {
     //     }
     // }
     shouldComponentUpdate(nextProps) {
-        return nextProps.mode != this.props.mode
+        return nextProps.mode !== this.props.mode
     }
 
     render() {
         let menu = this.computeChildren(this.props.mode)
         return (
-                <NavTmpl logo={logo} mode={this.props.mode} modeConst={Mode} username="JOJO">
+                <NavTmpl logo={logo} mode={this.props.mode} modeConst={Mode}>
                     {menu}
                 </NavTmpl>
         )

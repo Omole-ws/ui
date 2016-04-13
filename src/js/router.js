@@ -38,7 +38,7 @@ export default function configureRouter(store) {
         store.dispatch(Action.setCurrentGraph(ctx.params.gid))
         modeSetter(Mode.OPERATE)(ctx, next)
     })
-    page('*', function (ctx) {
+    page('*', ctx => {
         if(!ctx.state.ifModeSet) {
             page.redirect('/')
         } else {

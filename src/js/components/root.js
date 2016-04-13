@@ -16,6 +16,10 @@ class Root extends React.Component {
         // this.updateMainView = () => this.updateMainView()
     }
 
+    static propTypes = {
+        mode: React.PropTypes.string.isRequired
+    }
+
     static modes = {
         [Mode.LOGIN]: {
             componentPath: './lr/login'
@@ -40,7 +44,7 @@ class Root extends React.Component {
     // }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.mode != this.props.mode) {
+        if(nextProps.mode !== this.props.mode) {
             require([`${Root.modes[nextProps.mode].componentPath}`], component => this.setState({mainView: component.default}))
             // this.updateMainView(nextProps.mode)
         }

@@ -17,12 +17,12 @@ export const login = (login, password) => {
             body: data
         })
         .then(response => {
-            if(response.status != 200) {
+            if(response.status !== 200) {
                 return Promise.reject(response.statusText)
             }
-            let csrf = response.headers.get('x-xsrf-token')
+            const csrf = response.headers.get('x-xsrf-token')
             if (csrf) {
-                dispatch(changeCsrf(csrf))
+                dispatch(changeCSRF(csrf))
             }
             return response.json()
         })
@@ -49,7 +49,7 @@ export const logout = () => {
             headers: new Headers({'x-xsrf-token': getState().session.csrf})
         })
         .then(response => {
-            if(response.status != 204) {
+            if(response.status !== 204) {
                 return Promise.reject(response.statusText)
             }
             page('#!/login')
@@ -67,7 +67,7 @@ export const logout = () => {
 }
 
 export const fetchSessionDetails = () => {
-    return (dispatch, getState) => {
+    return (dispatch) => {
         dispatch({type: `${ActionType.FETCH_SESSION_DETAILS}_PENDING`})
         fetch('/auth/check', {
             credentials: 'same-origin'/*,
@@ -75,12 +75,12 @@ export const fetchSessionDetails = () => {
             headers: new Headers({'x-xsrf-token': getState().session.csrf})*/
         })
         .then(response => {
-            if(response.status != 200) {
+            if(response.status !== 200) {
                 return Promise.reject(response.statusText)
             }
-            let csrf = response.headers.get('x-xsrf-token')
+            const csrf = response.headers.get('x-xsrf-token')
             if (csrf) {
-                dispatch(changeCsrf(csrf))
+                dispatch(changeCSRF(csrf))
             }
             return response.json()
         })
@@ -98,7 +98,7 @@ export const fetchSessionDetails = () => {
 
 export const clearLoginError = () => ({type: ActionType.CLEAR_LOGIN_ERROR})
 
-export const changeCsrf = (csrf) => {
+export const changeCSRF = (csrf) => {
     return {
         type: ActionType.CSRF,
         payload: csrf

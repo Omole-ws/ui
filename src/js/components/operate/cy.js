@@ -6,7 +6,7 @@ export default class Cy {
 
     constructor(elem) {
         this._cy = cytoscapeLdr().then(cytoscape => {
-            let _cy = cytoscape({
+            const _cy = cytoscape({
                 container: elem,
                 selectionType: 'additive',
                 autounselectify: true,
@@ -79,7 +79,7 @@ export default class Cy {
                 break
         }
         if (opts && opts.ifShowLevel) {
-            converted.data.label = node.info.label + '(' + node.level + ')'
+            converted.data.label = `${node.info.label}(${node.level})`
         }
         return converted
     }

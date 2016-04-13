@@ -1,10 +1,9 @@
-import { combineReducers } from 'redux'
 import { ActionType } from '../actions'
 
 
 const graph = (store = {isFetching: false, lastUpdated: null}, action) => {
 
-    if (store.id != action.payload.id) {
+    if (store.id !== action.payload.id) {
         return store
     }
     switch(action.type) {
@@ -64,11 +63,9 @@ export const graphs = (store = {isFetching: false, lastUpdated: null, list: [], 
 }
 
 export const currentGraph = (store = null, action) => {
-    if (action.type == ActionType.SET_CURRENT_GRAPH) {
+    if (action.type === ActionType.SET_CURRENT_GRAPH) {
         return action.payload
     } else {
         return store
     }
 }
-
-// export const currentGraph = combineReducers({id, data})

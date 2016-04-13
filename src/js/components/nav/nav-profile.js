@@ -5,13 +5,19 @@ import NavProfileTmpl from '!jade-react!./nav-profile.jade'
 class VisibleNavProfile extends React.Component {
 
     componentWillMount() {
-        if (this.props.name == null) {
+        if (this.props.name === null) {
             this.props.fetchSessionDetails()
         }
     }
 
+    static propTypes = {
+        name:                React.PropTypes.string.isRequired,
+        logout:              React.PropTypes.func.isRequired,
+        fetchSessionDetails: React.PropTypes.func.isRequired
+    }
+
     componentWillReceiveProps(nextProps) {
-        if (nextProps.name == null) {
+        if (nextProps.name === null) {
             nextProps.fetchSessionDetails()
         }
     }

@@ -31,9 +31,17 @@ class VisualLogin extends React.Component {
         this.loginTo = (...args) => this._loginTo(...args)
     }
 
+    static propTypes = {
+        error:      React.PropTypes.string,
+        login:      React.PropTypes.func.isRequired,
+        clearError: React.PropTypes.func.isRequired
+    }
+
     /**
      * Maps form fields to local state
      * @arg {string} name of local state parameter to update from name form field
+     * @arg {object} e event triggered
+     * @return {void}
      */
     _changeField(name, e) {
         this.setState({[name]: e.target.value})
@@ -44,12 +52,13 @@ class VisualLogin extends React.Component {
      * @arg {string} [login] accaunt name
      * @arg {string} [password] accaunt password
      * @arg {Object} ev submit event that have triggered login action
+     * @return {void}
      */
     _loginTo(login, password, ev) {
         // let ev = args[0]
         if (_.isObject(login)) {
             ev = login
-            if (ev.type != 'submit') {
+            if (ev.type !== 'submit') {
                 return
             }
             login = this.state.login
