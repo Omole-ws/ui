@@ -6,7 +6,6 @@ import '../../../../semantic/dist/components/dimmer.css'
 import '../../../../semantic/dist/components/dimmer'
 
 import React from 'react'
-// import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import ReactTransitionGroup from 'react-addons-transition-group'
 import { connect } from 'react-redux'
 
