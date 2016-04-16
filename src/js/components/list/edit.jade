@@ -1,0 +1,21 @@
+- var title = graph.info.label
+- var description = graph.info.comment
+- var timeStamp = graph.info.tstamp && new Date(Number.parseInt(graph.info.tstamp)).toString() || null
+.ui.small.modal(ref=setRef)
+    .header Edit
+    .content
+        if timeStamp
+            .ui.small.grey.label Last modified
+                .detail= timeStamp
+        form.ui.form(onSubmit=submit)
+            .required.field
+                .label Title
+                input(type="text", name="title", onChange=handleFieldChange, defaultValue=title)
+            .field
+                .label Description
+                textarea(rows="2", name="description", onChange=handleFieldChange, defaultValue=description)
+            .actions
+                .ui.cancel.black.button Cancel
+                button.ui.ok.green.right.labeled.icon.button(type="submit")
+                    | Save
+                    i.checkmark.icon

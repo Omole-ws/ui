@@ -1,6 +1,7 @@
 import page from 'page'
 
 import { sessionActionType as ActionType } from './action-types'
+import { createFetchError } from './helpers'
 
 export const login = (login, password) => {
 
@@ -17,8 +18,8 @@ export const login = (login, password) => {
             body: data
         })
         .then(response => {
-            if(response.status !== 200) {
-                return Promise.reject(response.statusText)
+            if(!response.ok) {
+                return createFetchError(response)
             }
             const csrf = response.headers.get('x-xsrf-token')
             if (csrf) {
@@ -33,10 +34,13 @@ export const login = (login, password) => {
             })
             page.redirect(getState().router.prevPath)
         })
-        .catch(err => dispatch({
-            type: `${ActionType.LOGIN}_FAIL`,
-            payload: err
-        }))
+        .catch(err => {
+            console.log(err)
+            dispatch({
+                type: `${ActionType.LOGIN}_FAIL`,
+                payload: err
+            })
+        })
     }
 }
 
@@ -49,19 +53,18 @@ export const logout = () => {
             headers: new Headers({'x-xsrf-token': getState().session.csrf})
         })
         .then(response => {
-            if(response.status !== 204) {
-                return Promise.reject(response.statusText)
+            if(!response.ok) {
+                return createFetchError(response)
             }
-            page('#!/login')
             dispatch({type: `${ActionType.LOGOUT}_OK`})
+            page('#!/login')
         })
         .catch(err => {
-            page.redirect('#!/login')
             dispatch({
                 type: `${ActionType.LOGOUT}_FAIL`,
-                payload: err,
-                error: true
+                payload: err
             })
+            page('#!/login')
         })
     }
 }
@@ -75,8 +78,8 @@ export const fetchSessionDetails = () => {
             headers: new Headers({'x-xsrf-token': getState().session.csrf})*/
         })
         .then(response => {
-            if(response.status !== 200) {
-                return Promise.reject(response.statusText)
+            if(!response.ok) {
+                return createFetchError(response)
             }
             const csrf = response.headers.get('x-xsrf-token')
             if (csrf) {
@@ -88,8 +91,7 @@ export const fetchSessionDetails = () => {
         .catch(err => {
             dispatch({
                 type: `${ActionType.FETCH_SESSION_DETAILS}_FAIL`,
-                payload: err,
-                error: true
+                payload: err
             })
             page.redirect('#!/login')
         })

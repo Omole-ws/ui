@@ -3,7 +3,11 @@ import * as sessionActions from './actions/session-actions'
 import * as graphsActions from './actions/graphs-actions'
 
 
-export const Action = { ...routerActions, ...sessionActions, ...graphsActions }
+export const Action = {
+    ...routerActions,
+    ...sessionActions,
+    ...graphsActions
+}
 
 export ActionType from './actions/action-types'
 

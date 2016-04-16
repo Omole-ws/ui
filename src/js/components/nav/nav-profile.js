@@ -11,7 +11,7 @@ class VisibleNavProfile extends React.Component {
     }
 
     static propTypes = {
-        name:                React.PropTypes.string.isRequired,
+        name:                React.PropTypes.string,
         logout:              React.PropTypes.func.isRequired,
         fetchSessionDetails: React.PropTypes.func.isRequired
     }

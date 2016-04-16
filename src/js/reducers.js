@@ -5,6 +5,13 @@ const state = {
         params: null
     },
     mode: 'list' || 'operate' || 'report' || 'TA' || 'DBA',
+    list: {
+        new: false,
+        sort: {
+            by: 'name',
+            asc: true
+        }
+    },
     session: {
         csrfToken: null,
         account: {
@@ -29,6 +36,8 @@ import * as routerReducers from './reducers/router-reducers'
 import * as sessionReducers from './reducers/session-reducers'
 import * as graphsReducers from './reducers/graphs-reducers'
 
-export default { ...routerReducers, ...sessionReducers, ...graphsReducers }
-
-
+export default {
+    ...routerReducers,
+    ...sessionReducers,
+    ...graphsReducers
+}

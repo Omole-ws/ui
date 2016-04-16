@@ -51,10 +51,10 @@ let plugins = [
         template: './index.jade',
         inject: 'body'
     }),
-    // new webpack.ProvidePlugin({
-    //     $: 'jquery',
-    //     jQuery: 'jquery'
-    // }),
+    new webpack.ProvidePlugin({
+        $: 'jquery',
+        jQuery: 'jquery'
+    }),
     new webpack.optimize.CommonsChunkPlugin({
         // name:      'main', // Move dependencies to our main file
         async: true, // Enable asynchronous chunks loading

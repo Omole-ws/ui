@@ -12,8 +12,11 @@ import '../../../../semantic/dist/components/message.css'
 import '../../../../semantic/dist/components/icon.css'
 
 import React from 'react'
+import { connect } from 'react-redux'
 
-import VisualLoginTmpl from '!jade-react!./login.jade'
+import  { Action, Mode } from '../../actions'
+import Nav from '../nav/nav'
+import LoginTmpl from '!jade-react!./login.jade'
 import logo from '../../../img/logo.png'
 
 import _ from 'lodash'
@@ -40,11 +43,11 @@ class VisualLogin extends React.Component {
     /**
      * Maps form fields to local state
      * @arg {string} name of local state parameter to update from name form field
-     * @arg {object} e event triggered
+     * @arg {object} ev event triggered
      * @return {void}
      */
-    _changeField(name, e) {
-        this.setState({[name]: e.target.value})
+    _changeField(ev) {
+        this.setState({[ev.target.name]: ev.target.value})
     }
 
     /**
@@ -70,16 +73,15 @@ class VisualLogin extends React.Component {
 
     render() {
         return (
-            <VisualLoginTmpl logo={logo} changeField={this.changeField} loginTo={this.loginTo}
-                error={this.props.error} clearError={this.props.clearError}/>
+            <div>
+                <Nav mode={Mode.LOGIN}/>
+                <LoginTmpl logo={logo} changeField={this.changeField} loginTo={this.loginTo}
+                    error={this.props.error} clearError={this.props.clearError}/>
+            </div>
         )
     }
 }
 
-import { connect } from 'react-redux'
-
-import  { Action } from '../../actions'
-// import VisualLogin from '../visuals/lr/login'
 
 const mapStoreToProps = store => ({
     error: store.session.loginError

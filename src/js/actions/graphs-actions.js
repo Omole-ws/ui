@@ -2,10 +2,16 @@ import page from 'page'
 
 import { graphsActionType as ActionType } from './action-types'
 import * as Action  from './session-actions'
+import { createFetchError } from './helpers'
 
 // import { graphs } from '../../utils/resources'
 
 const root = '/app/r/graphs'
+
+export const setCurrentGraph = gid => ({
+    type: ActionType.SET_CURRENT_GRAPH,
+    payload: gid
+})
 
 export const fetchGraphsList = () => {
 
@@ -17,11 +23,11 @@ export const fetchGraphsList = () => {
             headers
         })
         .then((response) => {
-            if(response.status !== 200) {
+            if(!response.ok) {
                 if (response.status === 403) {
-                    new Promise(() => page.redirect('#!/login'))
+                    new Promise(() => page('#!/login'))
                 }
-                return Promise.reject(response.statusText)
+                return createFetchError(response)
             }
             const csrf = response.headers.get('x-xsrf-token')
             if (csrf) {
@@ -33,17 +39,14 @@ export const fetchGraphsList = () => {
             type: `${ActionType.FETCH_GRAPHS_LIST}_OK`,
             payload: data
         }))
-        .catch((err) => {
-            dispatch({
-                type: `${ActionType.FETCH_GRAPHS_LIST}_FAIL`,
-                payload: {err},
-                error: true
-            })
-        })
+        .catch(error => dispatch({
+            type: `${ActionType.FETCH_GRAPHS_LIST}_FAIL`,
+            payload: {error}
+        }))
     }
 }
 
-export const fetchGraph = (gid) => {
+export const fetchGraph = gid => {
     return (dispatch, getState) => {
         dispatch({type: `${ActionType.FETCH_GRAPH}_PENDING`, payload: {id: gid}})
         const headers = new Headers({'x-xsrf-token': getState().session.csrf})
@@ -52,11 +55,11 @@ export const fetchGraph = (gid) => {
             headers
         })
         .then(response => {
-            if(response.status !== 200) {
+            if(!response.ok) {
                 if (response.status === 403) {
-                    new Promise(() => page.redirect('#!/login'))
+                    new Promise(() => page('#!/login'))
                 }
-                return Promise.reject(response.statusText)
+                return createFetchError(response)
             }
             const csrf = response.headers.get('x-xsrf-token')
             if (csrf) {
@@ -68,18 +71,76 @@ export const fetchGraph = (gid) => {
             type: `${ActionType.FETCH_GRAPH}_OK`,
             payload: data
         }), 1000))
-        .catch((err) => {
-            dispatch({
-                type: `${ActionType.FETCH_GRAPH}_FAIL`,
-                payload: {id: gid, err},
-                error: true
-            })
-        })
+        .catch(error => dispatch({
+            type: `${ActionType.FETCH_GRAPH}_FAIL`,
+            payload: {error, id: gid}
+        }))
       
     }
 }
 
-export const setCurrentGraph = gid => ({
-    type: ActionType.SET_CURRENT_GRAPH,
-    payload: gid
-})
+export const postNewGraph = graph => {
+    return (dispatch, getState) => {
+        dispatch({type: `${ActionType.POST_NEW_GRAPH}_PENDING`, payload: graph})
+        const headers = new Headers({'x-xsrf-token': getState().session.csrf, 'content-type': 'application/json'})
+        fetch(root, {
+            credentials: 'same-origin',
+            headers,
+            method: 'post',
+            body: JSON.stringify(graph)
+        })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 403) {
+                    new Promise(() => page('#!/login'))
+                }
+                return createFetchError(response)
+            }
+            const csrf = response.headers.get('x-xsrf-token')
+            if (csrf) {
+                dispatch(Action.changeCSRF(csrf))
+            }
+            return response.json()
+        })
+        .then(data => dispatch({
+            type: `${ActionType.POST_NEW_GRAPH}_OK`,
+            payload: data
+        }))
+        .catch(error => dispatch({
+            type: `${ActionType.POST_NEW_GRAPH}_FAIL`,
+            payload: {error}
+        }))
+    }
+}
+
+export const removeGraph = graph => {
+    return (dispatch, getState) => {
+        dispatch({type: `${ActionType.REMOVE_GRAPH}_PENDING`, payload: graph})
+        const headers = new Headers({'x-xsrf-token': getState().session.csrf})
+        fetch(`${root}/${graph.id}`, {
+            credentials: 'same-origin',
+            headers,
+            method: 'delete'
+        })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 403) {
+                    new Promise(() => page('#!/login'))
+                }
+                return createFetchError(response)
+            }
+            const csrf = response.headers.get('x-xsrf-token')
+            if (csrf) {
+                dispatch(Action.changeCSRF(csrf))
+            }
+            dispatch({
+                type: `${ActionType.REMOVE_GRAPH}_OK`,
+                payload: graph
+            })
+        })
+        .catch(error => dispatch({
+            type: `${ActionType.REMOVE_GRAPH}_FAIL`,
+            payload: {error, graph}
+        }))
+    }
+}

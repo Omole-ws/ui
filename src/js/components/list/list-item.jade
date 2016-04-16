@@ -1,19 +1,24 @@
-- var link = "#!/" + id + "/operate"
-.item
+- var link = "#!/" + graph.id + "/operate"
+- var timeStamp = new Date(Number.parseInt(graph.info.tstamp)).toString()
+// - var timeStamp = (new Date()).toString()
+.item.blurring(ref=setRef)
     i.large.clockwise.rotated.orange.fork.icon
     .content
-        a.header(href=link)
-            =hdr
+        a.header(href=link)= graph.info.label
         .meta
-        .description
-            =desc
+            .ui.small.basic.label Last modified
+                .detail= timeStamp
+        .description= graph.info.comment
         .extra
-            button.ui.compact.tiny.basic.button
+            button.ui.compact.tiny.basic.button(onClick=edit(graph))
                 i.edit.icon
                 | Edit
-            button.ui.compact.tiny.basic.button
+            button.ui.compact.tiny.basic.button(onClick=duplicate(graph))
                 i.copy.icon
                 | Duplicate
-            button.ui.compact.tiny.basic.button
+            button.ui.compact.tiny.basic.button(onClick=remove(graph))
                 i.remove.icon
                 | Remove
+if graph.isFetching
+    .ui.active.inverted.dimmer
+        .ui.loader

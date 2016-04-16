@@ -16,6 +16,12 @@ const graph = (store = {isFetching: false, lastUpdated: null}, action) => {
         case `${ActionType.FETCH_GRAPH}_FAIL`:
             return {...store, ...action.payload, isFetching: false}
 
+        case `${ActionType.REMOVE_GRAPH}_PENDING`:
+            return {...store, isFetching: true}
+
+        case `${ActionType.REMOVE_GRAPH}_FAIL`:
+            return {...store, isFetching: false}
+
         default:
             return store
     }
@@ -53,7 +59,32 @@ export const graphs = (store = {isFetching: false, lastUpdated: null, list: [], 
             list = store.list.map(e => graph(e, action))
             return {
                 ...store,
-                list: list.map(e => graph(e, action)),
+                list,
+                lmap: new Map(list.map(e => [e.id, e]))
+            }
+
+        case `${ActionType.POST_NEW_GRAPH}_OK`:
+            list = store.list.concat(action.payload)
+            return {
+                isFetching: store.isFetching,
+                list,
+                lmap: new Map(list.map(e => [e.id, e]))
+            }
+
+        case `${ActionType.REMOVE_GRAPH}_PENDING`:
+        case `${ActionType.REMOVE_GRAPH}_FAIL`:
+            list = store.list.map(e => graph(e, action))
+            return {
+                isFetching: store.isFetching,
+                list,
+                lmap: new Map(list.map(e => [e.id, e]))
+            }
+
+        case `${ActionType.REMOVE_GRAPH}_OK`:
+            list = store.list.filter(e => e.id !== action.payload.id)
+            return {
+                isFetching: store.isFetching,
+                list,
                 lmap: new Map(list.map(e => [e.id, e]))
             }
 

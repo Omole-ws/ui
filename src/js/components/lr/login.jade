@@ -9,16 +9,18 @@
         .field
           .ui.left.icon.input(class=error? 'error' : '')
             i.user.icon
-            input(type="text" name="login" placeholder="Login" onChange=changeField('login'))
+            input(type="text" name="login" placeholder="Login" onChange=changeField)
         .field
           .ui.left.icon.input(class=error? 'error' : '')
             i.lock.icon
-            input(type="password" name="password" placeholder="Password" onChange=changeField('password'))
+            input(type="password" name="password" placeholder="Password" onChange=changeField)
         input.ui.fluid.large.orange.submit.button(type="submit", value="Login")
       if error
         .ui.bottom.attached.error.message
           i.ui.close.icon(onClick=clearError)
-          =error
+          .header
+            =error.error
+          =error.message
   
   .ui.horizontal.divider NEW TO US ?
 
