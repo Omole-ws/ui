@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 
 import { ActionType } from '../actions'
 
-const csrf = (store = null, action) => {
+function csrf(store = null, action) {
     switch(action.type) {
         case ActionType.CSRF:
             return action.payload
@@ -15,7 +15,7 @@ const csrf = (store = null, action) => {
     }
 }
 
-const account = (store = {isFetching: false, name: null, roles: []}, action) => {
+function account(store = {isFetching: false, name: null, roles: []}, action) {
     switch(action.type) {
         case `${ActionType.LOGIN}_PENDING`:
         case `${ActionType.FETCH_SESSION_DETAILS}_PENDING`:
@@ -37,7 +37,7 @@ const account = (store = {isFetching: false, name: null, roles: []}, action) => 
     }
 }
 
-const loginError = (store = null, action) => {
+function loginError(store = null, action) {
     switch(action.type) {
         case `${ActionType.LOGIN}_PENDING`:
         case `${ActionType.LOGIN}_OK`:

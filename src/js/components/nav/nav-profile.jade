@@ -1,7 +1,15 @@
 .ui.right.simple.dropdown.item(class=cls)
+    .ui.user.icon
     =username
+    if isFetching
+        .ui.active.dimmer
+            .content
+                .center
+                    .spinner.loading.icon
     i.dropdown.icon
     .vertical.menu
         a.item(onClick=logout)
             | Logout&nbsp;
             i.sign.out.icon.right
+        .link.item
+            | Message center

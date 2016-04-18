@@ -8,14 +8,17 @@ import { createFetchError } from './helpers'
 
 const root = '/app/r/graphs'
 
-export const setCurrentGraph = gid => ({
-    type: ActionType.SET_CURRENT_GRAPH,
-    payload: gid
-})
+export function setCurrentGraph(gid) {
 
-export const fetchGraphsList = () => {
+    return {
+        type: ActionType.SET_CURRENT_GRAPH,
+        payload: gid
+    }
+}
 
-    return (dispatch, getState) => {
+export function fetchGraphsList() {
+
+    return function(dispatch, getState) {
         dispatch({type: `${ActionType.FETCH_GRAPHS_LIST}_PENDING`})
         const headers = new Headers({'x-xsrf-token': getState().session.csrf})
         fetch(root, {
@@ -35,7 +38,7 @@ export const fetchGraphsList = () => {
             }
             return response.json()
         })
-        .then((data) => dispatch({
+        .then(data => dispatch({
             type: `${ActionType.FETCH_GRAPHS_LIST}_OK`,
             payload: data
         }))
@@ -46,11 +49,11 @@ export const fetchGraphsList = () => {
     }
 }
 
-export const fetchGraph = gid => {
-    return (dispatch, getState) => {
-        dispatch({type: `${ActionType.FETCH_GRAPH}_PENDING`, payload: {id: gid}})
+export function fetchGraph(graph) {
+    return function(dispatch, getState) {
+        dispatch({type: `${ActionType.FETCH_GRAPH}_PENDING`, payload: graph})
         const headers = new Headers({'x-xsrf-token': getState().session.csrf})
-        fetch(`${root}/${gid}`, {
+        fetch(`${root}/${graph.id}`, {
             credentials: 'same-origin',
             headers
         })
@@ -73,14 +76,14 @@ export const fetchGraph = gid => {
         }), 1000))
         .catch(error => dispatch({
             type: `${ActionType.FETCH_GRAPH}_FAIL`,
-            payload: {error, id: gid}
+            payload: {error, ...graph}
         }))
       
     }
 }
 
-export const postNewGraph = graph => {
-    return (dispatch, getState) => {
+export function postNewGraph(graph) {
+    return function(dispatch, getState) {
         dispatch({type: `${ActionType.POST_NEW_GRAPH}_PENDING`, payload: graph})
         const headers = new Headers({'x-xsrf-token': getState().session.csrf, 'content-type': 'application/json'})
         fetch(root, {
@@ -113,8 +116,41 @@ export const postNewGraph = graph => {
     }
 }
 
-export const removeGraph = graph => {
-    return (dispatch, getState) => {
+export function patchGraph(graph) {
+    return function(dispatch, getState) {
+        dispatch({type: `${ActionType.PATCH_GRAPH}_PENDING`, payload: graph})
+        const headers = new Headers({'x-xsrf-token': getState().session.csrf, 'content-type': 'application/json'})
+        fetch(`${root}/${graph.id}`, {
+            credentials: 'same-origin',
+            headers,
+            method: 'PATCH',
+            body: JSON.stringify(graph)
+        })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 403) {
+                    new Promise(() => page('#!/login'))
+                }
+                return createFetchError(response)
+            }
+            const csrf = response.headers.get('x-xsrf-token')
+            if (csrf) {
+                dispatch(Action.changeCSRF(csrf))
+            }
+            setTimeout(() => dispatch({
+                type: `${ActionType.PATCH_GRAPH}_OK`,
+                payload: graph
+            }), 1000)
+        })
+        .catch(error => dispatch({
+            type: `${ActionType.PATCH_GRAPH}_FAIL`,
+            payload: {error, ...graph}
+        }))
+    } 
+} 
+
+export function removeGraph(graph) {
+    return function(dispatch, getState) {
         dispatch({type: `${ActionType.REMOVE_GRAPH}_PENDING`, payload: graph})
         const headers = new Headers({'x-xsrf-token': getState().session.csrf})
         fetch(`${root}/${graph.id}`, {
@@ -140,7 +176,7 @@ export const removeGraph = graph => {
         })
         .catch(error => dispatch({
             type: `${ActionType.REMOVE_GRAPH}_FAIL`,
-            payload: {error, graph}
+            payload: {error, ...graph}
         }))
     }
 }

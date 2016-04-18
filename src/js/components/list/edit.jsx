@@ -20,9 +20,7 @@ export default class Edit extends React.Component {
 
     constructor(props) {
         super(props)
-        // this.state = {graph: {info: {label: '', comment: '', tstamp: ''}}}
         this.state = {graph: null, title: '', description: ''}
-        this.reset = () => this._reset()
         this.setRref = r => this._setRref(r)
         this.activate = toEdit => this._activate(toEdit)
         this.show = () => this._show()
@@ -34,25 +32,15 @@ export default class Edit extends React.Component {
         save: React.PropTypes.func.isRequired
     }
 
-    _reset() {
-        // this.setState({graph: {info: {label: '', comment: '', tstamp: ''}}})
-        this.setState({graph: null, title: '', description: ''})
-    }
-
     _setRref(ref) {
         this.ref = ref
     }
 
     _activate(graph) {
         if(graph) {
-            this.setState({graph: graph, title: graph.info.label || '', description: graph.info.comment || ''}, () => this.show())
-            // this.setState({graph: graph, title: }, () => this.show())
-            // this.title = graph.info.label || ''
-            // this.description = graph.info.comment || ''
+            this.setState({graph: graph, title: graph.info.label || '', description: graph.info.comment || ''}, this.show)
         } else {
-            // this.title = ''
-            // this.description = ''
-            this.show()
+            this.setState({graph: null, title: '', description: ''}, this.show)
         }
     }
 
@@ -60,30 +48,26 @@ export default class Edit extends React.Component {
         $(this.ref)
             .modal({
                 blurring: true,
-                transition: 'fly up',
-                onDeny: this.reset
+                transition: 'fly up'
             })
             .modal('show')
     }
 
     _handleFieldChange(ev) {
         this.setState({[ev.target.name]: ev.target.value})
-        // this[ev.target.name] = ev.target.value
     }
 
     _submit(ev) {
         this.props.save({
             id: this.state.graph ? this.state.graph.id : null,
-            info: this.state.graph ? {...this.state.graph.info, label: this.title, comment: this.description} :
-                {label: this.title, comment: this.description}
+            info: this.state.graph ? {...this.state.graph.info, label: this.state.title, comment: this.state.description} :
+                {label: this.state.title, comment: this.state.description}
         })
-        this.reset()
         ev.preventDefault()
     }
 
     render() {
-        // const title = this.state.toEdit.info && this.state.toEdit.info.label || ''
-        return <EditTmpl setRef={this.setRref} graph={this.state.graph}
+        return <EditTmpl setRef={this.setRref} ifNew={this.state.graph === null}
             title={this.state.title} description={this.state.description}
             timeStamp={this.state.graph ? new Date(Number.parseInt(this.state.graph.info.tstamp)).toString() : null}
             handleFieldChange={this.handleFieldChange} submit={this.submit}/>

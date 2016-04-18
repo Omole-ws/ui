@@ -1,7 +1,7 @@
 import { ActionType, Mode } from '../actions'
 
 
-export const router = (store = { path: '#!/', prevPath: '#!/' }, action) => {
+export function router(store = { path: '#!/', prevPath: '#!/' }, action) {
     switch (action.type) {
         case ActionType.ROUTE_CHANGED:
             return {
@@ -15,7 +15,7 @@ export const router = (store = { path: '#!/', prevPath: '#!/' }, action) => {
     }
 }
 
-export const mode = (store = Mode.LIST, action) => {
+export function mode(store = Mode.LIST, action) {
     switch (action.type) {
         case ActionType.SET_MODE:
             return action.payload

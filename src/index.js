@@ -18,8 +18,8 @@ import Root from './js/components/root'
 
 
 const createStoreWithMiddleware = applyMiddleware(
-    loggerMiddleware(),
-    thunkMiddleware
+    thunkMiddleware,
+    loggerMiddleware()
     // promiseMiddleware({
         // promiseTypeSuffixes: ['PENDING', 'OK', 'FAIL']
     // })

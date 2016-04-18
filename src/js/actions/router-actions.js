@@ -1,13 +1,13 @@
 import { routerActionType as ActionType } from './action-types'
 
-export const routeChanged = (path) => {
+export function routeChanged(path) {
     return {
         type: ActionType.ROUTE_CHANGED,
         payload: path
     }
 }
 
-export const setMode = (mode) => {
+export function setMode(mode) {
     return {
         type: ActionType.SET_MODE,
         payload: mode

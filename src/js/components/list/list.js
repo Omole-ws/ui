@@ -1,9 +1,5 @@
 import '../../../../semantic/dist/components/item.css'
-import '../../../../semantic/dist/components/button.css'
 import '../../../../semantic/dist/components/icon.css'
-import '../../../../semantic/dist/components/label.css'
-import '../../../../semantic/dist/components/dimmer.css'
-import '../../../../semantic/dist/components/dimmer'
 
 import React from 'react'
 import ReactTransitionGroup from 'react-addons-transition-group'
@@ -21,7 +17,7 @@ class ListView extends React.Component {
     constructor(props) {
         super(props)
         this.editGraph      = graph => this._editGraph(graph)
-        this.removeGraph    = graph => this._removeGraph(graph)
+        this.saveGraph      = graph => this._saveGraph(graph)
         this.duplicateGraph = graph => this._duplicateGraph(graph)
         this.list = new Map()
         this.setListRef     = (id, ref) => this._setListRef(id, ref)
@@ -34,6 +30,7 @@ class ListView extends React.Component {
         changeCSRF:     React.PropTypes.func.isRequired,
         fetchGraphList: React.PropTypes.func.isRequired,
         postNewGraph:   React.PropTypes.func.isRequired,
+        patchGraph:     React.PropTypes.func.isRequired,
         removeGraph:    React.PropTypes.func.isRequired
     }
 
@@ -47,8 +44,13 @@ class ListView extends React.Component {
         this.editComponent.activate(graph)
     }
 
-    _removeGraph(graph) {
-        this.props.removeGraph(graph)
+    _saveGraph(graph) {
+        if (graph.id) {
+            // this.props.postNewGraph(graph)
+            this.props.patchGraph(graph)
+        } else {
+            this.props.postNewGraph(graph)
+        }
     }
 
     _duplicateGraph(graph) {
@@ -69,13 +71,13 @@ class ListView extends React.Component {
                         New
                     </div>
                 </Nav>
-                <Edit ref={(r) => this.editComponent = r} save={this.props.postNewGraph}/>
+                <Edit ref={(r) => this.editComponent = r} save={this.saveGraph}/>
                 <ReactTransitionGroup component="div" className="ui divided items">
                     {
                         this.props.list.map(g => {
                             return <ListItem key={g.id} setRef={this.setListRef} graph={g}
                                 edit={this.editGraph}
-                                remove={this.removeGraph}
+                                remove={this.props.removeGraph}
                                 duplicate={this.duplicateGraph}/>
                         })
                     }
@@ -99,6 +101,7 @@ const mapDispatchToProps = {
     changeCSRF: Action.changeCSRF,
     fetchGraphList: Action.fetchGraphsList,
     postNewGraph: Action.postNewGraph,
+    patchGraph: Action.patchGraph,
     removeGraph: Action.removeGraph
 }
 

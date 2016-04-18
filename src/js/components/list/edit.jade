@@ -2,7 +2,7 @@
 // - var description = graph.info.comment
 // - var timeStamp = graph.info.tstamp && new Date(Number.parseInt(graph.info.tstamp)).toString() || null
 .ui.small.modal(ref=setRef)
-    .header Edit
+    .header= ifNew ? 'Create new graph' : 'Edit graph'
     .content
         if timeStamp
             .ui.small.grey.label Last modified

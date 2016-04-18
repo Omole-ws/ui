@@ -3,7 +3,7 @@ import page from 'page'
 import { sessionActionType as ActionType } from './action-types'
 import { createFetchError } from './helpers'
 
-export const login = (login, password) => {
+export function login(login, password) {
 
     const data = new FormData()
     data.append('login', login)
@@ -44,7 +44,7 @@ export const login = (login, password) => {
     }
 }
 
-export const logout = () => {
+export function logout() {
     return (dispatch, getState) => {
         dispatch({type: `${ActionType.LOGOUT}_PENDING`})
         fetch('/auth/logout', {
@@ -69,7 +69,7 @@ export const logout = () => {
     }
 }
 
-export const fetchSessionDetails = () => {
+export function fetchSessionDetails() {
     return (dispatch) => {
         dispatch({type: `${ActionType.FETCH_SESSION_DETAILS}_PENDING`})
         fetch('/auth/check', {
@@ -98,9 +98,11 @@ export const fetchSessionDetails = () => {
     }
 }
 
-export const clearLoginError = () => ({type: ActionType.CLEAR_LOGIN_ERROR})
+export function clearLoginError() {
+    return {type: ActionType.CLEAR_LOGIN_ERROR}
+}
 
-export const changeCSRF = (csrf) => {
+export function changeCSRF(csrf) {
     return {
         type: ActionType.CSRF,
         payload: csrf

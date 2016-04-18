@@ -1,91 +1,81 @@
+import _ from 'lodash'
+
 import { ActionType } from '../actions'
 
 
-const graph = (store = {isFetching: false, lastUpdated: null}, action) => {
+function graph(store = {isFetching: false, lastUpdated: null}, action) {
 
     if (store.id !== action.payload.id) {
         return store
     }
     switch(action.type) {
         case `${ActionType.FETCH_GRAPH}_PENDING`:
-            return {...store, isFetching: true}
-
-        case `${ActionType.FETCH_GRAPH}_OK`:
-            return {...action.payload, isFetching: false, lastUpdated: new Date()}
-
-        case `${ActionType.FETCH_GRAPH}_FAIL`:
-            return {...store, ...action.payload, isFetching: false}
-
+        case `${ActionType.PATCH_GRAPH}_PENDING`:
         case `${ActionType.REMOVE_GRAPH}_PENDING`:
             return {...store, isFetching: true}
 
+        case `${ActionType.FETCH_GRAPH}_OK`:
+            return {...action.payload, isFetching: false}
+
+        case `${ActionType.PATCH_GRAPH}_OK`:
+            const t = new Map([['a', 1], ['b', 2]])
+            const tt = new Map([['a', 11], ['c', 3]])
+            const p = _.merge({}, t, tt)
+            const pp = _.merge({}, tt, t)
+            console.info(p)
+            console.info(pp)
+            return {...store, ...action.payload, isFetching: false}
+
+        case `${ActionType.REMOVE_GRAPH}_OK`:
+            return null
+
+        case `${ActionType.FETCH_GRAPH}_FAIL`:
+            if (_.isEqual(store, {id: action.payload.id})) {return null}
+        case `${ActionType.PATCH_GRAPH}_FAIL`:
         case `${ActionType.REMOVE_GRAPH}_FAIL`:
             return {...store, isFetching: false}
-
+        
         default:
             return store
     }
 }
 
-export const graphs = (store = {isFetching: false, lastUpdated: null, list: [], lmap: new Map()}, action) => {
+export function graphs(store = {isFetching: false, list: []}, action) {
 
     switch(action.type) {
         case `${ActionType.FETCH_GRAPHS_LIST}_PENDING`:
             return {...store, isFetching: true}
 
         case `${ActionType.FETCH_GRAPHS_LIST}_OK`:
-            let list = action.payload.map(e => ({...e, isFetching: false, lastUpdated: null}))
             return {
-                ...store,
-                list,
-                lmap: new Map(list.map(e => [e.id, e])),
-                isFetching: false,
-                lastUpdated: new Date()
+                list: action.payload.map(g => ({...g, isFetching: false})),
+                isFetching: false
             }
 
         case `${ActionType.FETCH_GRAPHS_LIST}_FAIL`:
             return {...store, isFetching: false}
 
-        case `${ActionType.FETCH_GRAPH}_PENDING`:
-            if (!store.lmap.has(action.payload.id)) {
-                // console.group('DEBUG')
-                // console.log('Creating noe')
-                // console.log(ac)
-                // console.groupEnd()
-                store.list.push({isFetching: false, lastUpdated: null, id: action.payload.id})
-            }
-        case `${ActionType.FETCH_GRAPH}_OK`:
-        case `${ActionType.FETCH_GRAPH}_FAIL`:
-            list = store.list.map(e => graph(e, action))
-            return {
-                ...store,
-                list,
-                lmap: new Map(list.map(e => [e.id, e]))
-            }
+
 
         case `${ActionType.POST_NEW_GRAPH}_OK`:
-            list = store.list.concat(action.payload)
             return {
                 isFetching: store.isFetching,
-                list,
-                lmap: new Map(list.map(e => [e.id, e]))
+                list: store.list.concat(action.payload)
             }
 
+        case `${ActionType.FETCH_GRAPH}_PENDING`:
+            if (store.list.some(g => g.id === action.payload.id)) {store.list.push({id: action.payload.id})}
+        case `${ActionType.FETCH_GRAPH}_OK`:
+        case `${ActionType.FETCH_GRAPH}_FAIL`:
+        case `${ActionType.PATCH_GRAPH}_PENDING`:
+        case `${ActionType.PATCH_GRAPH}_OK`:
+        case `${ActionType.PATCH_GRAPH}_FAIL`:
         case `${ActionType.REMOVE_GRAPH}_PENDING`:
-        case `${ActionType.REMOVE_GRAPH}_FAIL`:
-            list = store.list.map(e => graph(e, action))
-            return {
-                isFetching: store.isFetching,
-                list,
-                lmap: new Map(list.map(e => [e.id, e]))
-            }
-
         case `${ActionType.REMOVE_GRAPH}_OK`:
-            list = store.list.filter(e => e.id !== action.payload.id)
+        case `${ActionType.REMOVE_GRAPH}_FAIL`:
             return {
                 isFetching: store.isFetching,
-                list,
-                lmap: new Map(list.map(e => [e.id, e]))
+                list: store.list.map(g => graph(g, action)).filter(g => g !== null)
             }
 
         default:
@@ -93,7 +83,7 @@ export const graphs = (store = {isFetching: false, lastUpdated: null, list: [], 
     }
 }
 
-export const currentGraph = (store = null, action) => {
+export function currentGraph(store = null, action) {
     if (action.type === ActionType.SET_CURRENT_GRAPH) {
         return action.payload
     } else {

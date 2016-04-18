@@ -1,6 +1,5 @@
 import '../../../../semantic/dist/components/header.css'
 import '../../../../semantic/dist/components/dimmer.css'
-import '../../../../semantic/dist/components/segment.css'
 import '../../../../semantic/dist/components/icon.css'
 
 import React from 'react'
@@ -54,18 +53,7 @@ export default class Desk extends React.Component {
     render() {
         return (
             <div id="cytoscape" ref={c => this._cytoscape = c}>
-                { this.props.isFetching ? 
-                    <div className="ui active inverted dimmer">
-                        <div className="content">
-                            <div className="center">
-                                <h2 className="ui icon header">
-                                    <i className="spinner loading icon"></i>
-                                        Loading data...
-                                </h2>
-                            </div>
-                        </div>
-                    </div>
-                 : '' }
+                {this.props.children}
             </div>
         )
     }

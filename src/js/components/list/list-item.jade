@@ -1,7 +1,7 @@
 - var link = "#!/" + graph.id + "/operate"
 - var timeStamp = new Date(Number.parseInt(graph.info.tstamp)).toString()
 // - var timeStamp = (new Date()).toString()
-.item.blurring(ref=setRef)
+.item.blurring.dimmable(ref=setRef)
     i.large.clockwise.rotated.orange.fork.icon
     .content
         a.header(href=link)= graph.info.label
@@ -19,6 +19,10 @@
             button.ui.compact.tiny.basic.button(onClick=remove(graph))
                 i.remove.icon
                 | Remove
-if graph.isFetching
-    .ui.active.inverted.dimmer
-        .ui.loader
+    if graph.isFetching
+        .ui.active.inverted.dimmer
+            //- .ui.loader
+            .content
+                .center
+                    h3.ui.icon.header
+                        i.ui.big.black.spinner.loading.icon

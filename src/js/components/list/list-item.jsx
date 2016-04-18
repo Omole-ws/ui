@@ -1,3 +1,10 @@
+import '../../../../semantic/dist/components/button.css'
+import '../../../../semantic/dist/components/icon.css'
+import '../../../../semantic/dist/components/label.css'
+import '../../../../semantic/dist/components/dimmer.css'
+import '../../../../semantic/dist/components/dimmer'
+import '../../../../semantic/dist/components/header.css'
+import '../../../../semantic/dist/components/loader.css'
 import '../../../../semantic/dist/components/transition.css'
 import '../../../../semantic/dist/components/transition'
 
