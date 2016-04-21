@@ -16,6 +16,23 @@
     z-index: 100;
 }
 
+.mcenter {
+    // padding-top: 3em;
+    top: 3em;
+    left: 0;
+    right: 0;
+    bottom: 1em;
+    // width: 300px;
+    position: fixed;
+    // z-index: 101;
+    .segment {
+        padding: 5px 0px 15px;
+        .message {
+            margin: 5px 0px;
+        }
+    }
+}
+
 // .container {
 //     margin-top: 55px;
 //     margin-bottom: 55px;

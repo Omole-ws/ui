@@ -9,8 +9,7 @@ export function login(login, password) {
     data.append('login', login)
     data.append('password', password)
 
-
-    return (dispatch, getState) => {
+    return function (dispatch, getState) {
         dispatch({type: `${ActionType.LOGIN}_PENDING`})
         fetch('/auth/login', {
             credentials: 'same-origin',
@@ -35,7 +34,6 @@ export function login(login, password) {
             page.redirect(getState().router.prevPath)
         })
         .catch(err => {
-            console.log(err)
             dispatch({
                 type: `${ActionType.LOGIN}_FAIL`,
                 payload: err
@@ -87,7 +85,7 @@ export function fetchSessionDetails() {
             }
             return response.json()
         })
-        .then(data => setTimeout(() => dispatch({type: `${ActionType.FETCH_SESSION_DETAILS}_OK`, payload: data}), 5000))
+        .then(data => dispatch({type: `${ActionType.FETCH_SESSION_DETAILS}_OK`, payload: data}))
         .catch(err => {
             dispatch({
                 type: `${ActionType.FETCH_SESSION_DETAILS}_FAIL`,

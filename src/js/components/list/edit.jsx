@@ -7,13 +7,12 @@ import '../../../../semantic/dist/components/dimmer'
 import '../../../../semantic/dist/components/transition.css'
 import '../../../../semantic/dist/components/transition'
 import '../../../../semantic/dist/components/form.css'
+import '../../../../semantic/dist/components/form'
 import '../../../../semantic/dist/components/input.css'
+import '../../../../semantic/dist/components/grid.css'
 
 import React from 'react'
-import _ from 'lodash'
-// import { connect } from 'react-redux'
 
-import { Action } from '../../actions'
 import EditTmpl from '!jade-react!./edit.jade'
 
 export default class Edit extends React.Component {
@@ -29,7 +28,8 @@ export default class Edit extends React.Component {
     }
 
     static propTypes ={
-        save: React.PropTypes.func.isRequired
+        postNewGraph: React.PropTypes.func.isRequired,
+        patchGraph: React.PropTypes.func.isRequired
     }
 
     _setRref(ref) {
@@ -58,11 +58,11 @@ export default class Edit extends React.Component {
     }
 
     _submit(ev) {
-        this.props.save({
-            id: this.state.graph ? this.state.graph.id : null,
-            info: this.state.graph ? {...this.state.graph.info, label: this.state.title, comment: this.state.description} :
-                {label: this.state.title, comment: this.state.description}
-        })
+        if (this.state.graph) {
+            this.props.patchGraph({id: this.state.graph.id, info: {label: this.state.title, comment: this.state.description}})
+        } else {
+            this.props.postNewGraph({info: {label: this.state.title, comment: this.state.description}})
+        }
         ev.preventDefault()
     }
 

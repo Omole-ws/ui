@@ -29,15 +29,22 @@ const state = {
         map: new Map(/*this.list.map(e => [e.id, e])*/),
         lastUpdated: new Date()
     },
-    currentGraph: 'gid'
+    currentGraph: 'gid',
+    mcenter: {
+        compact: false,
+        visible: true,
+        messages: []
+    }
 }
 
 import * as routerReducers from './reducers/router-reducers'
 import * as sessionReducers from './reducers/session-reducers'
 import * as graphsReducers from './reducers/graphs-reducers'
+import * as messageCenterReducers from './reducers/mcenter-reducers'
 
 export default {
     ...routerReducers,
     ...sessionReducers,
-    ...graphsReducers
+    ...graphsReducers,
+    ...messageCenterReducers
 }

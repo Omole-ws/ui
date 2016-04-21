@@ -1,7 +1,7 @@
 import './styles/app.scss'
 import '../semantic/dist/components/reset.css'
 import '../semantic/dist/components/site.css'
-// import '../semantic/dist/components/site.js'
+import '../semantic/dist/components/site'
 
 import React from 'react'
 import ReactDOM from 'react-dom'

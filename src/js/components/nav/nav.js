@@ -4,21 +4,23 @@ import '../../../../semantic/dist/components/dropdown.css'
 import '../../../../semantic/dist/components/image.css'
 
 import React from 'react'
+import { connect } from 'react-redux'
 
-import { Mode } from '../../actions'
+import { Action, Mode } from '../../actions'
 import NavTmpl from '!jade-react!./nav.jade'
 import logo from '../../../img/logo.png'
 import NavProfile from './nav-profile'
 
 
-export default class Nav extends React.Component {
+class Nav extends React.Component {
 
     static propTypes = {
         children: React.PropTypes.oneOfType([
             React.PropTypes.node,
             React.PropTypes.arrayOf(React.PropTypes.node)
         ]),
-        mode: React.PropTypes.string.isRequired
+        mode: React.PropTypes.string.isRequired,
+        showMessageCenter: React.PropTypes.func.isRequired
     }
 
     // computeChildren(mode) {
@@ -72,26 +74,35 @@ export default class Nav extends React.Component {
         // return nextProps.mode !== this.props.mode
     // }
 
+                    // {this.props.mode !== Mode.LOGIN && this.props.mode !== Mode.REGISTRATION ?
+                    //     <div className="ui div right inverted menu">
+                    //         <div className="ui link item" onClick={() => this.props.showMessageCenter()}>
+                    //             <i className="ui large mail icon"></i>
+                    //         </div>
+                    //         <NavProfile/>
+                    //     </div>
+                    // :
+                    //     null
+                    // }
     render() {
         // let menu = this.computeChildren(this.props.mode)
         return (
-                <NavTmpl logo={logo}>
+                <NavTmpl logo={logo} restrict={() => this.props.mode === Mode.LOGIN || this.props.mode === Mode.REGISTRATION}
+                    showMC={this.props.showMessageCenter} profile={<NavProfile/>}>
                     {this.props.children}
-                    {this.props.mode !== Mode.LOGIN && this.props.mode !== Mode.REGISTRATION ? <NavProfile/> : null}
                 </NavTmpl>
         )
     }
 }
 
-// // import { connect } from 'react-redux'
-// import { Action } from '../../actions'
 
-// const mapStoreToProps = (store) => ({
-//     mode: store.mode
-// })
+const mapStoreToProps = (store) => ({
+    mode: store.mode
+})
 
-// const mapDispatchToProps = {
-//     setCreatingGraph: Action.setCreatingGraph
-// }
+const mapDispatchToProps = {
+    showMessageCenter: Action.showMessageCenter
+}
 
-// export default connect(mapStoreToProps, mapDispatchToProps)(Nav)
+export default connect(mapStoreToProps, mapDispatchToProps)(Nav)
+

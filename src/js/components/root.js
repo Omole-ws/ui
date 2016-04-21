@@ -37,6 +37,22 @@ class Root extends React.Component {
         }
     }
 
+    componentDidMount() {
+        if (this.props.mode === Mode.LOGIN) {
+            $('body').css({'background-color': '#fffaf2'})
+        } else {
+            $('body').css({'background-color': '#ffffff'})
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.props.mode === Mode.LOGIN) {
+            $('body').css({'background-color': '#fffaf2'})
+        } else {
+            $('body').css({'background-color': '#ffffff'})
+        }
+    }
+
     shouldComponentUpdate(nextProps, nextState) {
         if (nextState.mainView !== this.state.mainView) {
             return true

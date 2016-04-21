@@ -1,37 +1,44 @@
 import '../../../../semantic/dist/components/item.css'
 import '../../../../semantic/dist/components/icon.css'
+import '../../../../semantic/dist/components/rail.css'
+import '../../../../semantic/dist/components/segment.css'
+import '../../../../semantic/dist/components/dropdown.css'
+import '../../../../semantic/dist/components/dropdown'
+
 
 import React from 'react'
 import ReactTransitionGroup from 'react-addons-transition-group'
 import { connect } from 'react-redux'
 
-import { Action, Mode } from '../../actions'
+import { Action } from '../../actions'
 import Nav from '../nav/nav'
+import MessageCenter from '../mcenter/mcenter'
 import ListItem from './list-item'
-// import ListItem from '!jade-react!./list-item.jade'
-// import List from '!jade-react!./list.jade'
 import Edit from './edit'
+import Import from './import'
 
 class ListView extends React.Component {
 
     constructor(props) {
         super(props)
-        this.editGraph      = graph => this._editGraph(graph)
-        this.saveGraph      = graph => this._saveGraph(graph)
+        this.dropdowns = []
         this.duplicateGraph = graph => this._duplicateGraph(graph)
-        this.list = new Map()
-        this.setListRef     = (id, ref) => this._setListRef(id, ref)
+        this.editComponent = {activate: () => undefined}
+        this.importComponent = {activate: () => undefined}
     }
 
 
     static propTypes = {
-        list:           React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-        isFetching:     React.PropTypes.bool.isRequired,
-        changeCSRF:     React.PropTypes.func.isRequired,
-        fetchGraphList: React.PropTypes.func.isRequired,
-        postNewGraph:   React.PropTypes.func.isRequired,
-        patchGraph:     React.PropTypes.func.isRequired,
-        removeGraph:    React.PropTypes.func.isRequired
+        list:              React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+        isFetching:        React.PropTypes.bool.isRequired,
+        changeCSRF:        React.PropTypes.func.isRequired,
+        fetchGraphList:    React.PropTypes.func.isRequired,
+        postNewGraph:      React.PropTypes.func.isRequired,
+        patchGraph:        React.PropTypes.func.isRequired,
+        removeGraph:       React.PropTypes.func.isRequired,
+        duplicateGraph:    React.PropTypes.func.isRequired,
+        fetchGraph:    React.PropTypes.func.isRequired,
+        showMessageCenter: React.PropTypes.func.isRequired
     }
 
     componentWillMount() {
@@ -40,53 +47,69 @@ class ListView extends React.Component {
         }
     }
 
-    _editGraph(graph) {
-        this.editComponent.activate(graph)
-    }
-
-    _saveGraph(graph) {
-        if (graph.id) {
-            // this.props.postNewGraph(graph)
-            this.props.patchGraph(graph)
-        } else {
-            this.props.postNewGraph(graph)
-        }
-    }
-
     _duplicateGraph(graph) {
         console.log(`Duplicate graph '${graph.info.label}'`)
     }
 
-    _setListRef(id, ref) {
-        this.list.set(id, ref)
+    componentWillUpdate() {
+        this.dropdowns = []
     }
-
-
+    componentWillUnmount() {
+        this.dropdowns = []
+    }
+    componentDidMount() {
+        $(this.dropdowns).dropdown()
+    }
+    componentDidUpdate() {
+        $(this.dropdowns).dropdown()
+    }
     render() {
         return(
             <div>
-                <Nav mode={Mode.LIST}>
-                    <div className="link item" onClick={() => this.editGraph(null)}>
-                        <i className="circle add icon"></i>
-                        New
+                <Nav>
+                    <div className="ui dropdown item" ref={r => this.dropdowns.push(r)}>
+                        Graph
+                        <i className="ui dropdown icon"></i>
+                        <div className="ui menu">
+                            <div className="ui link item" onClick={() => this.editComponent.activate()}>
+                                <i className="ui circle add icon"></i>
+                                New
+                            </div>
+                            <div className="ui link item" onClick={() => this.importComponent.activate()}>
+                                <i className="ui cloud upload icon"></i>
+                                Import...
+                            </div>
+                        </div>
                     </div>
                 </Nav>
-                <Edit ref={(r) => this.editComponent = r} save={this.saveGraph}/>
-                <ReactTransitionGroup component="div" className="ui divided items">
+
+                <MessageCenter/>
+
+                <Import ref={r => this.importComponent = r}
+                    postNewGraph={this.props.postNewGraph} patchGraph={this.props.patchGraph}/>
+
+                <Edit ref={r => this.editComponent = r}
+                    postNewGraph={this.props.postNewGraph} patchGraph={this.props.patchGraph}/>
+
+                <ReactTransitionGroup component="div"
+                    className={`ui divided items blurring dimmable${this.props.isFetching ? ' dimmed' : ''}`}>
                     {
                         this.props.list.map(g => {
-                            return <ListItem key={g.id} setRef={this.setListRef} graph={g}
-                                edit={this.editGraph}
+                            return <ListItem key={g.id} graph={g}
+                                edit={this.editComponent.activate}
                                 remove={this.props.removeGraph}
-                                duplicate={this.duplicateGraph}/>
+                                duplicate={this.props.duplicateGraph}
+                                fetchGraph={this.props.fetchGraph}/>
                         })
                     }
+                    <div className="ui simple inverted dimmer">
+                        <div className="ui loader"></div>
+                    </div>
                 </ReactTransitionGroup>
             </div>
         )
     }
 }
-// ListView.defaultProps = {list:[], isFetching: false}
 
 
 
@@ -102,7 +125,10 @@ const mapDispatchToProps = {
     fetchGraphList: Action.fetchGraphsList,
     postNewGraph: Action.postNewGraph,
     patchGraph: Action.patchGraph,
-    removeGraph: Action.removeGraph
+    removeGraph: Action.removeGraph,
+    duplicateGraph: Action.duplicateGraph,
+    fetchGraph: Action.fetchGraph,
+    showMessageCenter: Action.showMessageCenter
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(ListView)

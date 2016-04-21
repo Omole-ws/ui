@@ -18,13 +18,7 @@ function graph(store = {isFetching: false, lastUpdated: null}, action) {
             return {...action.payload, isFetching: false}
 
         case `${ActionType.PATCH_GRAPH}_OK`:
-            const t = new Map([['a', 1], ['b', 2]])
-            const tt = new Map([['a', 11], ['c', 3]])
-            const p = _.merge({}, t, tt)
-            const pp = _.merge({}, tt, t)
-            console.info(p)
-            console.info(pp)
-            return {...store, ...action.payload, isFetching: false}
+            return {...store, ...action.payload, info: {...store.info, ...action.payload.info}, isFetching: false}
 
         case `${ActionType.REMOVE_GRAPH}_OK`:
             return null
@@ -48,7 +42,10 @@ export function graphs(store = {isFetching: false, list: []}, action) {
 
         case `${ActionType.FETCH_GRAPHS_LIST}_OK`:
             return {
-                list: action.payload.map(g => ({...g, isFetching: false})),
+                list: action.payload.map(g => ({
+                    ...store.list.find(gr => gr.id === g.id),
+                    ...g
+                })),
                 isFetching: false
             }
 
@@ -64,7 +61,7 @@ export function graphs(store = {isFetching: false, list: []}, action) {
             }
 
         case `${ActionType.FETCH_GRAPH}_PENDING`:
-            if (store.list.some(g => g.id === action.payload.id)) {store.list.push({id: action.payload.id})}
+            if (!store.list.some(g => g.id === action.payload.id)) {store.list.push({id: action.payload.id})}
         case `${ActionType.FETCH_GRAPH}_OK`:
         case `${ActionType.FETCH_GRAPH}_FAIL`:
         case `${ActionType.PATCH_GRAPH}_PENDING`:
@@ -76,6 +73,12 @@ export function graphs(store = {isFetching: false, list: []}, action) {
             return {
                 isFetching: store.isFetching,
                 list: store.list.map(g => graph(g, action)).filter(g => g !== null)
+            }
+
+        case `${ActionType.DUPLICATE_GRAPH}_OK`:
+            return {
+                isFetching: store.isFetching,
+                list: store.list.concat(action.payload)
             }
 
         default:

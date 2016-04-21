@@ -5,7 +5,7 @@
         img.image(src=logo)
         .content Log-in to your account
       //- .ui.segment
-      form.ui.large.attached.form.stacked.segment(onSubmit=loginTo)
+      form.ui.large.form(onSubmit=loginTo)
         .field
           .ui.left.icon.input(class=error? 'error' : '')
             i.user.icon

@@ -1,5 +1,10 @@
 .DS_Store
 node_modules
-semantic
-semantic.json
 npm-debug.log
+semantic/*
+!semantic/src
+semantic/src/*
+!semantic/src/theme.config
+!semantic/src/site
+semantic.json
+src/img/tmp

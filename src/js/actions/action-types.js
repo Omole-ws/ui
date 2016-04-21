@@ -18,12 +18,19 @@ export const graphsActionType = {
     FETCH_GRAPH:       'FETCH_GRAPH',
     POST_NEW_GRAPH:    'POST_NEW_GRAPH',
     PATCH_GRAPH:       'PATCH_GRAPH',
-    REMOVE_GRAPH:      'REMOVE_GRAPH'
+    REMOVE_GRAPH:      'REMOVE_GRAPH',
+    DUPLICATE_GRAPH:   'DUPLICATE_GRAPH'
+}
+
+export const messageCenterActionType = {
+    SHOW_MSG_CENTER: 'SHOW_MSG_CENTER',
+    HIDE_MSG_CENTER: 'HIDE_MSG_CENTER'
 }
 
 
 export default {
     ...routerActionType, 
     ...sessionActionType, 
-    ...graphsActionType
+    ...graphsActionType,
+    ...messageCenterActionType
 }

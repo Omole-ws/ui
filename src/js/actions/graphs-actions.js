@@ -1,4 +1,5 @@
 import page from 'page'
+import _ from 'lodash'
 
 import { graphsActionType as ActionType } from './action-types'
 import * as Action  from './session-actions'
@@ -118,7 +119,8 @@ export function postNewGraph(graph) {
 
 export function patchGraph(graph) {
     return function(dispatch, getState) {
-        dispatch({type: `${ActionType.PATCH_GRAPH}_PENDING`, payload: graph})
+        const serial = _.uniqueId()
+        dispatch({type: `${ActionType.PATCH_GRAPH}_PENDING`, payload: graph, serial})
         const headers = new Headers({'x-xsrf-token': getState().session.csrf, 'content-type': 'application/json'})
         fetch(`${root}/${graph.id}`, {
             credentials: 'same-origin',
@@ -139,12 +141,14 @@ export function patchGraph(graph) {
             }
             setTimeout(() => dispatch({
                 type: `${ActionType.PATCH_GRAPH}_OK`,
-                payload: graph
+                payload: graph,
+                serial
             }), 1000)
         })
         .catch(error => dispatch({
             type: `${ActionType.PATCH_GRAPH}_FAIL`,
-            payload: {error, ...graph}
+            payload: {error, ...graph},
+            serial
         }))
     } 
 } 
@@ -180,3 +184,37 @@ export function removeGraph(graph) {
         }))
     }
 }
+
+export function duplicateGraph(graph) {
+    return function(dispatch, getState) {
+        dispatch({type: `${ActionType.DUPLICATE_GRAPH}_PENDING`, payload: graph})
+        const headers = new Headers({'x-xsrf-token': getState().session.csrf})
+        fetch(`${root}/${graph.id}/duplicate`, {
+            credentials: 'same-origin',
+            headers,
+            method: 'post'
+        })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 403) {
+                    new Promise(() => page('#!/login'))
+                }
+                return createFetchError(response)
+            }
+            const csrf = response.headers.get('x-xsrf-token')
+            if (csrf) {
+                dispatch(Action.changeCSRF(csrf))
+            }
+            return response.json()
+        })
+        .then(data => dispatch({
+            type: `${ActionType.DUPLICATE_GRAPH}_OK`,
+            payload: data
+        }))
+        .catch(error => dispatch({
+            type: `${ActionType.DUPLICATE_GRAPH}_FAIL`,
+            payload: {error}
+        }))
+    }
+}
+
