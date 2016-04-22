@@ -22,7 +22,6 @@ class ListView extends React.Component {
     constructor(props) {
         super(props)
         this.dropdowns = []
-        this.duplicateGraph = graph => this._duplicateGraph(graph)
         this.editComponent = {activate: () => undefined}
         this.importComponent = {activate: () => undefined}
     }
@@ -45,10 +44,6 @@ class ListView extends React.Component {
         if (!this.props.isFetching) {
             this.props.fetchGraphList()
         }
-    }
-
-    _duplicateGraph(graph) {
-        console.log(`Duplicate graph '${graph.info.label}'`)
     }
 
     componentWillUpdate() {

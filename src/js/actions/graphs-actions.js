@@ -3,6 +3,7 @@ import _ from 'lodash'
 
 import { graphsActionType as ActionType } from './action-types'
 import * as Action  from './session-actions'
+import { Mode } from '../actions'
 import { createFetchError } from './helpers'
 
 // import { graphs } from '../../utils/resources'
@@ -28,7 +29,7 @@ export function fetchGraphsList() {
         })
         .then((response) => {
             if(!response.ok) {
-                if (response.status === 403) {
+                if (response.status === 403 && getState().mode !== Mode.LOGIN) {
                     new Promise(() => page('#!/login'))
                 }
                 return createFetchError(response)
@@ -60,7 +61,7 @@ export function fetchGraph(graph) {
         })
         .then(response => {
             if(!response.ok) {
-                if (response.status === 403) {
+                if (response.status === 403 && getState().mode !== Mode.LOGIN) {
                     new Promise(() => page('#!/login'))
                 }
                 return createFetchError(response)
@@ -95,7 +96,7 @@ export function postNewGraph(graph) {
         })
         .then(response => {
             if (!response.ok) {
-                if (response.status === 403) {
+                if (response.status === 403 && getState().mode !== Mode.LOGIN) {
                     new Promise(() => page('#!/login'))
                 }
                 return createFetchError(response)
@@ -130,7 +131,7 @@ export function patchGraph(graph) {
         })
         .then(response => {
             if (!response.ok) {
-                if (response.status === 403) {
+                if (response.status === 403 && getState().mode !== Mode.LOGIN) {
                     new Promise(() => page('#!/login'))
                 }
                 return createFetchError(response)
@@ -164,7 +165,7 @@ export function removeGraph(graph) {
         })
         .then(response => {
             if (!response.ok) {
-                if (response.status === 403) {
+                if (response.status === 403 && getState().mode !== Mode.LOGIN) {
                     new Promise(() => page('#!/login'))
                 }
                 return createFetchError(response)
@@ -196,7 +197,7 @@ export function duplicateGraph(graph) {
         })
         .then(response => {
             if (!response.ok) {
-                if (response.status === 403) {
+                if (response.status === 403 && getState().mode !== Mode.LOGIN) {
                     new Promise(() => page('#!/login'))
                 }
                 return createFetchError(response)

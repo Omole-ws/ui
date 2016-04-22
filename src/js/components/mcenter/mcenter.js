@@ -76,7 +76,7 @@ class MessageCenter extends React.Component {
                         )
                     }
                 </div>
-                <div className="mcenter pusher"></div>
+                <div className=" pusher"></div>
             </div>
         )
     }

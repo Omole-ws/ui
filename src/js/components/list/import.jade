@@ -3,14 +3,18 @@
     .content
         form.ui.form(onSubmit=submit)
             .required.field
-                .label Title
+                label Title
                 input(type="text", name="title", onChange=handleFieldChange, value=title)
             .field
-                .label Description
+                label Description
                 textarea(rows="2", name="description", onChange=handleFieldChange, value=description)
-            .field
-                .label File
-                input(type="file", name="data", accept="application/json", onChange=handleFieldChange)
+            .required.field
+                label File
+                .ui.action.input
+                    .ui.black.icon.basic.button(onClick=function(ev){console.log(ev.nativeEvent.target);ev.stopPropagation();$(ev.target).find('input').click();})
+                        i.black.outline.open.folder.icon
+                            input(type="file", name="data", accept="application/json", style="display: none" onChange=handleFieldChange onClick=function(ev){ev.stopPropagation()})
+                    input(type="text", name="fname", readonly, value=file)
             .actions
                 .ui.cancel.black.button Cancel
                 button.ui.ok.green.right.labeled.icon.button(type="submit")

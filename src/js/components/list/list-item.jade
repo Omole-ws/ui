@@ -10,16 +10,16 @@
                 .detail= timeStamp
         .description!= graph.info.comment ? graph.info.comment.replace(/\n/g, '<br>') : ''
         .extra
-            button.ui.compact.small.basic.button(onClick=edit(graph))
+            .ui.compact.small.basic.button(onClick=edit(graph))
                 i.edit.icon
                 | Edit
-            button.ui.compact.small.basic.button(onClick=duplicate(graph))
+            .ui.compact.small.basic.button(onClick=duplicate(graph))
                 i.copy.icon
                 | Duplicate
             a.ui.compact.small.basic.button(href='/app/r/graphs/' + graph.id, download=graph.info.label + '.json')
                 i.cloud.download.icon
                 | Export
-            button.ui.compact.small.basic.button(onClick=remove(graph))
+            .ui.compact.small.basic.button(onClick=remove(graph))
                 i.recycle.icon
                 | Remove
     .ui.simple.inverted.dimmer

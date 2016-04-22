@@ -19,7 +19,7 @@ export default class Import extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state = {title: '', description: ''}
+        this.state = {title: '', description: '', file: ''}
         this.setRref = r => this._setRref(r)
         this.activate = () => this._show()
         this.show = () => this._show()
@@ -58,12 +58,13 @@ export default class Import extends React.Component {
         if (name === 'data') {
             if (ev.target.files.length > 0) {
                 const fr = new FileReader()
+                const fileName = ev.target.files[0].name
                 fr.onload = e => {
                     let graph = JSON.parse(e.target.result)
                     graph = _.merge(graph, {id: null, uid: null, info: {tstamp: null}})
-                    const title = this.state.title || graph.info.label || e.target.files[0].name.replace(/\.(json|JSON)$/, '')
+                    const title = this.state.title || graph.info.label || fileName.replace(/\.(json|JSON)$/, '')
                     const description = graph.info.comment || ''
-                    this.setState({graph, title, description})
+                    this.setState({graph, title, description, file: fileName})
                 }
                 fr.readAsText(ev.target.files[0])
             }
@@ -79,7 +80,7 @@ export default class Import extends React.Component {
 
     render() {
         return <ImportTmpl setRef={this.setRref}
-            title={this.state.title} description={this.state.description}
+            title={this.state.title} description={this.state.description} file={this.state.file}
             handleFieldChange={this.handleFieldChange} submit={this.submit}/>
     }
 }

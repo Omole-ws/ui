@@ -2,6 +2,7 @@ import page from 'page'
 
 import { sessionActionType as ActionType } from './action-types'
 import { createFetchError } from './helpers'
+import { Mode } from '../actions'
 
 export function login(login, password) {
 
@@ -68,7 +69,7 @@ export function logout() {
 }
 
 export function fetchSessionDetails() {
-    return (dispatch) => {
+    return (dispatch, getState) => {
         dispatch({type: `${ActionType.FETCH_SESSION_DETAILS}_PENDING`})
         fetch('/auth/check', {
             credentials: 'same-origin'/*,
@@ -91,7 +92,9 @@ export function fetchSessionDetails() {
                 type: `${ActionType.FETCH_SESSION_DETAILS}_FAIL`,
                 payload: err
             })
-            page.redirect('#!/login')
+            if (getState().mode !== Mode.LOGIN) {
+                page.redirect('#!/login')
+            }
         })
     }
 }
