@@ -24,10 +24,22 @@ const state = {
     graphs: {
         isFetching: true,
         list: [
-            
-        ],
-        map: new Map(/*this.list.map(e => [e.id, e])*/),
-        lastUpdated: new Date()
+            {
+                isFetching: false,
+                id: 'str',
+                uid: 'str',
+                info: {label: 'str', comment:''},
+                nodes: [],
+                edges: []
+            }
+        ]
+    },
+    graphExtra: {
+        vizualAttributes: {
+            ['gid']: {
+                isFetching: false
+            }
+        }
     },
     currentGraph: 'gid',
     mcenter: {
@@ -41,10 +53,12 @@ import * as routerReducers from './reducers/router-reducers'
 import * as sessionReducers from './reducers/session-reducers'
 import * as graphsReducers from './reducers/graphs-reducers'
 import * as messageCenterReducers from './reducers/mcenter-reducers'
+import * as graphExtra from './reducers/graph-extra-reducers'
 
 export default {
     ...routerReducers,
     ...sessionReducers,
     ...graphsReducers,
-    ...messageCenterReducers
+    ...messageCenterReducers,
+    ...graphExtra
 }

@@ -1,11 +1,11 @@
-import cytoscapeLdr from 'promise?bluebird!cytoscape'
+import loadCytoscape from 'promise?bluebird!cytoscape'
 
 import style from '!raw!./cy-style.css'
 
 export default class Cy {
 
     constructor(elem) {
-        this._cy = cytoscapeLdr().then(cytoscape => {
+        this._cy = loadCytoscape().then(cytoscape => {
             const _cy = cytoscape({
                 container: elem,
                 selectionType: 'additive',
@@ -36,15 +36,15 @@ export default class Cy {
 
 
     load(graph) {
-        const toLoad = {}
+        let edges = [], nodes = []
         if (graph && graph.edges) {
-            toLoad.edges = graph.edges.map(e => Cy.edgeConverter(e))
+            edges = graph.edges.map(e => Cy.edgeConverter(e))
         }
         if (graph && graph.nodes) {
-            toLoad.nodes = graph.nodes.map(e => Cy.nodeConverter(e))
+            nodes = graph.nodes.map(e => Cy.nodeConverter(e))
         }
         this._cy.then(_cy => {
-            _cy.add(toLoad)
+            _cy.add({nodes, edges})
             this.layout()
         })
     }
