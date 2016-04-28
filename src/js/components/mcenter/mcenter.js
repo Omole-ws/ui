@@ -43,24 +43,24 @@ class MessageCenter extends React.Component {
 
     // _activate() {
     // }
-    // componentDidMount() {
-    //     $(this.ref)
-    //         .sticky({
-    //             context: this.context
-    //         })
-    // }
+    componentDidMount() {
+        $(this.ref)
+        .sidebar({
+            context: this.context,
+            dimPage: false,
+            transition: 'overlay',
+            onHide: () => this.props.onScreen && this.props.hide()
+        })
+    }
 
     componentDidUpdate() {
         if (this.props.onScreen) {
             $(this.ref)
-                .sidebar({
-                    context: this.context,
-                    dimPage: false,
-                    transition: 'overlay',
-                    onHide: this.props.hide
-                })
-                .sidebar('toggle')
-                .css({padding: '5px 5px 15px'})
+            .sidebar('show')
+            .css({padding: '5px 5px 15px'})
+        } else {
+            $(this.ref)
+            .sidebar('hide')
         }
     }
 

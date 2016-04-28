@@ -8,4 +8,4 @@ function visualAttributes (store = emptyMap, action) {
     }
 }
 
-export const graphExtra = combineReducers({visualAttributes})
+export const graphsExtra = combineReducers({visualAttributes})

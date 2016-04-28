@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 
 import { Action, Mode } from '../../actions'
+import EditGraphElement from './edit-graph-element'
 import Cy from './cy'
 
 export default class Desk extends React.Component {
@@ -15,9 +16,10 @@ export default class Desk extends React.Component {
         super(props)
 
         this.state = {isReady: false, isGraphReady: false, isVisualAttributesReady: false}
+        this.cytoscapeElement = null
+        this.cy = {addNode: () => null}
         this.loadNewGraph = graph => this._loadNewGraph(graph)
-        this._cytoscape = null
-        this._cy = null
+        this.setReady = isReady => this.setState({isReady})
     }
 
     static propTypes = {
@@ -39,7 +41,7 @@ export default class Desk extends React.Component {
         let isGraphReady = this.state.isGraphReady, isVisualAttributesReady = this.state.isVisualAttributesReady
         if (!this.state.isReady && !nextProps.graph.isFetching && this.props.graph.isFetching) {
             isGraphReady = true
-            this._cy.load(nextProps.graph)
+            this.cy.load(nextProps.graph)
         }
         if (!this.state.isReady && !nextProps.visualAttributes.isFetching && this.props.visualAttributes.isFetching) {
             isVisualAttributesReady = true
@@ -55,31 +57,52 @@ export default class Desk extends React.Component {
     }
 
     componentDidMount() {
-        this._cy = new Cy(this._cytoscape)
+        this.cy = new Cy(this.cytoscapeElement)
+        this.cy.menu([
+            {
+                content: '<i class="ui edit icon"></i>',
+                select: nod => console.log('edit ' + nod.id() + ' : ' + nod)
+            },
+            {
+                fillColor: 'rgba(255, 0, 0, 0.75)',
+                content: '<i class="ui recycle icon"></i>',
+                select: nod => console.log('remove ' + nod.id() + ' : ' + nod)
+            }
+        ], 'node')
+        this.cy.menu([
+            {
+                content: '<i class="ui edit icon"></i>',
+                select: nod => console.log('edit ' + nod.id() + ' : ' + nod)
+            },
+            {
+                fillColor: 'rgba(255, 0, 0, 0.75)',
+                content: '<i class="ui recycle icon"></i>',
+                select: nod => console.log('remove ' + nod.id() + ' : ' + nod)
+            }
+        ], 'edge')
+        this.cy.menu([
+            {
+                fillColor: 'rgba(0, 255, 0, 0.75)',
+                content: '<i class="ui circle add icon"></i>',
+                select: () => this.editComponent.activate(null)
+            }
+        ])
+        this.cy.edgehandles()
     }
 
     componentWillUnmount() {
-        this._cy.destroy()
-        this._cy = null
+        this.cy.destroy()
+        this.cy = null
     }
 
-                    // <div className="ui active inverted dimmer">
-                        // <div className="content">
-                            // <div className="center">
-                                // <h2 className="ui icon header">
-                                    // <i className="spinner loading icon"></i>
-                                    // Loading data....
-                                // </h2>
-                            // </div>
-                        // </div>
-                    // </div>
     render() {
         return (
-            <div id="cytoscape" ref={c => this._cytoscape = c}
+            <div ref={c => this.cytoscapeElement = c}
                     className={`ui blurring dimmable ${this.state.isReady ? '' : 'dimmed'} cytoscape`}>
-                <h1 className="ui disabled center alligned header">
+                <h1 className="ui disabled center alligned green header">
                     {this.props.graph.info.label}
                 </h1>
+                <EditGraphElement ref={r => this.editComponent = r} newNode={ele => this.cy.addNode(ele)}/>
                 <div className="ui simple inverted dimmer">
                     <div className="ui large text loader">
                         Loading data ...
@@ -101,7 +124,7 @@ export default class Desk extends React.Component {
 function mapStoreToProps(store, ownProps) {
     return {
         graph: store.graphs.list.find(g => g.id === ownProps.gid) || {id: ownProps.gid, info: {label: '', tstamp: null}},
-        visualAttributes: store.graphExtra.visualAttributes.get(ownProps.gid) || {isFetching: false}
+        visualAttributes: store.graphsExtra.visualAttributes.get(ownProps.gid) || {isFetching: false}
     }
 }
 

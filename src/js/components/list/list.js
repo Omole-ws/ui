@@ -14,7 +14,7 @@ import { Action } from '../../actions'
 import Nav from '../nav/nav'
 import MessageCenter from '../mcenter/mcenter'
 import ListItem from './list-item'
-import Edit from './edit'
+import EditGraphList from './edit-graph-list'
 import Import from './import'
 
 class ListView extends React.Component {
@@ -72,7 +72,7 @@ class ListView extends React.Component {
                             </div>
                             <div className="ui link item" onClick={() => this.importComponent.activate()}>
                                 <i className="ui cloud upload icon"></i>
-                                Import...
+                                Import
                             </div>
                         </div>
                     </div>
@@ -83,7 +83,7 @@ class ListView extends React.Component {
                 <Import ref={r => this.importComponent = r}
                     postNewGraph={this.props.postNewGraph} patchGraph={this.props.patchGraph}/>
 
-                <Edit ref={r => this.editComponent = r}
+                <EditGraphList ref={r => this.editComponent = r}
                     postNewGraph={this.props.postNewGraph} patchGraph={this.props.patchGraph}/>
 
                 <ReactTransitionGroup component="div"

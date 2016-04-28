@@ -1,11 +1,55 @@
 node {
   shape: ellipse;
-  color: #000000;
+  color: #ffffff;
   label: data(label);
-  text-valign: top;
-  text-halign: center;
   background-color: #546e7a;
+  background-opacity: 0.9;
+  border-color: #546e7a;
   border-width: 0px;
+  text-valign: center;
+  text-halign: center;
+  text-opacity: 0.75;
+  text-outline-width: 2;
+  text-outline-color: #546e7a;
+  min-zoomed-font-size: 9;
+}
+.rectangle {
+  shape: rectangle;
+  width: 40;
+  height: 20;
+}
+.roundrectangle {
+  shape: roundrectangle;
+}
+.ellipse {
+  shape: ellipse;
+}
+.triangle {
+  shape: triangle;
+}
+.pentagon {
+  shape: pentagon;
+}
+.hexagon {
+  shape: hexagon;
+}
+.heptagon {
+  shape: heptagon;
+}
+.octagon {
+  shape: octagon;
+}
+.star {
+  shape: star;
+}
+.diamond {
+  shape: diamond;
+}
+.vee {
+  shape: vee;
+}
+.rhomboid {
+  shape: rhomboid;
 }
 
 .group {

@@ -1,29 +1,151 @@
+import _ from 'lodash'
 import loadCytoscape from 'promise?bluebird!cytoscape'
+import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
+import loadEdgeHandles from 'promise?bluebird!cytoscape-edgehandles'
 
 import style from '!raw!./cy-style.css'
+
+import { uuid } from '../../helpers'
+
+const cytoscape = Promise.all([loadCytoscape(), loadCxtMenu(), loadEdgeHandles()])
+.then(([cytoscape, cxtmenu, edgehandles]) => {
+    cxtmenu(cytoscape, $)
+    edgehandles(cytoscape, $)
+    return cytoscape
+})
+.catch(err => {
+    // TODO: error handling
+    console.error(err)
+})
+
+
 
 export default class Cy {
 
     constructor(elem) {
-        this._cy = loadCytoscape().then(cytoscape => {
-            const _cy = cytoscape({
+        this.menus = {}
+        this.cy = cytoscape.then(cytoscape => {
+            return cytoscape({
                 container: elem,
+                style,
                 selectionType: 'additive',
-                autounselectify: true,
+                // autounselectify: true,
                 motionBlur: true
             })
-            _cy.style(style)
-            _cy.resize()
-            return _cy
+        })
+        .catch(err => {
+            // TODO: error handling
+            console.error(err)
         })
     }
 
+    static cxtMenuDefaults = {
+        menuRadius: 80, // the radius of the circular menu in pixels
+        selector: '', // elements matching this Cytoscape.js selector will trigger cxtmenus
+        // commands: [ // an array of commands to list in the menu or a function that returns the array
+        /*
+        { // example command
+          fillColor: 'rgba(200, 200, 200, 0.75)', // optional: custom background color for item
+          content: 'a command name' // html/text content to be displayed in the menu
+          select: function(ele){ // a function to execute when the command is selected
+            console.log( ele.id() ) // `ele` holds the reference to the active element
+          }
+        }
+        */
+        // ], // function( ele ){ return [ /*...*/ ] }, // example function for commands
+        fillColor: 'rgba(0, 0, 0, 0.75)', // the background colour of the menu
+        activeFillColor: 'rgba(92, 194, 237, 0.75)', // the colour used to indicate the selected command
+        activePadding: 5, // additional size in pixels for the active command
+        indicatorSize: 0, // the size in pixels of the pointer to the active command
+        separatorWidth: 0, // the empty spacing in pixels between successive commands
+        spotlightPadding: 5, // extra spacing in pixels between the element and the spotlight
+        minSpotlightRadius: 0, // the minimum radius in pixels of the spotlight
+        maxSpotlightRadius: 30, // the maximum radius in pixels of the spotlight
+        openMenuEvents: 'cxttapstart', // cytoscape events that will open the menu (space separated)
+        itemColor: 'white', // the colour of text in the command's content
+        itemTextShadowColor: null, // the text shadow colour of the command's content
+        zIndex: 9999 // the z-index of the ui div
+    }
+    static edgeHandlesDefaults = {
+        preview: true, // whether to show added edges preview before releasing selection
+        stackOrder: 4, // Controls stack order of edgehandles canvas element by setting it's z-index
+        handleSize: 10, // the size of the edge handle put on nodes
+        handleColor: '#ff0000', // the colour of the handle and the line drawn from it
+        handleLineType: 'ghost', // can be 'ghost' for real edge, 'straight' for a straight line, or 'draw' for a draw-as-you-go line
+        handleLineWidth: 1, // width of handle line in pixels
+        handleNodes: 'node', // selector/filter function for whether edges can be made from a given node
+        hoverDelay: 150, // time spend over a target node before it is considered a target selection
+        cxt: false, // whether cxt events trigger edgehandles (useful on touch)
+        enabled: true, // whether to start the extension in the enabled state
+        toggleOffOnLeave: true, // whether an edge is cancelled by leaving a node (true), or whether you need to go over again to cancel (false; allows multiple edges in one pass)
+        edgeType: function(/*sourceNode, targetNode*/) {
+            // can return 'flat' for flat edges between nodes or 'node' for intermediate node between them
+            // returning null/undefined means an edge can't be added between the two nodes
+            return 'flat'
+        },
+        loopAllowed: function(/*node*/) {
+            // for the specified node, return whether edges from itself to itself are allowed
+            return false
+        },
+        nodeLoopOffset: -50, // offset for edgeType: 'node' loops
+        nodeParams: function(/*sourceNode, targetNode*/) {
+            // for edges between the specified source and target
+            // return element object to be passed to cy.add() for intermediary node
+            return {}
+        },
+        edgeParams: function(/*sourceNode, targetNode, i*/) {
+            // for edges between the specified source and target
+            // return element object to be passed to cy.add() for edge
+            // NB: i indicates edge index in case of edgeType: 'node'
+            return {}
+        },
+        start: function(/*sourceNode*/) {
+            // fired when edgehandles interaction starts (drag on handle)
+        },
+        complete: function(/*sourceNode, targetNodes, addedEntities*/) {
+            // fired when edgehandles is done and entities are added
+        },
+        stop: function(/*sourceNode*/) {
+            // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
+        }
+    }
+
+    menu(menu, selector = 'core') {
+        if (!_.isArray(menu)) {
+            return
+        }
+        let opts = {selector}
+        switch(selector) {
+            case 'core':
+                opts = {
+                    ...opts,
+                    menuRadius: 30
+                }
+                break
+            case 'edge':
+                opts = {
+                    ...opts,
+                    menuRadius: 40
+                }
+                break
+        }
+        this.cy.then(cy => cy.cxtmenu({
+            ...Cy.cxtMenuDefaults,
+            ...opts,
+            commands: menu
+        }))
+    }
+
+    edgehandles() {
+        this.cy.then(cy => cy.edgehandles(Cy.edgeHandlesDefaults))
+    }
+
     destroy() {
-        this._cy.then(_cy => _cy.destroy())
+        this.cy.then(cy => cy.destroy())
     }
 
     layout() {
-        this._cy.then(_cy => _cy.layout({
+        this.cy.then(cy => cy.layout({
             name: 'cose',
             padding: 1,
             componentSpacing: -100,
@@ -43,10 +165,26 @@ export default class Cy {
         if (graph && graph.nodes) {
             nodes = graph.nodes.map(e => Cy.nodeConverter(e))
         }
-        this._cy.then(_cy => {
-            _cy.add({nodes, edges})
+        this.cy.then(cy => {
+            cy.add({nodes, edges})
             this.layout()
         })
+    }
+
+    addNode(ele) {
+        const node = {
+            data: {
+                id: uuid(),
+                label: ele.type,
+                'text-valign': 'center'
+            },
+            position: {
+                x: 0,
+                y: 0
+            },
+            classes : ele.type
+        }
+        this.cy.then(cy => cy.add({nodes: [node]}))
     }
 
     // node converter from storage format to cytoscape node

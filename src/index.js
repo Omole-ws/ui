@@ -17,14 +17,13 @@ import reducers from './js/reducers'
 import Root from './js/components/root'
 
 
-const createStoreWithMiddleware = applyMiddleware(
-    thunkMiddleware,
-    loggerMiddleware()
-    // promiseMiddleware({
-        // promiseTypeSuffixes: ['PENDING', 'OK', 'FAIL']
-    // })
-)(createStore)
-const store = createStoreWithMiddleware(combineReducers(reducers))
+// const createStoreWithMiddleware = applyMiddleware(
+//     loggerMiddleware(),
+//     thunkMiddleware
+// )(createStore)
+// const store = createStoreWithMiddleware(combineReducers(reducers))
+const store = createStore(combineReducers(reducers), applyMiddleware(loggerMiddleware(), thunkMiddleware))
+// const store = applyMiddleware(loggerMiddleware(), thunkMiddleware)(createStore)(combineReducers(reducers))
 
 configureRouter(store)
 

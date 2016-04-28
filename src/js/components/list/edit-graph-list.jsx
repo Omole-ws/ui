@@ -13,9 +13,9 @@ import '../../../../semantic/dist/components/grid.css'
 
 import React from 'react'
 
-import EditTmpl from '!jade-react!./edit.jade'
+import EditGraphListTmpl from '!jade-react!./edit-graph-list.jade'
 
-export default class Edit extends React.Component {
+export default class EditGraphList extends React.Component {
 
     constructor(props) {
         super(props)
@@ -67,7 +67,7 @@ export default class Edit extends React.Component {
     }
 
     render() {
-        return <EditTmpl setRef={this.setRref} ifNew={this.state.graph === null}
+        return <EditGraphListTmpl setRef={this.setRref} ifNew={this.state.graph === null}
             title={this.state.title} description={this.state.description}
             timeStamp={this.state.graph ? new Date(Number.parseInt(this.state.graph.info.tstamp)).toString() : null}
             handleFieldChange={this.handleFieldChange} submit={this.submit}/>

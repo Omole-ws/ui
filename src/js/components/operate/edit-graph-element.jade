@@ -1,0 +1,38 @@
+.ui.small.modal(ref=setRef)
+    .ui.header= ifNew ? 'Create new ' : 'Edit ' + ifNode ? 'asset' : 'relation'
+    .ui.content
+        form.ui.form(onSubmit=submit)
+            .field.required
+                label Label
+                input(type="text", name="label", onChange=handleFieldChange, value=label)
+            .field
+                label Note
+                textarea(rows="2", name="note", onChange=handleFieldChange, value=note)
+            .required.inline.field
+                label Type
+                .ui.selection.dropdown
+                    input(type="hidden", name="type", defaultValue=type)
+                    i.ui.dropdown.icon
+                    .default.text Select type
+                    .menu
+                        .item(data-value="rectangle") Rectangle
+                        .item(data-value="roundrectangle") Roundrectangle
+                        .item(data-value="ellipse") Ellipse
+                        .item(data-value="triangle") Triangle
+                        .item(data-value="pentagon") Pentagon
+                        .item(data-value="hexagon") Hexagon
+                        .item(data-value="heptagon") Heptagon
+                        .item(data-value="octagon") Octagon
+                        .item(data-value="star") Star
+                        .item(data-value="diamond") Diamond
+                        .item(data-value="vee") Vee
+                        .item(data-value="rhomboid") Rhomboid
+
+            .ui.right.aligned.grid
+                .row
+                    .column
+                        .actions
+                            .ui.cancel.black.button Cancel
+                            button.ui.ok.green.right.labeled.icon.button(type="submit")
+                                | Save
+                                i.save.icon

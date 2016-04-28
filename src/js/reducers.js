@@ -16,8 +16,8 @@ const state = {
         csrfToken: null,
         account: {
             isFetching: false,
-            name: '',
-            roles: ['R', 'RR']
+            name: null,
+            roles: []
         },
         loginError: 'txt'
     },
@@ -34,7 +34,7 @@ const state = {
             }
         ]
     },
-    graphExtra: {
+    graphsExtra: {
         vizualAttributes: {
             ['gid']: {
                 isFetching: false
@@ -43,8 +43,7 @@ const state = {
     },
     currentGraph: 'gid',
     mcenter: {
-        compact: false,
-        visible: true,
+        onScreen: false,
         messages: []
     }
 }
@@ -53,12 +52,12 @@ import * as routerReducers from './reducers/router-reducers'
 import * as sessionReducers from './reducers/session-reducers'
 import * as graphsReducers from './reducers/graphs-reducers'
 import * as messageCenterReducers from './reducers/mcenter-reducers'
-import * as graphExtra from './reducers/graph-extra-reducers'
+import * as graphsExtraReducers from './reducers/graphs-extra-reducers'
 
 export default {
     ...routerReducers,
     ...sessionReducers,
     ...graphsReducers,
     ...messageCenterReducers,
-    ...graphExtra
+    ...graphsExtraReducers
 }

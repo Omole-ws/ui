@@ -1,4 +1,4 @@
-import { messageCenterActionType as ActionType } from './action-types'
+import { ActionType } from '../actions'
 // import * as Action  from './session-actions'
 // import { createFetchError } from './helpers'
 

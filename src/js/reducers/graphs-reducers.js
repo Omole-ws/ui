@@ -5,9 +5,9 @@ import { ActionType } from '../actions'
 
 function graph(store = {isFetching: false, lastUpdated: null}, action) {
 
-    if (store.id !== action.payload.id) {
-        return store
-    }
+    // if (store.id !== action.payload.id) {
+    //     return store
+    // }
     switch(action.type) {
         case `${ActionType.FETCH_GRAPH}_PENDING`:
         case `${ActionType.PATCH_GRAPH}_PENDING`:
@@ -61,7 +61,7 @@ export function graphs(store = {isFetching: false, list: []}, action) {
             }
 
         case `${ActionType.FETCH_GRAPH}_PENDING`:
-            if (!store.list.some(g => g.id === action.payload.id)) {store.list.push({id: action.payload.id})}
+            if (!store.list.some(g => g.id === action.payload.id)) {store.list.push({id: action.payload.id, info: {label: ''}})}
         case `${ActionType.FETCH_GRAPH}_OK`:
         case `${ActionType.FETCH_GRAPH}_FAIL`:
         case `${ActionType.PATCH_GRAPH}_PENDING`:
@@ -72,7 +72,7 @@ export function graphs(store = {isFetching: false, list: []}, action) {
         case `${ActionType.REMOVE_GRAPH}_FAIL`:
             return {
                 isFetching: store.isFetching,
-                list: store.list.map(g => graph(g, action)).filter(g => g !== null)
+                list: store.list.map(g => g.id === action.payload.id ? graph(g, action) : g).filter(g => g !== null)
             }
 
         case `${ActionType.DUPLICATE_GRAPH}_OK`:

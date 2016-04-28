@@ -1,101 +1,51 @@
 import page from 'page'
 
-import { sessionActionType as ActionType } from './action-types'
-import { createFetchError } from './helpers'
-import { Mode } from '../actions'
+import { ActionType } from '../actions'
+import { netAction } from '../helpers'
 
 export function login(login, password) {
-
-    const data = new FormData()
-    data.append('login', login)
-    data.append('password', password)
+    const form = new FormData()
+    form.append('login', login)
+    form.append('password', password)
 
     return function (dispatch, getState) {
         dispatch({type: `${ActionType.LOGIN}_PENDING`})
-        fetch('/auth/login', {
-            credentials: 'same-origin',
+        dispatch(netAction({
+            url: '/auth/login',
             method: 'post',
-            body: data
-        })
-        .then(response => {
-            if(!response.ok) {
-                return createFetchError(response)
-            }
-            const csrf = response.headers.get('x-xsrf-token')
-            if (csrf) {
-                dispatch(changeCSRF(csrf))
-            }
-            return response.json()
-        })
-        .then(data => {
-            dispatch({
-                type: `${ActionType.LOGIN}_OK`,
-                payload: data
-            })
-            page.redirect(getState().router.prevPath)
-        })
-        .catch(err => {
-            dispatch({
-                type: `${ActionType.LOGIN}_FAIL`,
-                payload: err
-            })
-        })
+            body: form,
+            onSuccess: payload => {
+                dispatch({type: `${ActionType.LOGIN}_OK`, payload})
+                page.redirect(getState().router.prevPath)
+            },
+            onError: error => dispatch({type: `${ActionType.LOGIN}_FAIL`, error})
+        }))
     }
 }
 
 export function logout() {
-    return (dispatch, getState) => {
+    return dispatch => {
         dispatch({type: `${ActionType.LOGOUT}_PENDING`})
-        fetch('/auth/logout', {
-            credentials: 'same-origin',
+        dispatch(netAction({
+            url: '/auth/logout',
             method: 'post',
-            headers: new Headers({'x-xsrf-token': getState().session.csrf})
-        })
-        .then(response => {
-            if(!response.ok) {
-                return createFetchError(response)
-            }
-            dispatch({type: `${ActionType.LOGOUT}_OK`})
-            page('#!/login')
-        })
-        .catch(err => {
-            dispatch({
-                type: `${ActionType.LOGOUT}_FAIL`,
-                payload: err
-            })
-            page('#!/login')
-        })
+            onSuccess: () => {
+                dispatch({type: `${ActionType.LOGOUT}_OK`})
+                page('#!/login')
+            },
+            onError: error => dispatch({type: `${ActionType.LOGOUT}_FAIL`, error})
+        }))
     }
 }
 
 export function fetchSessionDetails() {
-    return (dispatch, getState) => {
+    return dispatch => {
         dispatch({type: `${ActionType.FETCH_SESSION_DETAILS}_PENDING`})
-        fetch('/auth/check', {
-            credentials: 'same-origin'/*,
-            method: 'post',
-            headers: new Headers({'x-xsrf-token': getState().session.csrf})*/
-        })
-        .then(response => {
-            if(!response.ok) {
-                return createFetchError(response)
-            }
-            const csrf = response.headers.get('x-xsrf-token')
-            if (csrf) {
-                dispatch(changeCSRF(csrf))
-            }
-            return response.json()
-        })
-        .then(data => dispatch({type: `${ActionType.FETCH_SESSION_DETAILS}_OK`, payload: data}))
-        .catch(err => {
-            dispatch({
-                type: `${ActionType.FETCH_SESSION_DETAILS}_FAIL`,
-                payload: err
-            })
-            if (getState().mode !== Mode.LOGIN) {
-                page.redirect('#!/login')
-            }
-        })
+        dispatch(netAction({
+            url: '/auth/check',
+            onSuccess: payload => dispatch({type: `${ActionType.FETCH_SESSION_DETAILS}_OK`, payload}),
+            onError: error => dispatch({type: `${ActionType.FETCH_SESSION_DETAILS}_FAIL`, error})
+        }))
     }
 }
 
