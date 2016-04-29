@@ -45,7 +45,7 @@ function loginError(store = null, action) {
             return null
 
         case `${ActionType.LOGIN}_FAIL`:
-            return action.payload
+            return action.error.message
 
         default:
             return store

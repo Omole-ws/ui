@@ -9,30 +9,23 @@ import { Action, Mode } from './actions'
  * @arg {object} response fetch result
  * @return {object} error message object {error: '...', message: '...'} wrapped with Promise.reject
  */
-export function createFetchError(response, error, contentType) {
+function createFetchError(response, error, contentType) {
     let errPromise
     if (contentType === 'application/json') {
         errPromise = response.json()
-            .then(e => {
-                return Promise.reject(`${e.error || ''}, ${e.message || ''}\nRaw: ${JSON.stringify(e, null, 2)}`)
-            })
+        .then(e => {
+            return Promise.reject(`${e.error || ''}, ${e.message || ''}\nRaw: ${JSON.stringify(e, null, 8)}`)
+        })
     } else if (contentType) {
         errPromise = response.text().then(msg => Promise.reject(msg))
     } else {
         errPromise = Promise.reject('')
     }
 
-    // TODO: refactor this
     return errPromise .catch(e => {
-        let err
-        if (error) {
-            err = new Error(`${error.message}\nDebug: ${e}`)
-            err.auth = error.auth
-            // return Promise.reject(new Error(`${error.message}\nDebug: ${e}`))
-        } else {
-            err = new Error(`error(${response.status}) ${response.statusText}\nDebug ${e}`)
-            // return Promise.reject(new Error(`error(${response.status}) ${response.statusText}\nDebug ${e}`))
-        }
+        const err = new Error(`${error.message}\nDebug: ${e}`)
+        err.auth = error.auth
+        err.http = error.http
         return Promise.reject(err)
     })
 }
@@ -71,7 +64,8 @@ export function netAction(opts) {
 
             if(!response.ok) {
                 const error = new Error(`error(${response.status}) ${response.statusText}`)
-                error.auth = response.status === 403
+                error.auth = response.status === 401
+                error.http = response.status
                 if (!production) {
                     return createFetchError(response, error, contentType)
                 } else {

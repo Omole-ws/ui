@@ -22,6 +22,19 @@ export function fetchGraphsList() {
     }
 }
 
+export function postNewGraph(graph) {
+    return function(dispatch) {
+        dispatch({type: `${ActionType.POST_NEW_GRAPH}_PENDING`, payload: graph})
+        dispatch(netAction({
+            url: resourceURL,
+            method: 'post',
+            body: graph,
+            onSuccess: id => dispatch({type: `${ActionType.POST_NEW_GRAPH}_OK`, payload: {...graph, id}}),
+            onError: error => dispatch({type: `${ActionType.POST_NEW_GRAPH}_FAIL`, payload: graph, error})
+        }))
+    }
+}
+
 export function fetchGraph(graph) {
     return function(dispatch) {
         dispatch({type: `${ActionType.FETCH_GRAPH}_PENDING`, payload: graph})
@@ -33,15 +46,14 @@ export function fetchGraph(graph) {
     }
 }
 
-export function postNewGraph(graph) {
+export function removeGraph(graph) {
     return function(dispatch) {
-        dispatch({type: `${ActionType.POST_NEW_GRAPH}_PENDING`, payload: graph})
+        dispatch({type: `${ActionType.REMOVE_GRAPH}_PENDING`, payload: graph})
         dispatch(netAction({
-            url: resourceURL,
-            method: 'post',
-            body: graph,
-            onSuccess: payload => dispatch({type: `${ActionType.POST_NEW_GRAPH}_OK`, payload}),
-            onError: error => dispatch({type: `${ActionType.POST_NEW_GRAPH}_FAIL`, payload: graph, error})
+            url: `${resourceURL}/${graph.id}`,
+            method: 'delete',
+            onSuccess: () => dispatch({type: `${ActionType.REMOVE_GRAPH}_OK`, payload: graph}),
+            onError: error => dispatch({type: `${ActionType.REMOVE_GRAPH}_FAIL`, payload: graph, error})
         }))
     }
 }
@@ -59,18 +71,6 @@ export function patchGraph(graph) {
     } 
 } 
 
-export function removeGraph(graph) {
-    return function(dispatch) {
-        dispatch({type: `${ActionType.REMOVE_GRAPH}_PENDING`, payload: graph})
-        dispatch(netAction({
-            url: `${resourceURL}/${graph.id}`,
-            method: 'delete',
-            onSuccess: () => dispatch({type: `${ActionType.REMOVE_GRAPH}_OK`, payload: graph}),
-            onError: error => dispatch({type: `${ActionType.REMOVE_GRAPH}_FAIL`, payload: graph, error})
-        }))
-    }
-}
-
 export function duplicateGraph(graph) {
     return function(dispatch) {
         dispatch({type: `${ActionType.DUPLICATE_GRAPH}_PENDING`, payload: graph})
@@ -82,4 +82,3 @@ export function duplicateGraph(graph) {
         }))
     }
 }
-

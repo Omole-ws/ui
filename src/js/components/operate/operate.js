@@ -91,4 +91,4 @@ const mapStoreToProps = store => {
     // fetchGraph: Action.fetchGraph
 // }
 
-export default connect(mapStoreToProps)(Operating)
+export default connect(mapStoreToProps, null)(Operating)

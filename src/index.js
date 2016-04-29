@@ -32,4 +32,3 @@ ReactDOM.render(
         <Root />
     </Provider>,
     document.getElementById('app'))
-

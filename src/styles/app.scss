@@ -3,6 +3,9 @@
         padding-top: 3em;
     }
 }
+.message pre {
+    font-size: 0.9rem;
+}
 .menu .logo {
     width: 15px;
     height: 25px;
@@ -20,6 +23,7 @@
         left: 0;
         right: 0;
         text-align: center;
+        z-index: 0;
     }
 }
 

@@ -22,23 +22,6 @@ const cytoscape = Promise.all([loadCytoscape(), loadCxtMenu(), loadEdgeHandles()
 
 export default class Cy {
 
-    constructor(elem) {
-        this.menus = {}
-        this.cy = cytoscape.then(cytoscape => {
-            return cytoscape({
-                container: elem,
-                style,
-                selectionType: 'additive',
-                // autounselectify: true,
-                motionBlur: true
-            })
-        })
-        .catch(err => {
-            // TODO: error handling
-            console.error(err)
-        })
-    }
-
     static cxtMenuDefaults = {
         menuRadius: 80, // the radius of the circular menu in pixels
         selector: '', // elements matching this Cytoscape.js selector will trigger cxtmenus
@@ -66,6 +49,7 @@ export default class Cy {
         itemTextShadowColor: null, // the text shadow colour of the command's content
         zIndex: 9999 // the z-index of the ui div
     }
+
     static edgeHandlesDefaults = {
         preview: true, // whether to show added edges preview before releasing selection
         stackOrder: 4, // Controls stack order of edgehandles canvas element by setting it's z-index
@@ -110,81 +94,15 @@ export default class Cy {
         }
     }
 
-    menu(menu, selector = 'core') {
-        if (!_.isArray(menu)) {
-            return
-        }
-        let opts = {selector}
-        switch(selector) {
-            case 'core':
-                opts = {
-                    ...opts,
-                    menuRadius: 30
-                }
-                break
-            case 'edge':
-                opts = {
-                    ...opts,
-                    menuRadius: 40
-                }
-                break
-        }
-        this.cy.then(cy => cy.cxtmenu({
-            ...Cy.cxtMenuDefaults,
-            ...opts,
-            commands: menu
-        }))
-    }
-
-    edgehandles() {
-        this.cy.then(cy => cy.edgehandles(Cy.edgeHandlesDefaults))
-    }
-
-    destroy() {
-        this.cy.then(cy => cy.destroy())
-    }
-
-    layout() {
-        this.cy.then(cy => cy.layout({
-            name: 'cose',
-            padding: 1,
-            componentSpacing: -100,
-            gravity: 400,
-            nestingFactor: 1,
-            idealEdgeLength: 10,
-            edgeElasticity: 1000
-        }))
-    }
-
-
-    load(graph) {
-        let edges = [], nodes = []
-        if (graph && graph.edges) {
-            edges = graph.edges.map(e => Cy.edgeConverter(e))
-        }
-        if (graph && graph.nodes) {
-            nodes = graph.nodes.map(e => Cy.nodeConverter(e))
-        }
-        this.cy.then(cy => {
-            cy.add({nodes, edges})
-            this.layout()
+    static create(elem, ok) {
+        cytoscape.then(c => {
+            const cy = new Cy(elem, c)
+            ok(cy)
         })
-    }
-
-    addNode(ele) {
-        const node = {
-            data: {
-                id: uuid(),
-                label: ele.type,
-                'text-valign': 'center'
-            },
-            position: {
-                x: 0,
-                y: 0
-            },
-            classes : ele.type
-        }
-        this.cy.then(cy => cy.add({nodes: [node]}))
+        .catch(err => {
+            // TODO: error handling
+            console.error(err)
+        })
     }
 
     // node converter from storage format to cytoscape node
@@ -262,4 +180,101 @@ export default class Cy {
         return converted
     }
 
+// ++++++++++++++++++++++++++++++++
+// ++++++++++++++++++++++++++++++++
+// ++++++++++++++++++++++++++++++++
+
+    constructor(elem, c) {
+        this.cy = c({
+            container: elem,
+            style,
+            selectionType: 'additive',
+            // autounselectify: true,
+            motionBlur: true
+        })
+    }
+
+    menu(menu, selector = 'core') {
+        if (!_.isArray(menu)) {
+            return
+        }
+        let opts = {selector}
+        switch(selector) {
+            case 'core':
+                opts = {
+                    ...opts,
+                    menuRadius: 30
+                }
+                break
+            case 'edge':
+                opts = {
+                    ...opts,
+                    menuRadius: 40
+                }
+                break
+        }
+        this.cy.cxtmenu({
+            ...Cy.cxtMenuDefaults,
+            ...opts,
+            commands: menu
+        })
+    }
+
+    edgehandles() {
+        this.cy.edgehandles(Cy.edgeHandlesDefaults)
+    }
+
+    destroy() {
+        this.cy.destroy()
+    }
+
+    layout() {
+        this.cy.layout({
+            name: 'cose',
+            padding: 1,
+            componentSpacing: -100,
+            gravity: 400,
+            nestingFactor: 1,
+            idealEdgeLength: 10,
+            edgeElasticity: 1000
+        })
+    }
+
+
+    load(graph, visualAttributes) {
+        if (visualAttributes.zoom && visualAttributes.pan) {
+            this.cy.viewport({zoom: visualAttributes.zoom, pan: visualAttributes.pan})
+        }
+
+        let edges = [], nodes = []
+        if (graph && graph.edges) {
+            edges = graph.edges.map(e => Cy.edgeConverter(e))
+        }
+        if (graph && graph.nodes) {
+            nodes = graph.nodes.map(e => Cy.nodeConverter(e))
+        }
+        if (visualAttributes.positions) {
+            nodes = nodes.map(n => ({...n, position: visualAttributes.positions[n.data.id] || {x:0, y:0}}))
+        }
+        this.cy.add({nodes, edges})
+        if (!visualAttributes.positions) {
+            this.layout()
+        }
+    }
+
+    addNode(ele) {
+        const node = {
+            data: {
+                id: uuid(),
+                label: ele.type,
+                'text-valign': 'center'
+            },
+            position: {
+                x: 0,
+                y: 0
+            },
+            classes : ele.type
+        }
+        this.cy.add({nodes: [node]})
+    }
 }

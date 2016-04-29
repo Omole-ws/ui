@@ -16,11 +16,11 @@
             input(type="password" name="password" placeholder="Password" onChange=changeField)
         input.ui.fluid.large.orange.submit.button(type="submit", value="Login")
       if error
-        .ui.bottom.attached.error.message
+        .ui.bottom.attached.small.error.message
           i.ui.close.icon(onClick=clearError)
-          .header
-            =error.error
-          =error.message
+          .header Failed
+          pre.ui.left.aligned.container
+            != error
   
   .ui.horizontal.divider NEW TO US ?
 

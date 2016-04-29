@@ -23,10 +23,10 @@ const graphsActionType = {
 }
 
 const graphsExtraActionType = {
-    FETCH_GRAPH_EXTRA: 'FETCH_GRAPH_EXTRA',
-    UPDATE_GRAPH_EXTRA: 'UPDATE_GRAPH_EXTRA',
-    POST_NEW_GRAPH_EXTRA: 'POST_NEW_GRAPH_EXTRA',
-    REMOVE_GRAPH_EXTRA: 'REMOVE_GRAPH_EXTRA'
+    FETCH_GVA: 'FETCH_GVA',
+    UPDATE_GVA: 'UPDATE_GVA',
+    POST_NEW_GVA: 'POST_NEW_GVA',
+    REMOVE_GVA: 'REMOVE_GVA'
 }
 
 const messageCenterActionType = {

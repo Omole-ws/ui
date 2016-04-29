@@ -105,4 +105,3 @@ const mapDispatchToProps = {
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(Nav)
-
