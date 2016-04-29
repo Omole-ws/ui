@@ -262,17 +262,22 @@ export default class Cy {
         }
     }
 
-    addNode(ele) {
+    addNode(ele, off) {
+        if (typeof ele === 'function') {
+            if (!off) {
+                this.cy.on('tap', ele)
+            } else {
+                this.cy.off('tap', ele)
+            }
+            return
+        }
         const node = {
             data: {
                 id: uuid(),
-                label: ele.type,
+                label: ele.label,
                 'text-valign': 'center'
             },
-            position: {
-                x: 0,
-                y: 0
-            },
+            position: ele.position || {x: 0, y: 0 },
             classes : ele.type
         }
         this.cy.add({nodes: [node]})

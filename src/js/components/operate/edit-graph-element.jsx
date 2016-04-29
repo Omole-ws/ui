@@ -23,7 +23,7 @@ export default class EditGraphElement extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = {ele: null, label: '', note: ''}
+        this.state = {ele: null, label: '', note: '', type: 'circle'}
         this.setRref = r => this._setRref(r)
         this.activate = ele => this._activate(ele)
         this.show = () => this._show()
@@ -52,8 +52,8 @@ export default class EditGraphElement extends React.Component {
     }
 
     _activate(ele) {
-        if (!ele) {
-            this.setState({ifNew: true, ifNode: true, label: '', note: '', type: 'circle'}, this.show)
+        if (ele) {
+            this.setState({ifNew: true, ifNode: true, label: '', note: '', position: ele.cyPosition}, this.show)
         }
     }
 

@@ -44,7 +44,9 @@ class Desk extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextState.isReady !== this.state.isReady || nextState.cy !== this.state.cy) {
+        if (nextState.isReady !== this.state.isReady ||
+            nextState.cy !== this.state.cy ||
+            nextState.newNode !== this.state.newNode) {
             return true
         }
         return false
@@ -55,23 +57,23 @@ class Desk extends React.Component {
             cy.menu([
                 {
                     content: '<i class="ui edit icon"></i>',
-                    select: nod => console.log('edit ' + nod.id() + ' : ' + nod)
+                    select: nod => console.log(`edit ${nod.id()}`)
                 },
                 {
                     fillColor: 'rgba(255, 0, 0, 0.75)',
                     content: '<i class="ui recycle icon"></i>',
-                    select: nod => console.log('remove ' + nod.id() + ' : ' + nod)
+                    select: nod => console.log(`remove ${nod.id()}`)
                 }
             ], 'node')
             cy.menu([
                 {
                     content: '<i class="ui edit icon"></i>',
-                    select: nod => console.log('edit ' + nod.id() + ' : ' + nod)
+                    select: nod => console.log(`edit ${nod.id()}`)
                 },
                 {
                     fillColor: 'rgba(255, 0, 0, 0.75)',
                     content: '<i class="ui recycle icon"></i>',
-                    select: nod => console.log('remove ' + nod.id() + ' : ' + nod)
+                    select: nod => console.log(`remove ${nod.id()}`)
                 }
             ], 'edge')
             cy.menu([
@@ -79,7 +81,13 @@ class Desk extends React.Component {
                     fillColor: 'rgba(0, 255, 0, 0.75)',
                     content: '<i class="ui circle add icon"></i>',
                     select: () => {
-                        this.editComponent.activate(null)
+                        if (!this.state.newNode) {
+                            this.state.cy.addNode(this.editComponent.activate)
+                        } else {
+                            this.state.cy.addNode(this.editComponent.activate, true)
+                        }
+                        this.setState({newNode: !this.state.newNode})
+                        // this.editComponent.activate(null)
                     }
                 }
             ])
@@ -90,18 +98,20 @@ class Desk extends React.Component {
     componentDidUpdate() {
         if (this.state.isReady && this.state.cy && this.state.isClean) {
             this.state.cy.load(this.props.graph, this.props.visualAttributes)
+            this.setState({isClean: false})
         }
     }
 
     componentWillUnmount() {
         this.state.cy.destroy()
-        this.state.cy = null
+        this.setState({cy: null})
     }
 
     render() {
         return (
             <div ref={c => this.cytoscapeElement = c}
-                    className={`ui blurring dimmable ${this.state.isReady ? '' : 'dimmed'} cytoscape`}>
+                    className={`ui blurring dimmable ${this.state.isReady ? '' : 'dimmed'} cytoscape`}
+                    style={{cursor: this.state.newNode ? 'cell' : 'auto'}}>
                 <h1 className="ui disabled center alligned green header">
                     {_.get('graph.info.label')(this.props)}
                 </h1>
