@@ -1,13 +1,14 @@
 import '../../../../semantic/dist/components/header.css'
 import '../../../../semantic/dist/components/dimmer.css'
-import '../../../../semantic/dist/components/icon.css'
+import '../../../../semantic/dist/components/loader.css'
 
 import React from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash/fp'
 
-import { Action } from '../../actions'
-import EditGraphElement from './edit-graph-element'
+import { Action, DeskMode } from '../../actions'
+import { tapeToCorrection } from '../../helpers'
+import EditNode from './edit-node'
 import Cy from './cy'
 
 class Desk extends React.Component {
@@ -15,19 +16,22 @@ class Desk extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state = {isReady: false, cy: null, isClean: true}
+        this.state = {isDataReady: false, cy: null}
+        this.isEmpty = true
         this.cytoscapeElement = null
-        this.cy = {addNode: () => null}
         this.loadGraphData = (g, gva) => this._loadGraphData(g, gva)
-        this.setReady = isReady => this.setState({isReady})
     }
 
     static propTypes = {
         gid: React.PropTypes.string.isRequired,
         graph: React.PropTypes.object,
         visualAttributes: React.PropTypes.object,
+        tape: React.PropTypes.array,
+        deskMode: React.PropTypes.string.isRequired,
         fetchGraph: React.PropTypes.func.isRequired,
-        fetchGVA: React.PropTypes.func.isRequired
+        fetchGVA: React.PropTypes.func.isRequired,
+        setDeskMode: React.PropTypes.func.isRequired,
+        nodeDialog: React.PropTypes.func.isRequired
     }
 
     componentWillMount() {
@@ -39,14 +43,19 @@ class Desk extends React.Component {
             this.loadGraphData(nextProps.graph, nextProps.visualAttributes)
             return
         }
-        this.setState({isReady: nextProps.graph && nextProps.graph.isFetching === false &&
-            (nextProps.visualAttributes && nextProps.visualAttributes.isFetching === false)})
+        if (nextProps.tape !== this.props.tape) {
+            const news = _.difference(nextProps.tape)(this.props.tape)
+            const upd = tapeToCorrection(news)
+            console.log(upd)
+        }
+        this.setState({isDataReady:
+            _.flow(_.at(['graph.isFetching', 'visualAttributes.isFetching']), _.all(e => e === false))(nextProps)})
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextState.isReady !== this.state.isReady ||
+        if (nextState.isDataReady !== this.state.isDataReady ||
             nextState.cy !== this.state.cy ||
-            nextState.newNode !== this.state.newNode) {
+            nextProps.deskMode !== this.props.deskMode) {
             return true
         }
         return false
@@ -54,68 +63,38 @@ class Desk extends React.Component {
 
     componentDidMount() {
         Cy.create(this.cytoscapeElement, cy => {
-            cy.menu([
-                {
-                    content: '<i class="ui edit icon"></i>',
-                    select: nod => console.log(`edit ${nod.id()}`)
-                },
-                {
-                    fillColor: 'rgba(255, 0, 0, 0.75)',
-                    content: '<i class="ui recycle icon"></i>',
-                    select: nod => console.log(`remove ${nod.id()}`)
-                }
-            ], 'node')
-            cy.menu([
-                {
-                    content: '<i class="ui edit icon"></i>',
-                    select: nod => console.log(`edit ${nod.id()}`)
-                },
-                {
-                    fillColor: 'rgba(255, 0, 0, 0.75)',
-                    content: '<i class="ui recycle icon"></i>',
-                    select: nod => console.log(`remove ${nod.id()}`)
-                }
-            ], 'edge')
-            cy.menu([
-                {
-                    fillColor: 'rgba(0, 255, 0, 0.75)',
-                    content: '<i class="ui circle add icon"></i>',
-                    select: () => {
-                        if (!this.state.newNode) {
-                            this.state.cy.addNode(this.editComponent.activate)
-                        } else {
-                            this.state.cy.addNode(this.editComponent.activate, true)
-                        }
-                        this.setState({newNode: !this.state.newNode})
-                        // this.editComponent.activate(null)
-                    }
-                }
-            ])
-            cy.edgehandles()
+            cy.setDeskMode = this.props.setDeskMode
+            cy.nodeDialog = this.props.nodeDialog
+            cy.setMenus(this.props.deskMode)
             this.setState({cy})
         })
     }
-    componentDidUpdate() {
-        if (this.state.isReady && this.state.cy && this.state.isClean) {
-            this.state.cy.load(this.props.graph, this.props.visualAttributes)
-            this.setState({isClean: false})
+
+    componentDidUpdate(prevProps) {
+        if (this.state.isDataReady && this.state.cy && this.isEmpty) {
+            this.state.cy.populate(this.props.graph, this.props.visualAttributes)
+            this.isEmpty =false
+        }
+        if (prevProps.deskMode !== this.props.deskMode) {
+            this.state.cy.setMenus(this.props.deskMode)
         }
     }
 
     componentWillUnmount() {
-        this.state.cy.destroy()
-        this.setState({cy: null})
+        this.state.cy && this.state.cy.destroy()
+        this.setState({isDataReady: false, cy: null})
+        this.isEmpty = true
     }
 
     render() {
         return (
             <div ref={c => this.cytoscapeElement = c}
-                    className={`ui blurring dimmable ${this.state.isReady ? '' : 'dimmed'} cytoscape`}
-                    style={{cursor: this.state.newNode ? 'cell' : 'auto'}}>
+                    className={`ui blurring dimmable ${this.state.isDataReady && this.state.cy ? '' : 'dimmed'} cytoscape`}
+                    style={{cursor: this.props.deskMode === DeskMode.NODE_CREATE ? 'crosshair' : 'auto'}}>
                 <h1 className="ui disabled center alligned green header">
                     {_.get('graph.info.label')(this.props)}
                 </h1>
-                <EditGraphElement ref={r => this.editComponent = r} newNode={ele => this.state.cy.addNode(ele)}/>
+                <EditNode newNode={ele => this.state.cy.addNode(ele)}/>
                 <div className="ui simple inverted dimmer">
                     <div className="ui large text loader">
                         Loading data  ...
@@ -128,11 +107,9 @@ class Desk extends React.Component {
     _loadGraphData(graph, visualAttributes) {
         if (!graph || !graph.isFetching) {
             this.props.fetchGraph(graph ? graph : {id: this.props.gid})
-            // this.setState({isGraphReady: false})
         }
         if (!visualAttributes || !visualAttributes.isFetching) {
             this.props.fetchGVA(graph ? graph : {id: this.props.gid})
-            // this.setState({isVisualAttributesReady: false})
         }
     }
 }
@@ -140,13 +117,17 @@ class Desk extends React.Component {
 function mapStoreToProps(store, ownProps) {
     return {
         graph: store.graphs.list.find(g => g.id === ownProps.gid),
-        visualAttributes: store.graphsExtra.visualAttributes[ownProps.gid]
+        visualAttributes: store.graphsExtra.visualAttributes[ownProps.gid],
+        tape: store.tape[ownProps.gid],
+        deskMode: store.operating.deskMode
     }
 }
 
 const mapDispatchToProps = {
     fetchGraph: Action.fetchGraph,
-    fetchGVA: Action.fetchGVA
+    fetchGVA: Action.fetchGVA,
+    setDeskMode: Action.setDeskMode,
+    nodeDialog: Action.nodeDialog
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(Desk)

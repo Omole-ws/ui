@@ -7,6 +7,7 @@ import { Mode } from '../actions'
 // import Nav from './nav/nav'
 // import Login from './lr/login'
 import loadLoginView from 'promise?bluebird!./lr/login'
+import loadRegistrationView from 'promise?bluebird!./lr/registration'
 import loadListView from 'promise?bluebird!./list/list'
 import loadOperateView from 'promise?bluebird!./operate/operate'
 
@@ -23,6 +24,7 @@ class Root extends React.Component {
 
     static modeViewLoaders = {
         [Mode.LOGIN]: loadLoginView,
+        [Mode.REGISTRATION]: loadRegistrationView,
         [Mode.LIST]: loadListView,
         [Mode.OPERATE]: loadOperateView
     }
@@ -38,7 +40,7 @@ class Root extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.mode === Mode.LOGIN) {
+        if (this.props.mode === Mode.LOGIN || this.props.mode === Mode.REGISTRATION) {
             $('body').css({'background-color': '#fffaf2'})
         } else {
             $('body').css({'background-color': '#ffffff'})
@@ -46,7 +48,7 @@ class Root extends React.Component {
     }
 
     componentDidUpdate() {
-        if (this.props.mode === Mode.LOGIN) {
+        if (this.props.mode === Mode.LOGIN || this.props.mode === Mode.REGISTRATION) {
             $('body').css({'background-color': '#fffaf2'})
         } else {
             $('body').css({'background-color': '#ffffff'})

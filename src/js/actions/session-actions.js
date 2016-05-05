@@ -3,6 +3,23 @@ import page from 'page'
 import { ActionType } from '../actions'
 import { netAction } from '../helpers'
 
+export function register({login, mail, password}) {
+    return function (dispatch) {
+        dispatch({type: `${ActionType.REGISTER}_PENDING`})
+        dispatch(netAction({
+            registration: true,
+            url: '/auth/registration',
+            method: 'post',
+            body: {login, mail, password},
+            onSuccess: () => {
+                dispatch({type: `${ActionType.REGISTER}_OK`})
+                page.redirect('#!/login')
+            },
+            onError: error => dispatch({type: `${ActionType.REGISTER}_FAIL`, error})
+        }))
+    } 
+}
+
 export function login(login, password) {
     const form = new FormData()
     form.append('login', login)

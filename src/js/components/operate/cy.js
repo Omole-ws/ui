@@ -1,11 +1,13 @@
 import _ from 'lodash'
 import loadCytoscape from 'promise?bluebird!cytoscape'
+// import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
 import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
 import loadEdgeHandles from 'promise?bluebird!cytoscape-edgehandles'
 
 import style from '!raw!./cy-style.css'
 
 import { uuid } from '../../helpers'
+import CyMenus from './cy-menus.js'
 
 const cytoscape = Promise.all([loadCytoscape(), loadCxtMenu(), loadEdgeHandles()])
 .then(([cytoscape, cxtmenu, edgehandles]) => {
@@ -21,34 +23,82 @@ const cytoscape = Promise.all([loadCytoscape(), loadCxtMenu(), loadEdgeHandles()
 
 
 export default class Cy {
-
-    static cxtMenuDefaults = {
-        menuRadius: 80, // the radius of the circular menu in pixels
-        selector: '', // elements matching this Cytoscape.js selector will trigger cxtmenus
-        // commands: [ // an array of commands to list in the menu or a function that returns the array
-        /*
-        { // example command
-          fillColor: 'rgba(200, 200, 200, 0.75)', // optional: custom background color for item
-          content: 'a command name' // html/text content to be displayed in the menu
-          select: function(ele){ // a function to execute when the command is selected
-            console.log( ele.id() ) // `ele` holds the reference to the active element
-          }
-        }
-        */
-        // ], // function( ele ){ return [ /*...*/ ] }, // example function for commands
-        fillColor: 'rgba(0, 0, 0, 0.75)', // the background colour of the menu
-        activeFillColor: 'rgba(92, 194, 237, 0.75)', // the colour used to indicate the selected command
-        activePadding: 5, // additional size in pixels for the active command
-        indicatorSize: 0, // the size in pixels of the pointer to the active command
-        separatorWidth: 0, // the empty spacing in pixels between successive commands
-        spotlightPadding: 5, // extra spacing in pixels between the element and the spotlight
-        minSpotlightRadius: 0, // the minimum radius in pixels of the spotlight
-        maxSpotlightRadius: 30, // the maximum radius in pixels of the spotlight
-        openMenuEvents: 'cxttapstart', // cytoscape events that will open the menu (space separated)
-        itemColor: 'white', // the colour of text in the command's content
-        itemTextShadowColor: null, // the text shadow colour of the command's content
-        zIndex: 9999 // the z-index of the ui div
+    constructor(elem, c) {
+        this.cy = c({
+            container: elem,
+            style,
+            selectionType: 'additive',
+            // autounselectify: true,
+            motionBlur: true
+        })
+        this.cy.edgehandles(Cy.edgeHandlesDefaults)
     }
+
+    destroy() {
+        this.cy.destroy()
+        if (this.menus) {
+            this.menus.destroy()
+        }
+    }
+
+    setMenus(mode) {
+        if (this.menus) {
+            this.menus.destroy()
+        }
+        this.menus = new CyMenus(this, mode)
+    }
+
+    populate(graph, visualAttributes) {
+        if (visualAttributes.zoom && visualAttributes.pan) {
+            this.cy.viewport({zoom: visualAttributes.zoom, pan: visualAttributes.pan})
+        }
+
+        let edges = [], nodes = []
+        if (graph && graph.edges) {
+            edges = graph.edges.map(e => Cy.edgeConverter(e))
+        }
+        if (graph && graph.nodes) {
+            nodes = graph.nodes.map(e => Cy.nodeConverter(e))
+        }
+        if (visualAttributes.positions) {
+            nodes = nodes.map(n => ({...n, position: visualAttributes.positions[n.data.id] || {x:0, y:0}}))
+        }
+        this.cy.add({nodes, edges})
+        if (!visualAttributes.positions) {
+            this.layout()
+        }
+    }
+
+    layout() {
+        this.cy.layout({
+            name: 'cose',
+            padding: 1,
+            componentSpacing: -100,
+            gravity: 400,
+            nestingFactor: 1,
+            idealEdgeLength: 10,
+            edgeElasticity: 1000
+        })
+    }
+
+
+    addNode(ele) {
+        const node = {
+            data: {
+                id: uuid(),
+                label: ele.label,
+                'text-valign': 'center'
+            },
+            position: ele.position || {x: 0, y: 0 },
+            classes : ele.type
+        }
+        this.cy.add({nodes: [node]})
+    }
+
+
+// ++++++++++++++++++++++++++++++++
+// +++++++++++ STATICS ++++++++++++
+// ++++++++++++++++++++++++++++++++
 
     static edgeHandlesDefaults = {
         preview: true, // whether to show added edges preview before releasing selection
@@ -60,7 +110,7 @@ export default class Cy {
         handleNodes: 'node', // selector/filter function for whether edges can be made from a given node
         hoverDelay: 150, // time spend over a target node before it is considered a target selection
         cxt: false, // whether cxt events trigger edgehandles (useful on touch)
-        enabled: true, // whether to start the extension in the enabled state
+        enabled: false, // whether to start the extension in the enabled state
         toggleOffOnLeave: true, // whether an edge is cancelled by leaving a node (true), or whether you need to go over again to cancel (false; allows multiple edges in one pass)
         edgeType: function(/*sourceNode, targetNode*/) {
             // can return 'flat' for flat edges between nodes or 'node' for intermediate node between them
@@ -97,6 +147,7 @@ export default class Cy {
     static create(elem, ok) {
         cytoscape.then(c => {
             const cy = new Cy(elem, c)
+            // cy.setDeskMode = setDeskMode
             ok(cy)
         })
         .catch(err => {
@@ -178,108 +229,5 @@ export default class Cy {
                 break
         }
         return converted
-    }
-
-// ++++++++++++++++++++++++++++++++
-// ++++++++++++++++++++++++++++++++
-// ++++++++++++++++++++++++++++++++
-
-    constructor(elem, c) {
-        this.cy = c({
-            container: elem,
-            style,
-            selectionType: 'additive',
-            // autounselectify: true,
-            motionBlur: true
-        })
-    }
-
-    menu(menu, selector = 'core') {
-        if (!_.isArray(menu)) {
-            return
-        }
-        let opts = {selector}
-        switch(selector) {
-            case 'core':
-                opts = {
-                    ...opts,
-                    menuRadius: 30
-                }
-                break
-            case 'edge':
-                opts = {
-                    ...opts,
-                    menuRadius: 40
-                }
-                break
-        }
-        this.cy.cxtmenu({
-            ...Cy.cxtMenuDefaults,
-            ...opts,
-            commands: menu
-        })
-    }
-
-    edgehandles() {
-        this.cy.edgehandles(Cy.edgeHandlesDefaults)
-    }
-
-    destroy() {
-        this.cy.destroy()
-    }
-
-    layout() {
-        this.cy.layout({
-            name: 'cose',
-            padding: 1,
-            componentSpacing: -100,
-            gravity: 400,
-            nestingFactor: 1,
-            idealEdgeLength: 10,
-            edgeElasticity: 1000
-        })
-    }
-
-
-    load(graph, visualAttributes) {
-        if (visualAttributes.zoom && visualAttributes.pan) {
-            this.cy.viewport({zoom: visualAttributes.zoom, pan: visualAttributes.pan})
-        }
-
-        let edges = [], nodes = []
-        if (graph && graph.edges) {
-            edges = graph.edges.map(e => Cy.edgeConverter(e))
-        }
-        if (graph && graph.nodes) {
-            nodes = graph.nodes.map(e => Cy.nodeConverter(e))
-        }
-        if (visualAttributes.positions) {
-            nodes = nodes.map(n => ({...n, position: visualAttributes.positions[n.data.id] || {x:0, y:0}}))
-        }
-        this.cy.add({nodes, edges})
-        if (!visualAttributes.positions) {
-            this.layout()
-        }
-    }
-
-    addNode(ele, off) {
-        if (typeof ele === 'function') {
-            if (!off) {
-                this.cy.on('tap', ele)
-            } else {
-                this.cy.off('tap', ele)
-            }
-            return
-        }
-        const node = {
-            data: {
-                id: uuid(),
-                label: ele.label,
-                'text-valign': 'center'
-            },
-            position: ele.position || {x: 0, y: 0 },
-            classes : ele.type
-        }
-        this.cy.add({nodes: [node]})
     }
 }

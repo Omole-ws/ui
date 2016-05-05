@@ -1,5 +1,5 @@
 .ui.small.modal(ref=setRef)
-    .ui.header= ifNew ? 'Create new ' : 'Edit ' + ifNode ? 'asset' : 'relation'
+    .ui.header= ifNew ? 'Create new' : 'Edit' + ' asset'
     .ui.content
         form.ui.form(onSubmit=submit)
             .field.required
@@ -13,7 +13,7 @@
                 .ui.selection.dropdown
                     input(type="hidden", name="type", defaultValue=type)
                     i.ui.dropdown.icon
-                    .default.text Select type
+                    .default.text Select node type
                     .menu
                         .item(data-value="rectangle") Rectangle
                         .item(data-value="roundrectangle") Roundrectangle

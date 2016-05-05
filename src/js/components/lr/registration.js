@@ -16,33 +16,33 @@ import { connect } from 'react-redux'
 
 import  { Action, Mode } from '../../actions'
 import Nav from '../nav/nav'
-import LoginTmpl from '!jade-react!./login.jade'
+import RegisterTmpl from '!jade-react!./registration.jade'
 import logo from '../../../img/logo.png'
 
-import _ from 'lodash'
+// import _ from 'lodash'
 // import cloneDeep from 'lodash-es/cloneDeep'
 
-class Login extends React.Component {
+class Register extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
             login: '',
+            mail: '',
             password: ''
         }
         this.changeField = (...args) => this._changeField(...args)
-        this.loginTo = (...args) => this._loginTo(...args)
+        this.register = (...args) => this._register(...args)
     }
 
     static propTypes = {
         error:      React.PropTypes.string,
-        login:      React.PropTypes.func.isRequired,
+        register:      React.PropTypes.func.isRequired,
         clearError: React.PropTypes.func.isRequired
     }
 
     /**
      * Maps form fields to local state
-     * @arg {string} name of local state parameter to update from name form field
      * @arg {object} ev event triggered
      * @return {void}
      */
@@ -53,21 +53,13 @@ class Login extends React.Component {
     /**
      * fire async login action
      * @arg {string} [login] accaunt name
+     * @arg {string} [mail]  accaunt e-mail
      * @arg {string} [password] accaunt password
      * @arg {Object} ev submit event that have triggered login action
      * @return {void}
      */
-    _loginTo(login, password, ev) {
-        // let ev = args[0]
-        if (_.isObject(login)) {
-            ev = login
-            if (ev.type !== 'submit') {
-                return
-            }
-            login = this.state.login
-            password = this.state.password
-        }
-        this.props.login(login, password)
+    _register(ev) {
+        this.props.register(this.state)
         ev.preventDefault()
     }
 
@@ -75,7 +67,7 @@ class Login extends React.Component {
         return (
             <div>
                 <Nav mode={Mode.LOGIN}/>
-                <LoginTmpl logo={logo} changeField={this.changeField} loginTo={this.loginTo}
+                <RegisterTmpl logo={logo} changeField={this.changeField} register={this.register}
                     error={this.props.error} clearError={this.props.clearError}/>
             </div>
         )
@@ -88,8 +80,8 @@ const mapStoreToProps = store => ({
 })
 
 const mapDispatchToProps = {
-    login: Action.login,
+    register: Action.register,
     clearError: Action.clearLoginError
 }
 
-export default connect(mapStoreToProps, mapDispatchToProps)(Login)
+export default connect(mapStoreToProps, mapDispatchToProps)(Register)

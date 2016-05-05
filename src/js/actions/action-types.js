@@ -29,6 +29,23 @@ const graphsExtraActionType = {
     REMOVE_GVA: 'REMOVE_GVA'
 }
 
+const crudActionType = {
+    NODE_CREATE: 'NODE_CREATE',
+    NODE_UPDATE: 'NODE_UPDATE',
+    NODE_DELETE: 'NODE_DELETE',
+    EDGE_CREATE: 'EDGE_CREATE',
+    EDGE_UPDATE: 'EDGE_UPDATE',
+    EDGE_DELETE: 'EDGE_DELETE',
+    NODE_POSITION_CHANGE: 'NODE_POSITION_CHANGE',
+    NODE_TYPE_CHANGE: 'NODE_TYPE_CHANGE'
+}
+
+const operateComponentActionType = {
+    SET_DESK_MODE: 'SET_DESK_MODE',
+    NODE_DIALOG: 'NODE_DIALOG',
+    NODE_DIALOG_CLOSE: 'NODE_DIALOG_CLOSE'
+}
+
 const messageCenterActionType = {
     SHOW_MSG_CENTER: 'SHOW_MSG_CENTER',
     HIDE_MSG_CENTER: 'HIDE_MSG_CENTER'
@@ -40,5 +57,7 @@ export default {
     ...sessionActionType, 
     ...graphsActionType,
     ...graphsExtraActionType,
+    ...crudActionType,
+    ...operateComponentActionType,
     ...messageCenterActionType
 }

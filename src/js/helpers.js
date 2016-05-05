@@ -30,34 +30,22 @@ function createFetchError(response, error, contentType) {
     })
 }
 
-function contentType(opts) {
-    // if (_.isString(opts.body)) {
-    //     return {'content-type': 'text/plain'}
-    // } else if (_.isPlainObject(opts.body)) {
-    //     return {'content-type': 'application/json'}
-    // } else {
-    //     return null
-    // }
-    return _.isPlainObject(opts.body) && {'content-type': 'application/json'} ||
-        _.isString(opts.body) && {'content-type': 'application/json'} ||
-        null
-}
-
-function body(opts) {
-    return opts.body ? {body: _.isPlainObject(opts.body) ? JSON.stringify(opts.body) : opts.body} : null
-}
-
 export function netAction(opts) {
     return function (dispatch, getState) {
         //TODO: parse form to query if GET or HEAD
+        const csrfHeader = !opts.registration ? {'x-xsrf-token': getState().session.csrf} : null
+        const contentType = _.isPlainObject(opts.body) && {'content-type': 'application/json'} ||
+            _.isString(opts.body) && {'content-type': 'application/json'} ||
+            null
+        const body = opts.body ? {body: _.isPlainObject(opts.body) ? JSON.stringify(opts.body) : opts.body} : null
         fetch(opts.url, {
             method: (opts.method || 'GET').toUpperCase(),
             credentials: 'same-origin',
             headers: {
-                'x-xsrf-token': getState().session.csrf,
-                ...contentType(opts)
+                ...csrfHeader,
+                ...contentType
             },
-            ...body(opts)
+            ...body
         })
         .then(response => {
             const contentType = (response.headers.get('content-type') || '').split(';')[0]
@@ -88,7 +76,7 @@ export function netAction(opts) {
         .then(data => opts.onSuccess(data))
         .catch(error => {
             opts.onError(error)
-            if (error.auth && getState().mode !== Mode.LOGIN) {
+            if (error.auth && getState().mode !== Mode.LOGIN && !opts.registration) {
                 new Promise(() => page('#!/login'))
             }
         })
