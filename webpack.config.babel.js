@@ -119,7 +119,7 @@ if (!production) {
 
 const config = {
     context: __dirname + '/src',
-    entry: './',
+    entry: ['babel-polyfill', './'],
     output: {
         path:          __dirname + '/dist',
         filename:      production ? '[name]-[hash].js' : 'bundle.js',

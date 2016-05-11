@@ -3,10 +3,20 @@
 // import { uuid } from '../../helpers'
 import { DeskMode } from '../../actions'
 
+// function et() {
+//     return et.edgeType
+// }
 
 export default class CyMenus {
-    constructor(cy, mode) {
-        const menus = {
+    constructor(cyObj) {
+        // super()
+        // et.edgeType = 'read'
+        this.cy = cyObj.cy
+        this.core = null
+
+        this.type = 'read'
+        // const this.cy = cyObj.this.cy
+        this.menus = {
             core: {
                 defaults: {
                     selector: 'core'
@@ -18,8 +28,12 @@ export default class CyMenus {
                             // content: '<i class="ui circle add icon"></i>',
                             content: '<i class="big icons"><i class="thin circle icon"></i><i class="corner add icon"></i></i>',
                             select: () => {
-                                cy.setDeskMode(DeskMode.NODE_CREATE)
-                                cy.cy.on('tap', (ev) => cy.nodeDialog(null, ev.cyPosition))
+                                cyObj.setDeskMode(DeskMode.NODE_CREATE)
+                                this.cy.on('tap', ev => {
+                                    if (ev.cyTarget === this.cy) {
+                                        cyObj.nodeDialog(null, ev.cyPosition)
+                                    }
+                                })
                             }
                         },
                         {
@@ -27,7 +41,9 @@ export default class CyMenus {
                             // content: '<i class="ui circle add icon"></i>',
                             content: '<i class="big clockwise rotated fork icon"</i>',
                             select: () => {
-                                cy.setDeskMode(DeskMode.CONNECT)
+                                cyObj.setDeskMode(DeskMode.CONNECT)
+                                this.cy.edgehandles('enable')
+                                // this.cy.edgehandles('option', 'edgeParams', () => ({classes: this.type}))
                             }
                         }
                     ]
@@ -36,26 +52,84 @@ export default class CyMenus {
                     commands: [
                         {
                             content: 'Done',
-                            fillColor: 'orange',
+                            fillColor: 'red',
                             select: () => {
-                                cy.setDeskMode(DeskMode.BASIC)
-                                cy.cy.off('tap')
+                                cyObj.setDeskMode(DeskMode.BASIC)
+                                this.cy.off('tap')
+                            }
+                        }
+                    ]
+                },
+                [DeskMode.CONNECT]: {
+                    commands: [
+                        {
+                            content: 'RO',
+                            fillColor: '#726707',
+                            select: () => {
+                                this.type = 'r-only'
+                            }
+                        },
+                        {
+                            content: 'WO',
+                            fillColor: '#ef6718',
+                            select: () => {
+                                this.type = 'w-only'
+                            }
+                        },
+                        {
+                            content: 'G',
+                            fillColor: '#bc00ff',
+                            select: () => {
+                                this.type = 'grant'
+                            }
+                        },
+                        {
+                            content: 'Done',
+                            fillColor: 'red',
+                            select: () => {
+                                cyObj.setDeskMode(DeskMode.BASIC)
+                                this.cy.edgehandles('disable')
+                            }
+                        },
+                        {
+                            content: 'T',
+                            fillColor: '#2979ff',
+                            select: () => {
+                                this.type = 'take'
+                            }
+                        },
+                        {
+                            content: 'W',
+                            fillColor: '#ff7728',
+                            select: () => {
+                                this.type = 'write'
+                            }
+                        },
+                        {
+                            content: 'R',
+                            fillColor: '#827717',
+                            select: () => {
+                                this.type = 'read'
                             }
                         }
                     ]
                 }
             }
         }
+    }
 
-        this.core = cy.cy.cxtmenu({
+    setup(mode) {
+        this.destroy()
+        this.core = this.cy.cxtmenu({
             ...CyMenus.cxtMenuDefaults,
-            ...menus.core.defaults,
-            ...menus.core[mode]
+            ...this.menus.core.defaults,
+            ...this.menus.core[mode]
         })
     }
 
     destroy() {
-        this.core.destroy()
+        this.core && this.core.destroy()
+        this.core = null
     }
 
 

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import page from 'page'
 
-import { Action, Mode } from './actions'
+import { Action, ActionType, Mode, NodeType } from './actions'
 
 
 /**
@@ -100,4 +100,64 @@ export function uuid(a /*placeholder*/){
         ).replace(     // replacing zeroes, ones, and eights with random hex digits
             /[018]/g, uuid
         )
+}
+
+export function tapeToCorrection(tape, base) {
+    const nodeCreations = base && base.nodeCreations || {}
+    const nodeUpdates = {}
+    const edgeCreations = base && base.edgeCreations || {}
+    let zoom = undefined
+    let pan = undefined
+    // TODO: updates & deletions; edges creations, updates & deletions
+    // const nodeDeletions = {}
+
+
+    tape.forEach(action => {
+        const nid = action.payload.nid
+        switch (action.type) {
+            case ActionType.NODE_CREATE:
+                nodeCreations[action.payload.node.id] = action.payload.node
+                break
+
+            case ActionType.NODE_POSITION_CHANGE:
+                if (nodeCreations[nid]) {
+                    nodeCreations[nid].position = action.payload.position
+                } else if (nodeUpdates[nid]) {
+                    nodeUpdates[nid].position = action.payload.position
+                } else {
+                    nodeUpdates[nid] = {id: nid, position: action.payload.position}
+                }
+                break
+
+            case ActionType.NODE_TYPE_CHANGE:
+                if (nodeCreations[nid]) {
+                    nodeCreations[nid].type = action.payload.type
+                } else if (nodeUpdates[nid]) {
+                    nodeUpdates[nid].type = action.payload.type
+                } else {
+                    nodeUpdates[nid] = {id: nid, type: action.payload.type}
+                }
+                break
+
+            case ActionType.EDGE_CREATE:
+                edgeCreations[action.payload.edge.id] = action.payload.edge
+                break
+
+            case ActionType.GVA_ZOOM:
+                zoom = action.payload.zoom
+                break
+
+            case ActionType.GVA_PAN:
+                pan = action.payload.pan
+                break
+        }
+    })
+
+    return {
+        nodeCreations: Object.values(nodeCreations),
+        nodeUpdates: Object.values(nodeUpdates),
+        edgeCreations: base && Object.values(edgeCreations) || [],
+        pan,
+        zoom
+    }
 }

@@ -1,4 +1,5 @@
 import '../../../../semantic/dist/components/button.css'
+import '../../../../semantic/dist/components/label.css'
 import '../../../../semantic/dist/components/dropdown'
 import '../../../../semantic/dist/components/dropdown.css'
 import '../../../../semantic/dist/components/form'
@@ -28,7 +29,7 @@ class EditNode extends React.Component {
         this.state = {
             label: _.get('node.label')(props) || '',
             note: _.get('node.note')(props) || '',
-            type: 'ellipse',
+            type: 'SUBJECT',
             position: props.position
         }
         this.handleFieldChange = ev => this._handleFieldChange(ev)
@@ -49,7 +50,7 @@ class EditNode extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.node !== this.props.node) {
+        if (nextProps.node !== this.props.node || nextProps.node === null) {
             this.setState({
                 label: _.get('node.label')(nextProps) || '',
                 note: _.get('node.note')(nextProps) || ''
@@ -85,7 +86,7 @@ class EditNode extends React.Component {
 
     render() {
         return <EditNodeTmpl setRef={r => this.ref = r} ifNew={!this.props.node}
-            label={this.state.label} note={this.state.note} type={this.state.type}
+            label={this.state.label} note={this.state.note} type={this.state.type} NodeType={NodeType}
             handleFieldChange={this.handleFieldChange} submit={this.submit}/>
     }
 
@@ -96,30 +97,30 @@ class EditNode extends React.Component {
     _submit(ev) {
         // this.props.newNode(this.state)
         const id = uuid()
-        this.props.nodeCreate(this.props.gid, {
+        this.props.nodeCreate({
             id,
-            active: EditNode.nodeTypeMappings[this.state.type],
+            active: EditNode.nodeTypeMappings[this.state.type] || this.state.type,
             info: {
                 label: this.state.label,
                 comment: this.state.note
             }
         })
-        this.props.nodePositionChange(this.props.gid, id, this.state.position)
-        this.props.nodeTypeChange(this.props.gid, id, this.state.type)
+        this.props.nodePositionChange(id, this.state.position)
+        this.props.nodeTypeChange(id, this.state.type)
         ev.preventDefault()
     }
 
     static nodeTypeMappings = {
-        USER: 'SUBJECT',
-        PROGRAM: 'SUBJECT_OR_OBJECT',
-        STORAGE: 'OBJECT',
-        'DATA/FILE': 'OBJECT',
-        BUFFER: 'OBJECT',
-        REMOVABLE_MEDIA: 'OBJECT',
-        SERVER: 'OBJECT',
-        CLIENT: 'SUBJECT',
-        FIREWALL: 'SUBJECT_OR_OBJECT',
-        GATE: 'OBJECT'
+        user: 'SUBJECT',
+        programm: 'SUBJECT_OR_OBJECT',
+        storage: 'OBJECT',
+        data_or_file: 'OBJECT',
+        buffer: 'OBJECT',
+        removable_media: 'OBJECT',
+        server: 'OBJECT',
+        client: 'SUBJECT',
+        firewall: 'SUBJECT_OR_OBJECT',
+        gate: 'OBJECT'
     }
 
 

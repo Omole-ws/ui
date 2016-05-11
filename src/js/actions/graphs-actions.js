@@ -40,7 +40,7 @@ export function fetchGraph(graph) {
         dispatch({type: `${ActionType.FETCH_GRAPH}_PENDING`, payload: graph})
         dispatch(netAction({
             url: `${resourceURL}/${graph.id}`,
-            onSuccess: payload => setTimeout(() => dispatch({type: `${ActionType.FETCH_GRAPH}_OK`, payload}), 1),
+            onSuccess: payload => dispatch({type: `${ActionType.FETCH_GRAPH}_OK`, payload}),
             onError: error => dispatch({type: `${ActionType.FETCH_GRAPH}_FAIL`, payload: graph, error })
         }))
     }
@@ -65,7 +65,7 @@ export function patchGraph(graph) {
             url: `${resourceURL}/${graph.id}`,
             method: 'patch',
             body: graph,
-            onSuccess: () => setTimeout(() => dispatch({type: `${ActionType.PATCH_GRAPH}_OK`, payload: graph}), 1000),
+            onSuccess: () => dispatch({type: `${ActionType.PATCH_GRAPH}_OK`, payload: graph}),
             onError: error => dispatch({type: `${ActionType.PATCH_GRAPH}_FAIL`, payload: graph, error})
         }))
     } 

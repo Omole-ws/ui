@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import loadCytoscape from 'promise?bluebird!cytoscape'
 // import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
 import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
@@ -6,7 +5,8 @@ import loadEdgeHandles from 'promise?bluebird!cytoscape-edgehandles'
 
 import style from '!raw!./cy-style.css'
 
-import { uuid } from '../../helpers'
+import { ActionType } from '../../actions'
+import { uuid, tapeToCorrection } from '../../helpers'
 import CyMenus from './cy-menus.js'
 
 const cytoscape = Promise.all([loadCytoscape(), loadCxtMenu(), loadEdgeHandles()])
@@ -20,8 +20,6 @@ const cytoscape = Promise.all([loadCytoscape(), loadCxtMenu(), loadEdgeHandles()
     console.error(err)
 })
 
-
-
 export default class Cy {
     constructor(elem, c) {
         this.cy = c({
@@ -31,7 +29,19 @@ export default class Cy {
             // autounselectify: true,
             motionBlur: true
         })
-        this.cy.edgehandles(Cy.edgeHandlesDefaults)
+        this.cy.edgehandles({
+            ...Cy.edgeHandlesDefaults,
+            edgeParams: () => ({id: uuid(), classes: this.menus.type}),
+            complete: (sourceNode, targetNodes/*, addedEntities*/) => {
+                this.edgeCreate({
+                    id: uuid(),
+                    source: sourceNode.id(),
+                    target: targetNodes.id(), 
+                    cclabel: Cy.edgeTypeMappings[this.menus.type]
+                })
+            }
+        })
+        this.menus = new CyMenus(this)
     }
 
     destroy() {
@@ -42,35 +52,68 @@ export default class Cy {
     }
 
     setMenus(mode) {
-        if (this.menus) {
-            this.menus.destroy()
-        }
-        this.menus = new CyMenus(this, mode)
+        this.menus.setup(mode)
     }
 
-    populate(graph, visualAttributes) {
-        if (visualAttributes.zoom && visualAttributes.pan) {
-            this.cy.viewport({zoom: visualAttributes.zoom, pan: visualAttributes.pan})
+    populate(graph, visualAttributes, tape) {
+        // const correction = tape && tapeToCorrection(tape) || {}
+        // const zoom = correction.zoom || visualAttributes.zoom
+        // const pan = correction.pan || visualAttributes.pan
+        const ifPanZoom = tape && tape
+            .map(a => a.type)
+            .filter(t => t === ActionType.GVA_ZOOM || t === ActionType.GVA_PAN)
+            .reduce((acc, val) => ({...acc, [val]: true}), {})
+            || {}
+        if (visualAttributes.zoom) {
+            this.cy.zoom(visualAttributes.zoom)
+        } else if (!ifPanZoom[ActionType.GVA_ZOOM]) {
+            this.gvaZoom(this.cy.zoom())
+        }
+        if (visualAttributes.pan) {
+            this.cy.pan(visualAttributes.pan)
+        } else if (!ifPanZoom[ActionType.GVA_PAN]) {
+            this.gvaPan(this.cy.pan())
         }
 
-        let edges = [], nodes = []
+        let edgeCreations = [], nodeCreations = []
         if (graph && graph.edges) {
-            edges = graph.edges.map(e => Cy.edgeConverter(e))
+            edgeCreations = graph.edges
+                .map(e => Cy.edgeConverter(e))
+                .reduce((acc, val) => ({...acc, [val.data.id]: val}), {})
         }
         if (graph && graph.nodes) {
-            nodes = graph.nodes.map(e => Cy.nodeConverter(e))
+            if (visualAttributes.positions) {
+                nodeCreations = graph.nodes.map(n => ({...n, position: visualAttributes.positions[n.id] || {x:0, y:0}}))
+                //TODO set ini positions for old graphs
+            }
+            if (visualAttributes.nodeTypes) {
+                nodeCreations = nodeCreations.map(n => ({...n, type: visualAttributes.nodeTypes[n.id]}))
+            }
+            nodeCreations = nodeCreations
+                .map(e => Cy.nodeConverter(e))
+                .reduce((acc, val) => ({...acc, [val.data.id]: val}), {})
         }
-        if (visualAttributes.positions) {
-            nodes = nodes.map(n => ({...n, position: visualAttributes.positions[n.data.id] || {x:0, y:0}}))
-        }
-        this.cy.add({nodes, edges})
-        if (!visualAttributes.positions) {
-            this.layout()
+        this.applyChanges(tape, {nodeCreations, edgeCreations})
+        // this.cy.add({nodes, edges})
+        // if (!visualAttributes.positions) {
+        //     this.layout()
+        // }
+    }
+
+    applyChanges(tape, base) {
+        if (tape) {
+            const correction = tapeToCorrection(tape, base)
+            const nodes = correction.nodeCreations.map(node => Cy.nodeConverter(node))
+            const edges = correction.edgeCreations.map(edge => Cy.edgeConverter(edge))
+            this.cy.add({nodes, edges})
+            correction.zoom && this.cy.zoom(correction.zoom)
+            correction.pan && this.cy.pan(correction.pan)
         }
     }
 
     layout() {
         this.cy.layout({
+            fit: false,
             name: 'cose',
             padding: 1,
             componentSpacing: -100,
@@ -79,20 +122,6 @@ export default class Cy {
             idealEdgeLength: 10,
             edgeElasticity: 1000
         })
-    }
-
-
-    addNode(ele) {
-        const node = {
-            data: {
-                id: uuid(),
-                label: ele.label,
-                'text-valign': 'center'
-            },
-            position: ele.position || {x: 0, y: 0 },
-            classes : ele.type
-        }
-        this.cy.add({nodes: [node]})
     }
 
 
@@ -137,7 +166,6 @@ export default class Cy {
             // fired when edgehandles interaction starts (drag on handle)
         },
         complete: function(/*sourceNode, targetNodes, addedEntities*/) {
-            // fired when edgehandles is done and entities are added
         },
         stop: function(/*sourceNode*/) {
             // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
@@ -172,11 +200,9 @@ export default class Cy {
             // scratch: {
                 // src: node
             },
-            position: {
-                x: 0,
-                y: 0
-            }
+            position: node.position || {x: 0, y: 0}
         }
+        converted.classes = 'subject'
         switch (node.active) {
             case 'OBJECT':
                 converted.classes = 'object'
@@ -184,6 +210,9 @@ export default class Cy {
             case 'SUBJECT_OR_OBJECT':
                 converted.classes = 'subject-object'
                 break
+        }
+        if (node.type) {
+            converted.classes = `${converted.classes} ${node.type}`
         }
         if (opts && opts.ifShowLevel) {
             converted.data.label = `${node.info.label}(${node.level})`
@@ -229,5 +258,14 @@ export default class Cy {
                 break
         }
         return converted
+    }
+
+    static edgeTypeMappings = {
+        'r-only': 'R_ONLY',
+        'w-only': 'W_ONLY',
+        read: 'READ',
+        write: 'WRITE',
+        take: 'TAKE',
+        grant: 'GRANT'
     }
 }

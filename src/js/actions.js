@@ -34,14 +34,14 @@ export const DeskMode = {
 }
 
 export const NodeType = {
-    USER: 'USER',
-    PROGRAM: 'PROGRAM',
-    STORAGE: 'STORAGE',
-    'DATA/FILE': 'DATA/FILE',
-    BUFFER: 'BUFFER',
-    REMOVABLE_MEDIA: 'REMOVABLE_MEDIA',
-    SERVER: 'SERVER',
-    CLIENT: 'CLIENT',
-    FIREWALL: 'FIREWALL',
-    GATE: 'GATE'
+    USER: 'user',
+    PROGRAM: 'programm',
+    STORAGE: 'storage',
+    DATA_OR_FILE: 'data_or_file',
+    BUFFER: 'buffer',
+    REMOVABLE_MEDIA: 'removable_media',
+    SERVER: 'server',
+    CLIENT: 'client',
+    FIREWALL: 'firewall',
+    GATE: 'gate'
 }

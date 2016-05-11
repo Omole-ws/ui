@@ -3,53 +3,70 @@ node {
   color: #ffffff;
   label: data(label);
   background-color: #546e7a;
-  background-opacity: 0.9;
+  background-opacity: 1.0;
   border-color: #546e7a;
-  border-width: 0px;
+  border-width: 2px;
   text-valign: center;
   text-halign: center;
-  text-opacity: 0.75;
+  text-opacity: 1.0;
   text-outline-width: 2;
   text-outline-color: #546e7a;
   min-zoomed-font-size: 9;
 }
-.rectangle {
+
+.subject {
+  background-opacity: 1.0;
+}
+
+.object {
+  background-opacity: 0.0;
+}
+
+.subject-object {
+  background-opacity: 0.3;
+}
+
+.user {
+  shape: ellipse;
+}
+.programm {
+  shape: diamond;
+}
+.buffer {
+  shape: rhomboid;
+}
+.data_or_file {
+  shape: roundrectangle;
+}
+.storage {
+  shape: ellipse;
+  width: 40;
+  height: 20;
+}
+.removable_media {
+  shape: vee;
+}
+.server {
   shape: rectangle;
   width: 40;
   height: 20;
 }
-.roundrectangle {
-  shape: roundrectangle;
+.client {
+  shape: rectangle;
+  width: 20;
+  height: 40;
 }
-.ellipse {
-  shape: ellipse;
-}
-.triangle {
-  shape: triangle;
-}
-.pentagon {
-  shape: pentagon;
-}
-.hexagon {
-  shape: hexagon;
-}
-.heptagon {
-  shape: heptagon;
-}
-.octagon {
-  shape: octagon;
-}
-.star {
+.firewall {
   shape: star;
 }
-.diamond {
-  shape: diamond;
+.gate {
+  shape: heptagon;
 }
-.vee {
-  shape: vee;
-}
-.rhomboid {
-  shape: rhomboid;
+.tmp {
+  shape: pentagon;
+  shape: hexagon;
+  shape: triangle;
+  shape: octagon;  
 }
 
 .group {
@@ -70,7 +87,7 @@ node {
 }
 
 .level {
-  background-color: #fff9c4; /* yellow lighten-4 */
+  background-color: #fff9c4;
 }
 
 edge {
@@ -80,28 +97,22 @@ edge {
   target-arrow-fill: hollow;
 }
 
-.object {
-  pie-size: 80%;
-  pie-1-background-color: #ffffff;
-  pie-1-background-size: 100%;
-}
-
-.subject-object {
-  pie-size: 80%;
-  pie-1-background-color: #ffffff;
-  pie-1-background-size: 50%;
-}
-
 .r-only {
   line-color: #827717;
   target-arrow-color: #827717;
   target-arrow-shape: triangle-tee;
+  mid-source-arrow-color: #827717;
+  mid-source-arrow-shape: tee;
+  mid-source-arrow-fill: hollow;
 }
 
 .w-only {
-  line-color: #e65100;
-  target-arrow-color: #e65100;
+  line-color: #ff7728;
+  target-arrow-color: #ff7728;
   target-arrow-shape: triangle-tee;
+  mid-source-arrow-color: #ff7728;
+  mid-source-arrow-shape: tee;
+  mid-source-arrow-fill: hollow;
 }
 
 .read {
@@ -110,18 +121,18 @@ edge {
 }
 
 .write {
-  line-color: #e65100;
-  target-arrow-color: #e65100;
+  line-color: #ff7728;
+  target-arrow-color: #ff7728;
 }
 
 .take {
-  line-color: #2979ff; /*blue accent-3*/
+  line-color: #2979ff;
   target-arrow-color: #2979ff;
 }
 
 .grant {
-  line-color: #00897b; /*teal darken-1*/
-  target-arrow-color: #00897b;
+  line-color: #bc00ff;
+  target-arrow-color: #bc00ff;
 }
 
 

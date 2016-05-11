@@ -7,7 +7,6 @@ import { connect } from 'react-redux'
 import _ from 'lodash/fp'
 
 import { Action, DeskMode } from '../../actions'
-import { tapeToCorrection } from '../../helpers'
 import EditNode from './edit-node'
 import Cy from './cy'
 
@@ -31,22 +30,16 @@ class Desk extends React.Component {
         fetchGraph: React.PropTypes.func.isRequired,
         fetchGVA: React.PropTypes.func.isRequired,
         setDeskMode: React.PropTypes.func.isRequired,
-        nodeDialog: React.PropTypes.func.isRequired
-    }
-
-    componentWillMount() {
-        this.loadGraphData(this.props.graph, this.props.visualAttributes)
+        nodeDialog: React.PropTypes.func.isRequired,
+        edgeCreate: React.PropTypes.func.isRequired,
+        gvaZoom: React.PropTypes.func.isRequired,
+        gvaPan: React.PropTypes.func.isRequired
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.gid !== this.props.gid) {
-            this.loadGraphData(nextProps.graph, nextProps.visualAttributes)
-            return
-        }
         if (nextProps.tape !== this.props.tape) {
             const news = _.difference(nextProps.tape)(this.props.tape)
-            const upd = tapeToCorrection(news)
-            console.log(upd)
+            this.state.cy.applyChanges(news)
         }
         this.setState({isDataReady:
             _.flow(_.at(['graph.isFetching', 'visualAttributes.isFetching']), _.all(e => e === false))(nextProps)})
@@ -61,23 +54,28 @@ class Desk extends React.Component {
         return false
     }
 
+    componentWillUpdate(nextProps, nextState) {
+        if (nextState.isDataReady && nextState.cy && this.isEmpty) {
+            nextState.cy.populate(nextProps.graph, nextProps.visualAttributes, nextProps.tape)
+            nextState.cy.applyChanges(nextProps.tape)
+            this.isEmpty =false
+        }
+        if (nextProps.deskMode !== this.props.deskMode) {
+            nextState.cy.setMenus(nextProps.deskMode)
+        }
+    }
+
     componentDidMount() {
+        this.loadGraphData(this.props.graph, this.props.visualAttributes)
         Cy.create(this.cytoscapeElement, cy => {
             cy.setDeskMode = this.props.setDeskMode
             cy.nodeDialog = this.props.nodeDialog
+            cy.edgeCreate = this.props.edgeCreate
+            cy.gvaZoom = this.props.gvaZoom
+            cy.gvaPan = this.props.gvaPan
             cy.setMenus(this.props.deskMode)
             this.setState({cy})
         })
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.state.isDataReady && this.state.cy && this.isEmpty) {
-            this.state.cy.populate(this.props.graph, this.props.visualAttributes)
-            this.isEmpty =false
-        }
-        if (prevProps.deskMode !== this.props.deskMode) {
-            this.state.cy.setMenus(this.props.deskMode)
-        }
     }
 
     componentWillUnmount() {
@@ -127,7 +125,10 @@ const mapDispatchToProps = {
     fetchGraph: Action.fetchGraph,
     fetchGVA: Action.fetchGVA,
     setDeskMode: Action.setDeskMode,
-    nodeDialog: Action.nodeDialog
+    nodeDialog: Action.nodeDialog,
+    edgeCreate: Action.edgeCreate,
+    gvaZoom: Action.gvaZoom,
+    gvaPan: Action.gvaPan
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(Desk)

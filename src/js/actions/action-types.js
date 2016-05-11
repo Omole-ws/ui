@@ -30,6 +30,8 @@ const graphsExtraActionType = {
 }
 
 const crudActionType = {
+    GVA_PAN: 'GVA_PAN',
+    GVA_ZOOM: 'GVA_ZOOM',
     NODE_CREATE: 'NODE_CREATE',
     NODE_UPDATE: 'NODE_UPDATE',
     NODE_DELETE: 'NODE_DELETE',
