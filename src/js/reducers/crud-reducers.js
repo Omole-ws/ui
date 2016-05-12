@@ -14,6 +14,7 @@ export function tape(store = {}, action) {
         action.type === ActionType.NODE_POSITION_CHANGE ||
         action.type === ActionType.NODE_TYPE_CHANGE ||
         action.type === ActionType.EDGE_CREATE ||
+        action.type === ActionType.EDGE_UPDATE ||
         action.type === ActionType.EDGE_DELETE ||
         action.type === ActionType.GVA_ZOOM ||
         action.type === ActionType.GVA_PAN) {

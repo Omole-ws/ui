@@ -107,7 +107,6 @@ export default class CyMenus {
                     commands: [
                         {
                             content: '<i class="ui edit icon"></i>',
-                            // fillColor: 'black',
                             select: node => cyObj.nodeDialog(node)
                         },
                         {
@@ -127,7 +126,6 @@ export default class CyMenus {
                     commands: [
                         {
                             content: '<i class="ui edit icon"></i>',
-                            // fillColor: 'black',
                             select: edge => cyObj.edgeDialog(edge)
                         },
                         {

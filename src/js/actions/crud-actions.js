@@ -54,6 +54,15 @@ export function edgeCreate(edge) {
     }
 }
 
+export function edgeUpdate(eid, update) {
+    return function (dispatch, getState) {
+        dispatch({
+            type: ActionType.EDGE_UPDATE,
+            payload: {gid: getState().currentGraph, eid, update}
+        }) 
+    }
+}
+
 export function edgeDelete(edge) {
     return function (dispatch, getState) {
         dispatch({

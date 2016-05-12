@@ -12,12 +12,10 @@ import '../../../../semantic/dist/components/modal.css'
 import '../../../../semantic/dist/components/transition'
 import '../../../../semantic/dist/components/transition.css'
 
-import _ from 'lodash/fp'
-
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Action, NodeType } from '../../actions'
+import { Action, NodeType, NodeTypeInverted, NodeRole } from '../../actions'
 import { uuid } from '../../helpers'
 
 import EditNodeTmpl from '!jade-react!./edit-node.jade'
@@ -27,17 +25,13 @@ class EditNode extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            label: _.get('node.label')(props) || '',
-            note: _.get('node.note')(props) || '',
-            type: 'SUBJECT',
-            position: props.position
+            type: NodeType.SUBJECT
         }
         this.handleFieldChange = ev => this._handleFieldChange(ev)
         this.submit = ev => this._submit(ev)
     }
 
     static propTypes = {
-        gid: React.PropTypes.string.isRequired,
         onScreen: React.PropTypes.bool.isRequired,
         node: React.PropTypes.object,
         position: React.PropTypes.object,
@@ -45,15 +39,13 @@ class EditNode extends React.Component {
         nodeCreate: React.PropTypes.func.isRequired,
         nodeUpdate: React.PropTypes.func.isRequired,
         nodePositionChange: React.PropTypes.func.isRequired,
-        nodeTypeChange: React.PropTypes.func.isRequired,
-        newNode: React.PropTypes.func.isRequired
-        // editNode: React.PropTypes.func.isRequired,
+        nodeTypeChange: React.PropTypes.func.isRequired
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.node !== this.props.node && nextProps.node) {
-            let type = Object.keys(EditNode.nodeTypeMappings).filter(cl => nextProps.node.hasClass(cl))
-            type = type ? type[0] : nextProps.node.data('active')
+            let type = Object.keys(NodeTypeInverted).filter(cl => nextProps.node.hasClass(cl))
+            type = type[0]
             this.setState({
                 label: nextProps.node.data('label'),
                 note: nextProps.node.data('note'),
@@ -93,7 +85,7 @@ class EditNode extends React.Component {
 
     render() {
         return <EditNodeTmpl setRef={r => this.ref = r} ifNew={!this.props.node}
-            label={this.state.label} note={this.state.note} type={this.state.type} NodeType={NodeType}
+            label={this.state.label} note={this.state.note} type={this.state.type} Types={Object.keys(NodeTypeInverted)}
             handleFieldChange={this.handleFieldChange} submit={this.submit}/>
     }
 
@@ -102,7 +94,6 @@ class EditNode extends React.Component {
     }
 
     _submit(ev) {
-        // this.props.newNode(this.state)
         if (this.props.node) {
             const id = this.props.node.id()
             if (this.state.label !== this.props.node.data('label') ||
@@ -110,7 +101,7 @@ class EditNode extends React.Component {
                 !this.props.node.hasClass(this.state.type)) {
                 this.props.nodeUpdate(id, {
                     id,
-                    active: EditNode.nodeTypeMappings[this.state.type] || this.state.type,
+                    active: NodeRole[this.state.type],
                     info: {
                         label: this.state.label,
                         comment: this.state.note
@@ -124,37 +115,23 @@ class EditNode extends React.Component {
             const id = uuid()
             this.props.nodeCreate({
                 id,
-                active: EditNode.nodeTypeMappings[this.state.type] || this.state.type,
+                active: NodeRole[this.state.type],
                 info: {
                     label: this.state.label,
                     comment: this.state.note
                 }
             })
             this.props.nodePositionChange(id, this.state.position)
-            EditNode.nodeTypeMappings[this.state.type] && this.props.nodeTypeChange(id, this.state.type)
+            if (!this.props.node || !this.props.node.hasClass(this.state.type)) {
+                this.props.nodeTypeChange(id, this.state.type)
+            }
         }
         ev.preventDefault()
     }
-
-    static nodeTypeMappings = {
-        [NodeType.USER]: 'SUBJECT',
-        [NodeType.PROGRAMM]: 'SUBJECT_OR_OBJECT',
-        [NodeType.STORAGE]: 'OBJECT',
-        [NodeType.DATA_OR_FILE]: 'OBJECT',
-        [NodeType.BUFFER]: 'OBJECT',
-        [NodeType.REMOVABLE_MEDIA]: 'OBJECT',
-        [NodeType.SERVER]: 'OBJECT',
-        [NodeType.CLIENT]: 'SUBJECT',
-        [NodeType.FIREWALL]: 'SUBJECT_OR_OBJECT',
-        [NodeType.GATE]: 'OBJECT'
-    }
-
-
 }
 
 function mapStoreToProps(store) {
     return {
-        gid: store.currentGraph,
         onScreen: store.operating.nodeEditor.onScreen,
         node: store.operating.nodeEditor.node,
         position: store.operating.nodeEditor.position

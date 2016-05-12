@@ -11,3 +11,12 @@ export function nodeDialog(node, position) {
 export function nodeDialogClose() {
     return {type: ActionType.NODE_DIALOG_CLOSE}
 }
+
+export function edgeDialog(edge) {
+    return {type: ActionType.EDGE_DIALOG, payload: {edge}}
+}
+
+export function edgeDialogClose() {
+    return {type: ActionType.EDGE_DIALOG_CLOSE}
+}
+

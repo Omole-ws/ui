@@ -11,6 +11,8 @@ import loadRegistrationView from 'promise?bluebird!./lr/registration'
 import loadListView from 'promise?bluebird!./list/list'
 import loadOperateView from 'promise?bluebird!./operate/operate'
 
+import Sync from '../sync'
+
 class Root extends React.Component {
 
     constructor(props) {
@@ -31,6 +33,9 @@ class Root extends React.Component {
 
     componentWillMount() {
         Root.modeViewLoaders[this.props.mode]().then(view => this.setState({mainView: view.default}))
+        if (this.props.mode !== Mode.LOGIN || this.props.mode !== Mode.REGISTRATION) {
+            this.sync = new Sync()
+        }
     }
 
     componentWillReceiveProps(nextProps) {

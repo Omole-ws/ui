@@ -45,7 +45,9 @@ const crudActionType = {
 const operateComponentActionType = {
     SET_DESK_MODE: 'SET_DESK_MODE',
     NODE_DIALOG: 'NODE_DIALOG',
-    NODE_DIALOG_CLOSE: 'NODE_DIALOG_CLOSE'
+    NODE_DIALOG_CLOSE: 'NODE_DIALOG_CLOSE',
+    EDGE_DIALOG: 'EDGE_DIALOG',
+    EDGE_DIALOG_CLOSE: 'EDGE_DIALOG_CLOSE'
 }
 
 const messageCenterActionType = {

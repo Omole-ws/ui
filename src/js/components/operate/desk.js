@@ -8,6 +8,7 @@ import _ from 'lodash/fp'
 
 import { Action, DeskMode } from '../../actions'
 import EditNode from './edit-node'
+import EditEdge from './edit-edge'
 import Cy from './cy'
 
 class Desk extends React.Component {
@@ -32,6 +33,7 @@ class Desk extends React.Component {
         setDeskMode: React.PropTypes.func.isRequired,
         nodeDialog: React.PropTypes.func.isRequired,
         nodeDelete: React.PropTypes.func.isRequired,
+        edgeDialog: React.PropTypes.func.isRequired,
         edgeCreate: React.PropTypes.func.isRequired,
         edgeDelete: React.PropTypes.func.isRequired,
         gvaZoom: React.PropTypes.func.isRequired,
@@ -59,7 +61,7 @@ class Desk extends React.Component {
     componentWillUpdate(nextProps, nextState) {
         if (nextState.isDataReady && nextState.cy && this.isEmpty) {
             nextState.cy.populate(nextProps.graph, nextProps.visualAttributes, nextProps.tape)
-            nextState.cy.applyChanges(nextProps.tape)
+            // nextState.cy.applyChanges(nextProps.tape)
             this.isEmpty =false
         }
         if (nextProps.deskMode !== this.props.deskMode) {
@@ -73,6 +75,7 @@ class Desk extends React.Component {
             cy.setDeskMode = this.props.setDeskMode
             cy.nodeDialog = this.props.nodeDialog
             cy.nodeDelete = this.props.nodeDelete
+            cy.edgeDialog = this.props.edgeDialog
             cy.edgeCreate = this.props.edgeCreate
             cy.edgeDelete = this.props.edgeDelete
             cy.gvaZoom = this.props.gvaZoom
@@ -96,7 +99,8 @@ class Desk extends React.Component {
                 <h1 className="ui disabled center alligned green header">
                     {_.get('graph.info.label')(this.props)}
                 </h1>
-                <EditNode newNode={ele => this.state.cy.addNode(ele)}/>
+                <EditNode/>
+                <EditEdge/>
                 <div className="ui simple inverted dimmer">
                     <div className="ui large text loader">
                         Loading data  ...
@@ -131,6 +135,7 @@ const mapDispatchToProps = {
     setDeskMode: Action.setDeskMode,
     nodeDialog: Action.nodeDialog,
     nodeDelete: Action.nodeDelete,
+    edgeDialog: Action.edgeDialog,
     edgeCreate: Action.edgeCreate,
     edgeDelete: Action.edgeDelete,
     gvaZoom: Action.gvaZoom,

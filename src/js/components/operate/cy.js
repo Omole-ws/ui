@@ -5,7 +5,7 @@ import loadEdgeHandles from 'promise?bluebird!cytoscape-edgehandles'
 
 import style from '!raw!./cy-style.css'
 
-import { ActionType } from '../../actions'
+import { ActionType, NodeType, EdgeType, EdgeTypeInverted } from '../../actions'
 import { uuid, tapeToCorrection } from '../../helpers'
 import CyMenus from './cy-menus.js'
 
@@ -37,7 +37,7 @@ export default class Cy {
                     id: addedEntities.id(),
                     source: sourceNode.id(),
                     target: targetNodes.id(), 
-                    cclabel: Cy.edgeTypeMappings[this.menus.type]
+                    cclabel: EdgeTypeInverted[this.menus.type]
                 })
             }
         })
@@ -91,10 +91,6 @@ export default class Cy {
                 .reduce((acc, val) => ({...acc, [val.data.id]: val}), {})
         }
         this.applyChanges(tape, {nodeCreations, edgeCreations})
-        // this.cy.add({nodes, edges})
-        // if (!visualAttributes.positions) {
-        //     this.layout()
-        // }
     }
 
     applyChanges(tape, base) {
@@ -110,6 +106,13 @@ export default class Cy {
                     cyNode.data(convertedNode.data)
                     node.type && cyNode.classes(convertedNode.classes)
                 })
+            correction.edgeUpdates
+                .map(edge => [edge, Cy.edgeConverter(edge), this.cy.$(`#${edge.id}`)])
+                .forEach(([edge, convertedEdge, cyEdge]) => {
+                    cyEdge.data(convertedEdge.data)
+                    cyEdge.classes(convertedEdge.classes)
+                })
+
             this.cy.collection(correction.edgeDeletions).remove()
             this.cy.collection(correction.nodeDeletions).remove()
             correction.zoom && this.cy.zoom(correction.zoom)
@@ -211,15 +214,7 @@ export default class Cy {
             },
             position: node.position || {x: 0, y: 0}
         }
-        converted.classes = 'subject'
-        switch (node.active) {
-            case 'OBJECT':
-                converted.classes = 'object'
-                break
-            case 'SUBJECT_OR_OBJECT':
-                converted.classes = 'subject-object'
-                break
-        }
+        converted.classes = NodeType[node.active]
         if (node.type) {
             converted.classes = `${converted.classes} ${node.type}`
         }
@@ -235,7 +230,8 @@ export default class Cy {
         const converted = {
             data: {
                 id: edge.id,
-                // label: edge.info.label,
+                label: edge.info && edge.info.label || null,
+                note: edge.info && edge.info.comment || null,
                 // attr: edge.info.atrib,
                 // status: edge.info.status,
                 // cclabel: edge.cclabel,
@@ -243,38 +239,10 @@ export default class Cy {
                 target: edge.target,
             // },
             // scratch: {
-                src: edge
+                // src: edge
             }
         }
-        switch (edge.cclabel) {
-            case 'R_ONLY':
-                converted.classes = 'r-only'
-                break
-            case 'W_ONLY':
-                converted.classes = 'w-only'
-                break
-            case 'READ':
-                converted.classes = 'read'
-                break
-            case 'WRITE':
-                converted.classes = 'write'
-                break
-            case 'TAKE':
-                converted.classes = 'take'
-                break
-            case 'GRANT':
-                converted.classes = 'grant'
-                break
-        }
+        converted.classes = EdgeType[edge.cclabel]
         return converted
-    }
-
-    static edgeTypeMappings = {
-        'r-only': 'R_ONLY',
-        'w-only': 'W_ONLY',
-        read: 'READ',
-        write: 'WRITE',
-        take: 'TAKE',
-        grant: 'GRANT'
     }
 }

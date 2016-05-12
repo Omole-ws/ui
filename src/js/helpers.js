@@ -166,6 +166,14 @@ export function tapeToCorrection(tape, base) {
                 edgeCreations[eid] = action.payload.edge
                 break
 
+            case ActionType.EDGE_UPDATE:
+                if (edgeCreations[eid]) {
+                    edgeCreations[eid] = {...edgeCreations[eid], ...action.payload.update}
+                } else {
+                    edgeUpdates[eid] = {...edgeUpdates[eid], ...action.payload.update}
+                }
+                break
+
             case ActionType.EDGE_DELETE:
                 if (edgeCreations[eid]) {
                     delete edgeCreations[eid]
@@ -192,6 +200,7 @@ export function tapeToCorrection(tape, base) {
         nodeUpdates: Object.values(nodeUpdates),
         nodeDeletions,
         edgeCreations: base && Object.values(edgeCreations) || [],
+        edgeUpdates: Object.values(edgeUpdates),
         edgeDeletions,
         pan,
         zoom

@@ -1,5 +1,5 @@
 .ui.small.modal(ref=setRef)
-    .ui.header= ifNew ? 'Create new' : 'Edit' + ' asset'
+    .ui.header= 'Edit relation'
     .ui.content
         form.ui.form(onSubmit=submit)
             .field.required
@@ -17,15 +17,6 @@
                     .menu
                         each val in Types
                             .item(key=val, data-value=val)= val.charAt(0).toUpperCase() + val.slice(1)
-                        //- .item(data-value="OBJECT")
-                        //-     .ui.orange.empty.circular.label
-                        //-     | Object
-                        //- .item(data-value="SUBJECT")
-                        //-     .ui.orange.empty.circular.label
-                        //-     | Subject
-                        //- .item(data-value="SUBJECT_OR_OBJECT")
-                        //-     .ui.orange.empty.circular.label
-                        //-     | Subject_or_bject
 
             .ui.right.aligned.grid
                 .row

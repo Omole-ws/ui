@@ -22,7 +22,7 @@ node {
   background-opacity: 0.0;
 }
 
-.subject-object {
+.subject-or-object {
   background-opacity: 0.3;
 }
 
@@ -35,7 +35,7 @@ node {
 .buffer {
   shape: rhomboid;
 }
-.data_or_file {
+.data-or-file {
   shape: roundrectangle;
 }
 .storage {
