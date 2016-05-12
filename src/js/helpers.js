@@ -105,7 +105,10 @@ export function uuid(a /*placeholder*/){
 export function tapeToCorrection(tape, base) {
     const nodeCreations = base && base.nodeCreations || {}
     const nodeUpdates = {}
+    const nodeDeletions = []
     const edgeCreations = base && base.edgeCreations || {}
+    const edgeUpdates = {}
+    const edgeDeletions = []
     let zoom = undefined
     let pan = undefined
     // TODO: updates & deletions; edges creations, updates & deletions
@@ -114,9 +117,21 @@ export function tapeToCorrection(tape, base) {
 
     tape.forEach(action => {
         const nid = action.payload.nid
+        const eid = action.payload.eid
         switch (action.type) {
             case ActionType.NODE_CREATE:
-                nodeCreations[action.payload.node.id] = action.payload.node
+                nodeCreations[nid] = action.payload.node
+                break
+
+            case ActionType.NODE_DELETE:
+                if (nodeCreations[nid]) {
+                    delete nodeCreations[nid]
+                } else if (nodeUpdates[nid]) {
+                    delete nodeUpdates[nid]
+                    nodeDeletions.push(action.payload.node)
+                } else {
+                    nodeDeletions.push(action.payload.node)
+                }
                 break
 
             case ActionType.NODE_POSITION_CHANGE:
@@ -140,7 +155,18 @@ export function tapeToCorrection(tape, base) {
                 break
 
             case ActionType.EDGE_CREATE:
-                edgeCreations[action.payload.edge.id] = action.payload.edge
+                edgeCreations[eid] = action.payload.edge
+                break
+
+            case ActionType.EDGE_DELETE:
+                if (edgeCreations[eid]) {
+                    delete edgeCreations[eid]
+                } else if (edgeUpdates[eid]) {
+                    delete edgeUpdates[eid]
+                    edgeDeletions.push(action.payload.edge)
+                } else {
+                    edgeDeletions.push(action.payload.edge)
+                }
                 break
 
             case ActionType.GVA_ZOOM:
@@ -156,7 +182,9 @@ export function tapeToCorrection(tape, base) {
     return {
         nodeCreations: Object.values(nodeCreations),
         nodeUpdates: Object.values(nodeUpdates),
+        nodeDeletions,
         edgeCreations: base && Object.values(edgeCreations) || [],
+        edgeDeletions,
         pan,
         zoom
     }

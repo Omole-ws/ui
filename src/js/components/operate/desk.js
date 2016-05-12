@@ -31,7 +31,9 @@ class Desk extends React.Component {
         fetchGVA: React.PropTypes.func.isRequired,
         setDeskMode: React.PropTypes.func.isRequired,
         nodeDialog: React.PropTypes.func.isRequired,
+        nodeDelete: React.PropTypes.func.isRequired,
         edgeCreate: React.PropTypes.func.isRequired,
+        edgeDelete: React.PropTypes.func.isRequired,
         gvaZoom: React.PropTypes.func.isRequired,
         gvaPan: React.PropTypes.func.isRequired
     }
@@ -70,7 +72,9 @@ class Desk extends React.Component {
         Cy.create(this.cytoscapeElement, cy => {
             cy.setDeskMode = this.props.setDeskMode
             cy.nodeDialog = this.props.nodeDialog
+            cy.nodeDelete = this.props.nodeDelete
             cy.edgeCreate = this.props.edgeCreate
+            cy.edgeDelete = this.props.edgeDelete
             cy.gvaZoom = this.props.gvaZoom
             cy.gvaPan = this.props.gvaPan
             cy.setMenus(this.props.deskMode)
@@ -126,7 +130,9 @@ const mapDispatchToProps = {
     fetchGVA: Action.fetchGVA,
     setDeskMode: Action.setDeskMode,
     nodeDialog: Action.nodeDialog,
+    nodeDelete: Action.nodeDelete,
     edgeCreate: Action.edgeCreate,
+    edgeDelete: Action.edgeDelete,
     gvaZoom: Action.gvaZoom,
     gvaPan: Action.gvaPan
 }

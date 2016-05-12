@@ -1,21 +1,12 @@
-// import _ from 'lodash'
-
-// import { uuid } from '../../helpers'
 import { DeskMode } from '../../actions'
 
-// function et() {
-//     return et.edgeType
-// }
 
 export default class CyMenus {
     constructor(cyObj) {
-        // super()
-        // et.edgeType = 'read'
         this.cy = cyObj.cy
         this.core = null
 
         this.type = 'read'
-        // const this.cy = cyObj.this.cy
         this.menus = {
             core: {
                 defaults: {
@@ -24,8 +15,6 @@ export default class CyMenus {
                 [DeskMode.BASIC]: {
                     commands: [
                         {
-                            fillColor: 'rgba(0, 50, 0, 0.75)',
-                            // content: '<i class="ui circle add icon"></i>',
                             content: '<i class="big icons"><i class="thin circle icon"></i><i class="corner add icon"></i></i>',
                             select: () => {
                                 cyObj.setDeskMode(DeskMode.NODE_CREATE)
@@ -37,13 +26,10 @@ export default class CyMenus {
                             }
                         },
                         {
-                            // fillColor: 'rgba(0, 50, 0, 0.75)',
-                            // content: '<i class="ui circle add icon"></i>',
                             content: '<i class="big clockwise rotated fork icon"</i>',
                             select: () => {
                                 cyObj.setDeskMode(DeskMode.CONNECT)
                                 this.cy.edgehandles('enable')
-                                // this.cy.edgehandles('option', 'edgeParams', () => ({classes: this.type}))
                             }
                         }
                     ]
@@ -52,7 +38,7 @@ export default class CyMenus {
                     commands: [
                         {
                             content: 'Done',
-                            fillColor: 'red',
+                            fillColor: 'rgba(255, 0, 0, 0.75)',
                             select: () => {
                                 cyObj.setDeskMode(DeskMode.BASIC)
                                 this.cy.off('tap')
@@ -64,28 +50,28 @@ export default class CyMenus {
                     commands: [
                         {
                             content: 'RO',
-                            fillColor: '#726707',
+                            fillColor: 'rgba(114, 103, 7, 0.75)',
                             select: () => {
                                 this.type = 'r-only'
                             }
                         },
                         {
                             content: 'WO',
-                            fillColor: '#ef6718',
+                            fillColor: 'rgba(239, 103, 24, 0.75)',
                             select: () => {
                                 this.type = 'w-only'
                             }
                         },
                         {
                             content: 'G',
-                            fillColor: '#bc00ff',
+                            fillColor: 'rgba(188, 0, 255, 0.75)',
                             select: () => {
                                 this.type = 'grant'
                             }
                         },
                         {
                             content: 'Done',
-                            fillColor: 'red',
+                            fillColor: 'rgba(255, 0, 0, 0.75)',
                             select: () => {
                                 cyObj.setDeskMode(DeskMode.BASIC)
                                 this.cy.edgehandles('disable')
@@ -93,33 +79,78 @@ export default class CyMenus {
                         },
                         {
                             content: 'T',
-                            fillColor: '#2979ff',
+                            fillColor: 'rgba(41, 121, 255, 0.75)',
                             select: () => {
                                 this.type = 'take'
                             }
                         },
                         {
                             content: 'W',
-                            fillColor: '#ff7728',
+                            fillColor: 'rgba(255, 119, 40, 0.75)',
                             select: () => {
                                 this.type = 'write'
                             }
                         },
                         {
                             content: 'R',
-                            fillColor: '#827717',
+                            fillColor: 'rgba(130, 119, 23, 0.75)',
                             select: () => {
                                 this.type = 'read'
                             }
                         }
                     ]
                 }
+            },
+            node: {
+                defaults: {
+                    selector: 'node',
+                    commands: [
+                        {
+                            content: '<i class="ui edit icon"></i>',
+                            // fillColor: 'black',
+                            select: node => cyObj.nodeDialog(node)
+                        },
+                        {
+                            content: '<i class="ui recycle icon"></i>',
+                            fillColor: 'rgba(255, 0, 0, 0.75)',
+                            select: node => {
+                                node.connectedEdges().map(edge => cyObj.edgeDelete(edge))
+                                cyObj.nodeDelete(node)
+                            }
+                        }
+                    ]
+                }
+            },
+            edge: {
+                defaults: {
+                    selector: 'edge',
+                    commands: [
+                        {
+                            content: '<i class="ui edit icon"></i>',
+                            // fillColor: 'black',
+                            select: edge => cyObj.edgeDialog(edge)
+                        },
+                        {
+                            content: '<i class="ui recycle icon"></i>',
+                            fillColor: 'rgba(255, 0, 0, 0.75)',
+                            select: edge => cyObj.edgeDelete(edge)
+                        }
+                    ]
+                }
             }
         }
+        this.node = this.cy.cxtmenu({
+            ...CyMenus.cxtMenuDefaults,
+            ...this.menus.node.defaults
+        })
+        this.edge = this.cy.cxtmenu({
+            ...CyMenus.cxtMenuDefaults,
+            ...this.menus.edge.defaults
+        })
     }
 
     setup(mode) {
-        this.destroy()
+        this.destroy(true)
         this.core = this.cy.cxtmenu({
             ...CyMenus.cxtMenuDefaults,
             ...this.menus.core.defaults,
@@ -127,9 +158,13 @@ export default class CyMenus {
         })
     }
 
-    destroy() {
+    destroy(partial) {
         this.core && this.core.destroy()
         this.core = null
+        if (!partial) {
+            this.node.destroy()
+            this.edge.destroy()
+        }
     }
 
 

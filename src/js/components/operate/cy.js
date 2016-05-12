@@ -31,10 +31,10 @@ export default class Cy {
         })
         this.cy.edgehandles({
             ...Cy.edgeHandlesDefaults,
-            edgeParams: () => ({id: uuid(), classes: this.menus.type}),
-            complete: (sourceNode, targetNodes/*, addedEntities*/) => {
+            edgeParams: () => ({data: {id: uuid()}, classes: this.menus.type}),
+            complete: (sourceNode, targetNodes, addedEntities) => {
                 this.edgeCreate({
-                    id: uuid(),
+                    id: addedEntities.id(),
                     source: sourceNode.id(),
                     target: targetNodes.id(), 
                     cclabel: Cy.edgeTypeMappings[this.menus.type]
@@ -56,9 +56,6 @@ export default class Cy {
     }
 
     populate(graph, visualAttributes, tape) {
-        // const correction = tape && tapeToCorrection(tape) || {}
-        // const zoom = correction.zoom || visualAttributes.zoom
-        // const pan = correction.pan || visualAttributes.pan
         const ifPanZoom = tape && tape
             .map(a => a.type)
             .filter(t => t === ActionType.GVA_ZOOM || t === ActionType.GVA_PAN)
@@ -105,9 +102,13 @@ export default class Cy {
             const correction = tapeToCorrection(tape, base)
             const nodes = correction.nodeCreations.map(node => Cy.nodeConverter(node))
             const edges = correction.edgeCreations.map(edge => Cy.edgeConverter(edge))
+            this.cy.startBatch()
             this.cy.add({nodes, edges})
+            this.cy.collection(correction.edgeDeletions).remove()
+            this.cy.collection(correction.nodeDeletions).remove()
             correction.zoom && this.cy.zoom(correction.zoom)
             correction.pan && this.cy.pan(correction.pan)
+            this.cy.endBatch()
         }
     }
 
@@ -141,33 +142,33 @@ export default class Cy {
         cxt: false, // whether cxt events trigger edgehandles (useful on touch)
         enabled: false, // whether to start the extension in the enabled state
         toggleOffOnLeave: true, // whether an edge is cancelled by leaving a node (true), or whether you need to go over again to cancel (false; allows multiple edges in one pass)
-        edgeType: function(/*sourceNode, targetNode*/) {
+        edgeType(/*sourceNode, targetNode*/) {
             // can return 'flat' for flat edges between nodes or 'node' for intermediate node between them
             // returning null/undefined means an edge can't be added between the two nodes
             return 'flat'
         },
-        loopAllowed: function(/*node*/) {
+        loopAllowed(/*node*/) {
             // for the specified node, return whether edges from itself to itself are allowed
             return false
         },
         nodeLoopOffset: -50, // offset for edgeType: 'node' loops
-        nodeParams: function(/*sourceNode, targetNode*/) {
+        nodeParams(/*sourceNode, targetNode*/) {
             // for edges between the specified source and target
             // return element object to be passed to cy.add() for intermediary node
             return {}
         },
-        edgeParams: function(/*sourceNode, targetNode, i*/) {
+        edgeParams(/*sourceNode, targetNode, i*/) {
             // for edges between the specified source and target
             // return element object to be passed to cy.add() for edge
             // NB: i indicates edge index in case of edgeType: 'node'
             return {}
         },
-        start: function(/*sourceNode*/) {
+        start(/*sourceNode*/) {
             // fired when edgehandles interaction starts (drag on handle)
         },
-        complete: function(/*sourceNode, targetNodes, addedEntities*/) {
+        complete(/*sourceNode, targetNodes, addedEntities*/) {
         },
-        stop: function(/*sourceNode*/) {
+        stop(/*sourceNode*/) {
             // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
         }
     }

@@ -4,8 +4,17 @@ export function nodeCreate(node) {
     return function (dispatch, getState) {
         dispatch({
             type: ActionType.NODE_CREATE,
-            payload: {gid: getState().currentGraph, node}
+            payload: {gid: getState().currentGraph, nid: node.id, node}
         })
+    }
+}
+
+export function nodeDelete(node) {
+    return function (dispatch, getState) {
+        dispatch({
+            type: ActionType.NODE_DELETE,
+            payload: {gid: getState().currentGraph, nid: node.id(), node}
+        }) 
     }
 }
 
@@ -31,9 +40,18 @@ export function edgeCreate(edge) {
     return function(dispatch, getState) {
         dispatch({
             type: ActionType.EDGE_CREATE,
-            payload: {gid: getState().currentGraph, edge}
+            payload: {gid: getState().currentGraph, eid: edge.id, edge}
         })
     }
+}
+
+export function edgeDelete(edge) {
+    return function (dispatch, getState) {
+        dispatch({
+            type: ActionType.EDGE_DELETE,
+            payload: {gid: getState().currentGraph, eid: edge.id(), edge}
+        }) 
+    } 
 }
 
 export function gvaZoom(zoom) {
