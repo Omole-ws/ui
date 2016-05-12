@@ -9,6 +9,15 @@ export function nodeCreate(node) {
     }
 }
 
+export function nodeUpdate(nid, update) {
+    return function (dispatch, getState) {
+        dispatch({
+            type: ActionType.NODE_UPDATE,
+            payload: {gid: getState().currentGraph, nid, update}
+        }) 
+    }
+}
+
 export function nodeDelete(node) {
     return function (dispatch, getState) {
         dispatch({

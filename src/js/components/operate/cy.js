@@ -104,6 +104,12 @@ export default class Cy {
             const edges = correction.edgeCreations.map(edge => Cy.edgeConverter(edge))
             this.cy.startBatch()
             this.cy.add({nodes, edges})
+            correction.nodeUpdates
+                .map(node => [node, Cy.nodeConverter(node), this.cy.$(`#${node.id}`)])
+                .forEach(([node, convertedNode, cyNode]) => {
+                    cyNode.data(convertedNode.data)
+                    node.type && cyNode.classes(convertedNode.classes)
+                })
             this.cy.collection(correction.edgeDeletions).remove()
             this.cy.collection(correction.nodeDeletions).remove()
             correction.zoom && this.cy.zoom(correction.zoom)
@@ -190,7 +196,9 @@ export default class Cy {
         const converted = {
             data: {
                 id: node.id,
-                label: node.info.label
+                label: node.info.label,
+                note: node.info.comment,
+                active: node.active
                 // label: node.info.label + '(' + node.level + ')',
                 // attr: node.info.atrib,
                 // status: node.info.status,

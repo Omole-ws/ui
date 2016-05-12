@@ -9,6 +9,7 @@ function record(store = [], action) {
 
 export function tape(store = {}, action) {
     if (action.type === ActionType.NODE_CREATE ||
+        action.type === ActionType.NODE_UPDATE ||
         action.type === ActionType.NODE_DELETE ||
         action.type === ActionType.NODE_POSITION_CHANGE ||
         action.type === ActionType.NODE_TYPE_CHANGE ||

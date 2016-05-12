@@ -123,6 +123,14 @@ export function tapeToCorrection(tape, base) {
                 nodeCreations[nid] = action.payload.node
                 break
 
+            case ActionType.NODE_UPDATE:
+                if (nodeCreations[nid]) {
+                    nodeCreations[nid] = {...nodeCreations[nid], ...action.payload.update}
+                } else {
+                    nodeUpdates[nid] = {...nodeUpdates[nid], ...action.payload.update}
+                }
+                break
+
             case ActionType.NODE_DELETE:
                 if (nodeCreations[nid]) {
                     delete nodeCreations[nid]

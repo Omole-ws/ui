@@ -33,7 +33,7 @@ function node(store = null, action) {
 function position(store = {x: 0, y: 0}, action) {
     switch (action.type) {
         case ActionType.NODE_DIALOG:
-            return action.payload.position
+            return action.payload.position || null
 
         case ActionType.NODE_DIALOG_CLOSE:
             return null

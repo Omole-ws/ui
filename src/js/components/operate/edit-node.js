@@ -43,6 +43,7 @@ class EditNode extends React.Component {
         position: React.PropTypes.object,
         nodeDialogClose: React.PropTypes.func.isRequired,
         nodeCreate: React.PropTypes.func.isRequired,
+        nodeUpdate: React.PropTypes.func.isRequired,
         nodePositionChange: React.PropTypes.func.isRequired,
         nodeTypeChange: React.PropTypes.func.isRequired,
         newNode: React.PropTypes.func.isRequired
@@ -50,13 +51,19 @@ class EditNode extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.node !== this.props.node || nextProps.node === null) {
+        if (nextProps.node !== this.props.node && nextProps.node) {
+            let type = Object.keys(EditNode.nodeTypeMappings).filter(cl => nextProps.node.hasClass(cl))
+            type = type ? type[0] : nextProps.node.data('active')
             this.setState({
-                label: _.get('node.label')(nextProps) || '',
-                note: _.get('node.note')(nextProps) || ''
+                label: nextProps.node.data('label'),
+                note: nextProps.node.data('note'),
+                type
             })
+            $(this.ref).find('.ui.dropdown').dropdown('set selected', type)
+        } else {
+            this.setState({label: '', note: ''})
         }
-        if (nextProps.position !== this.props.position) {
+        if (nextProps.position !== this.props.position && nextProps.position) {
             this.setState({
                 position: nextProps.position
             })
@@ -96,31 +103,50 @@ class EditNode extends React.Component {
 
     _submit(ev) {
         // this.props.newNode(this.state)
-        const id = uuid()
-        this.props.nodeCreate({
-            id,
-            active: EditNode.nodeTypeMappings[this.state.type] || this.state.type,
-            info: {
-                label: this.state.label,
-                comment: this.state.note
+        if (this.props.node) {
+            const id = this.props.node.id()
+            if (this.state.label !== this.props.node.data('label') ||
+                this.state.note !== this.props.node.data('note') ||
+                !this.props.node.hasClass(this.state.type)) {
+                this.props.nodeUpdate(id, {
+                    id,
+                    active: EditNode.nodeTypeMappings[this.state.type] || this.state.type,
+                    info: {
+                        label: this.state.label,
+                        comment: this.state.note
+                    }
+                })
             }
-        })
-        this.props.nodePositionChange(id, this.state.position)
-        this.props.nodeTypeChange(id, this.state.type)
+            if (!this.props.node.hasClass(this.state.type)) {
+                this.props.nodeTypeChange(id, this.state.type)
+            }
+        } else {
+            const id = uuid()
+            this.props.nodeCreate({
+                id,
+                active: EditNode.nodeTypeMappings[this.state.type] || this.state.type,
+                info: {
+                    label: this.state.label,
+                    comment: this.state.note
+                }
+            })
+            this.props.nodePositionChange(id, this.state.position)
+            EditNode.nodeTypeMappings[this.state.type] && this.props.nodeTypeChange(id, this.state.type)
+        }
         ev.preventDefault()
     }
 
     static nodeTypeMappings = {
-        user: 'SUBJECT',
-        programm: 'SUBJECT_OR_OBJECT',
-        storage: 'OBJECT',
-        data_or_file: 'OBJECT',
-        buffer: 'OBJECT',
-        removable_media: 'OBJECT',
-        server: 'OBJECT',
-        client: 'SUBJECT',
-        firewall: 'SUBJECT_OR_OBJECT',
-        gate: 'OBJECT'
+        [NodeType.USER]: 'SUBJECT',
+        [NodeType.PROGRAMM]: 'SUBJECT_OR_OBJECT',
+        [NodeType.STORAGE]: 'OBJECT',
+        [NodeType.DATA_OR_FILE]: 'OBJECT',
+        [NodeType.BUFFER]: 'OBJECT',
+        [NodeType.REMOVABLE_MEDIA]: 'OBJECT',
+        [NodeType.SERVER]: 'OBJECT',
+        [NodeType.CLIENT]: 'SUBJECT',
+        [NodeType.FIREWALL]: 'SUBJECT_OR_OBJECT',
+        [NodeType.GATE]: 'OBJECT'
     }
 
 
@@ -138,6 +164,7 @@ function mapStoreToProps(store) {
 const mapDispatchToProps = {
     nodeDialogClose: Action.nodeDialogClose,
     nodeCreate: Action.nodeCreate,
+    nodeUpdate: Action.nodeUpdate,
     nodePositionChange: Action.nodePositionChange,
     nodeTypeChange: Action.nodeTypeChange
 }
