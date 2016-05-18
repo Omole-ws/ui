@@ -105,14 +105,12 @@ export function uuid(a /*placeholder*/){
 export function tapeToCorrection(tape, base) {
     const nodeCreations = base && base.nodeCreations || {}
     const nodeUpdates = {}
-    const nodeDeletions = []
+    const nodeDeletions = {}
     const edgeCreations = base && base.edgeCreations || {}
     const edgeUpdates = {}
-    const edgeDeletions = []
+    const edgeDeletions = {}
     let zoom = undefined
     let pan = undefined
-    // TODO: updates & deletions; edges creations, updates & deletions
-    // const nodeDeletions = {}
 
 
     tape.forEach(action => {
@@ -133,12 +131,12 @@ export function tapeToCorrection(tape, base) {
 
             case ActionType.NODE_DELETE:
                 if (nodeCreations[nid]) {
-                    delete nodeCreations[nid]
+                    Reflect.deleteProperty(nodeCreations[nid])
                 } else if (nodeUpdates[nid]) {
-                    delete nodeUpdates[nid]
-                    nodeDeletions.push(action.payload.node)
+                    Reflect.deleteProperty(nodeUpdates[nid])
+                    nodeDeletions[nid] = action.payload.node
                 } else {
-                    nodeDeletions.push(action.payload.node)
+                    nodeDeletions[nid] = action.payload.node
                 }
                 break
 
@@ -176,12 +174,12 @@ export function tapeToCorrection(tape, base) {
 
             case ActionType.EDGE_DELETE:
                 if (edgeCreations[eid]) {
-                    delete edgeCreations[eid]
+                    Reflect.deleteProperty(edgeCreations[eid])
                 } else if (edgeUpdates[eid]) {
-                    delete edgeUpdates[eid]
-                    edgeDeletions.push(action.payload.edge)
+                    Reflect.deleteProperty(edgeUpdates[eid])
+                    edgeDeletions[eid] = action.payload.edge
                 } else {
-                    edgeDeletions.push(action.payload.edge)
+                    edgeDeletions[eid] = action.payload.edge
                 }
                 break
 
@@ -195,14 +193,5 @@ export function tapeToCorrection(tape, base) {
         }
     })
 
-    return {
-        nodeCreations: Object.values(nodeCreations),
-        nodeUpdates: Object.values(nodeUpdates),
-        nodeDeletions,
-        edgeCreations: base && Object.values(edgeCreations) || [],
-        edgeUpdates: Object.values(edgeUpdates),
-        edgeDeletions,
-        pan,
-        zoom
-    }
+    return {nodeCreations, nodeUpdates, nodeDeletions, edgeCreations, edgeUpdates, edgeDeletions, pan, zoom}
 }

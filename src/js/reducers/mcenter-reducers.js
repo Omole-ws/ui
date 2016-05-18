@@ -28,20 +28,20 @@ function messages(store = [], action) {
         case `${ActionType.PATCH_GRAPH}_PENDING`:
             return store.concat({
                 type: 'info',
-                msg: `Updating graph '${action.payload.info.label}'`,
+                msg: `Updating graph '${action.payload.id}'`,
                 id: action.serial
             })
 
         case `${ActionType.PATCH_GRAPH}_OK`:
             return store.filter(m => m.id !== action.serial).concat({
                 type: 'success',
-                msg: `Graph '${action.payload.info.label}' has updated`
+                msg: `Graph '${action.payload.id}' has updated`
             })
 
         case `${ActionType.PATCH_GRAPH}_FAIL`:
             return store.filter(m => m.id !== action.serial).concat({
                 type: 'error',
-                msg: `Update of graph '${action.payload.info.label}' has failed. (${action.payload.error})`
+                msg: `Update of graph '${action.payload.id}' has failed. (${action.payload.error})`
             })
 
         default:

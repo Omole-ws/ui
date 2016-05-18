@@ -98,7 +98,7 @@ class EditNode extends React.Component {
             const id = this.props.node.id()
             if (this.state.label !== this.props.node.data('label') ||
                 this.state.note !== this.props.node.data('note') ||
-                !this.props.node.hasClass(this.state.type)) {
+                NodeRole[this.state.type] !== this.props.node.data('active')) {
                 this.props.nodeUpdate(id, {
                     id,
                     active: NodeRole[this.state.type],
@@ -122,9 +122,7 @@ class EditNode extends React.Component {
                 }
             })
             this.props.nodePositionChange(id, this.state.position)
-            if (!this.props.node || !this.props.node.hasClass(this.state.type)) {
-                this.props.nodeTypeChange(id, this.state.type)
-            }
+            this.props.nodeTypeChange(id, this.state.type)
         }
         ev.preventDefault()
     }

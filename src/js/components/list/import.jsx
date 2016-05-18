@@ -28,8 +28,7 @@ export default class Import extends React.Component {
     }
 
     static propTypes ={
-        postNewGraph: React.PropTypes.func.isRequired,
-        patchGraph: React.PropTypes.func.isRequired
+        postNewGraph: React.PropTypes.func.isRequired
     }
 
     _setRref(ref) {

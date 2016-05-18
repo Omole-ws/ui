@@ -81,7 +81,7 @@ class ListView extends React.Component {
                 <MessageCenter/>
 
                 <Import ref={r => this.importComponent = r}
-                    postNewGraph={this.props.postNewGraph} patchGraph={this.props.patchGraph}/>
+                    postNewGraph={this.props.postNewGraph}/>
 
                 <EditGraphList ref={r => this.editComponent = r}
                     postNewGraph={this.props.postNewGraph} patchGraph={this.props.patchGraph}/>

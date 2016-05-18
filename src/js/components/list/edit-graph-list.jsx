@@ -61,7 +61,7 @@ export default class EditGraphList extends React.Component {
         if (this.state.graph) {
             this.props.patchGraph({id: this.state.graph.id, info: {label: this.state.title, comment: this.state.description}})
         } else {
-            this.props.postNewGraph({info: {label: this.state.title, comment: this.state.description}})
+            this.props.postNewGraph({info: {label: this.state.title, comment: this.state.description}, nodes: [], edges: []})
         }
         ev.preventDefault()
     }

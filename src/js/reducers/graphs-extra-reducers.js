@@ -7,6 +7,7 @@ function vaItem(store, action) {
     switch (action.type) {
         case `${ActionType.FETCH_GVA}_PENDING`:
         case `${ActionType.UPDATE_GVA}_PENDING`:
+        case `${ActionType.PATCH_GRAPH}_PENDING`:
         case `${ActionType.REMOVE_GVA}_PENDING`:
             return store ? {...store, isFetching: true} : null
 
@@ -18,7 +19,7 @@ function vaItem(store, action) {
             return null
             
         case `${ActionType.FETCH_GVA}_FAIL`:
-        case `${ActionType.UPDATE_GVA}_FAIL`:
+        case `${ActionType.PATCH_GRAPH}_FAIL`:
         case `${ActionType.REMOVE_GVA}_FAIL`:
             return {positions: null, ...store, isFetching: false}
     }
@@ -28,6 +29,7 @@ function visualAttributes (store = {}, action) {
     if (action.type.startsWith(ActionType.POST_NEW_GVA) ||
         action.type.startsWith(ActionType.FETCH_GVA) ||
         action.type.startsWith(ActionType.UPDATE_GVA) ||
+        action.type.startsWith(ActionType.PATCH_GRAPH) ||
         action.type.startsWith(ActionType.REMOVE_GVA)) {
         return _.omitBy({...store, [action.payload.gid]: vaItem(store[action.payload.gid], action)}, v => v === null)
     } else {

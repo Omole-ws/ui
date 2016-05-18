@@ -2,6 +2,32 @@ import _ from 'lodash'
 
 import { ActionType } from '../actions'
 
+function _patch(graph, patch) {
+    const patchedGraph = {...graph, isFetching: false}
+    if (patch.info) {
+        patchedGraph.info = {...graph.info, ...patch.info}
+    }
+    if (patch.gInserts) {
+        let nodes = graph.nodes
+        if (Reflect.ownKeys(patch.gDeletions.nodes).length > 0) {
+            nodes = nodes.filter(node => !patch.gDeletions.nodes[node.id])
+        }
+        if (Reflect.ownKeys(patch.gUpdates.nodes).length > 0) {
+            nodes = nodes.map(node => ({...node, ...patch.gUpdates.nodes[node.id]}))
+        }
+        patchedGraph.nodes = nodes.concat(Object.values(patch.gInserts.nodes))
+
+        let edges = graph.edges
+        if (Reflect.ownKeys(patch.gDeletions.edges).length > 0) {
+            edges = edges.filter(edge => !patch.gDeletions.edges[edge.id])
+        }
+        if (Reflect.ownKeys(patch.gUpdates.edges).length > 0) {
+            edges = edges.map(edge => ({...edge, ...patch.gUpdates.edges[edge.id]}))
+        }
+        patchedGraph.edges = edges.concat(Object.values(patch.gInserts.edges))
+    }
+    return patchedGraph
+}
 
 function graph(store = {isFetching: false, lastUpdated: null}, action) {
 
@@ -18,7 +44,8 @@ function graph(store = {isFetching: false, lastUpdated: null}, action) {
             return {...action.payload, isFetching: false}
 
         case `${ActionType.PATCH_GRAPH}_OK`:
-            return {...store, ...action.payload, info: {...store.info, ...action.payload.info}, isFetching: false}
+            return _patch(store, action.payload)
+            // return {...store, ...action.payload, info: {...store.info, ...action.payload.info}, isFetching: false}
 
         case `${ActionType.REMOVE_GRAPH}_OK`:
             return null

@@ -41,6 +41,11 @@ export default class Cy {
                 })
             }
         })
+        this.panHandlerID = null
+        this.cy.on('pan', () => {
+            clearTimeout(this.panHandlerID)
+            setTimeout(() => this.gvaPan(this.cy.pan()), 2)
+        })
         this.menus = new CyMenus(this)
     }
 
@@ -96,25 +101,25 @@ export default class Cy {
     applyChanges(tape, base) {
         if (tape) {
             const correction = tapeToCorrection(tape, base)
-            const nodes = correction.nodeCreations.map(node => Cy.nodeConverter(node))
-            const edges = correction.edgeCreations.map(edge => Cy.edgeConverter(edge))
+            const nodes = Object.values(correction.nodeCreations).map(node => Cy.nodeConverter(node))
+            const edges = base && Object.values(correction.edgeCreations).map(edge => Cy.edgeConverter(edge)) || []
             this.cy.startBatch()
             this.cy.add({nodes, edges})
-            correction.nodeUpdates
+            Object.values(correction.nodeUpdates)
                 .map(node => [node, Cy.nodeConverter(node), this.cy.$(`#${node.id}`)])
                 .forEach(([node, convertedNode, cyNode]) => {
                     cyNode.data(convertedNode.data)
                     node.type && cyNode.classes(convertedNode.classes)
                 })
-            correction.edgeUpdates
-                .map(edge => [edge, Cy.edgeConverter(edge), this.cy.$(`#${edge.id}`)])
-                .forEach(([edge, convertedEdge, cyEdge]) => {
+            Object.values(correction.edgeUpdates)
+                .map(edge => [Cy.edgeConverter(edge), this.cy.$(`#${edge.id}`)])
+                .forEach(([convertedEdge, cyEdge]) => {
                     cyEdge.data(convertedEdge.data)
                     cyEdge.classes(convertedEdge.classes)
                 })
 
-            this.cy.collection(correction.edgeDeletions).remove()
-            this.cy.collection(correction.nodeDeletions).remove()
+            this.cy.collection(Object.values(correction.edgeDeletions)).remove()
+            this.cy.collection(Object.values(correction.nodeDeletions)).remove()
             correction.zoom && this.cy.zoom(correction.zoom)
             correction.pan && this.cy.pan(correction.pan)
             this.cy.endBatch()

@@ -36,6 +36,7 @@ class Desk extends React.Component {
         edgeDialog: React.PropTypes.func.isRequired,
         edgeCreate: React.PropTypes.func.isRequired,
         edgeDelete: React.PropTypes.func.isRequired,
+        nodePositionChange: React.PropTypes.func.isRequired,
         gvaZoom: React.PropTypes.func.isRequired,
         gvaPan: React.PropTypes.func.isRequired
     }
@@ -52,7 +53,8 @@ class Desk extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
         if (nextState.isDataReady !== this.state.isDataReady ||
             nextState.cy !== this.state.cy ||
-            nextProps.deskMode !== this.props.deskMode) {
+            nextProps.deskMode !== this.props.deskMode ||
+            nextProps.tape !== this.props.tape) {
             return true
         }
         return false
@@ -78,6 +80,7 @@ class Desk extends React.Component {
             cy.edgeDialog = this.props.edgeDialog
             cy.edgeCreate = this.props.edgeCreate
             cy.edgeDelete = this.props.edgeDelete
+            cy.nodePositionChange = this.props.nodePositionChange
             cy.gvaZoom = this.props.gvaZoom
             cy.gvaPan = this.props.gvaPan
             cy.setMenus(this.props.deskMode)
@@ -96,7 +99,7 @@ class Desk extends React.Component {
             <div ref={c => this.cytoscapeElement = c}
                     className={`ui blurring dimmable ${this.state.isDataReady && this.state.cy ? '' : 'dimmed'} cytoscape`}
                     style={{cursor: this.props.deskMode === DeskMode.NODE_CREATE ? 'crosshair' : 'auto'}}>
-                <h1 className="ui disabled center alligned green header">
+                <h1 className={`ui disabled center alligned ${this.props.tape && this.props.tape.length > 0 ? 'red' : 'green'} header`}>
                     {_.get('graph.info.label')(this.props)}
                 </h1>
                 <EditNode/>
@@ -138,6 +141,7 @@ const mapDispatchToProps = {
     edgeDialog: Action.edgeDialog,
     edgeCreate: Action.edgeCreate,
     edgeDelete: Action.edgeDelete,
+    nodePositionChange: Action.nodePositionChange,
     gvaZoom: Action.gvaZoom,
     gvaPan: Action.gvaPan
 }

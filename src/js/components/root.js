@@ -3,9 +3,8 @@ import '../../../semantic/dist/components/container.css'
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Mode } from '../actions'
-// import Nav from './nav/nav'
-// import Login from './lr/login'
+import { Action, Mode } from '../actions'
+
 import loadLoginView from 'promise?bluebird!./lr/login'
 import loadRegistrationView from 'promise?bluebird!./lr/registration'
 import loadListView from 'promise?bluebird!./list/list'
@@ -21,7 +20,9 @@ class Root extends React.Component {
     }
 
     static propTypes = {
-        mode: React.PropTypes.string.isRequired
+        mode: React.PropTypes.string.isRequired,
+        tape: React.PropTypes.object.isRequired,
+        patchGraph: React.PropTypes.func.isRequired
     }
 
     static modeViewLoaders = {
@@ -33,14 +34,24 @@ class Root extends React.Component {
 
     componentWillMount() {
         Root.modeViewLoaders[this.props.mode]().then(view => this.setState({mainView: view.default}))
+        this.sync = new Sync(this.props.tape, this.props.patchGraph)
         if (this.props.mode !== Mode.LOGIN || this.props.mode !== Mode.REGISTRATION) {
-            this.sync = new Sync()
+            this.sync.run()
         }
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.mode !== this.props.mode) {
             Root.modeViewLoaders[nextProps.mode]().then(view => this.setState({mainView: view.default}))
+            if (nextProps.mode !== Mode.LOGIN || nextProps.mode !== Mode.REGISTRATION) {
+                this.sync.changeTape(nextProps.tape)
+                this.sync.run()
+            } else {
+                this.sync.stop()
+            }
+        }
+        if (nextProps.tape !== this.props.tape && this.syncing) {
+            this.sync.changeTape(nextProps.tape)
         }
     }
 
@@ -82,8 +93,13 @@ class Root extends React.Component {
 
 const mapStoreToProps = store => {
     return {
-        mode: store.mode
+        mode: store.mode,
+        tape: store.tape
     }
 }
 
-export default connect(mapStoreToProps)(Root)
+const mapDispatchToProps = {
+    patchGraph: Action.patchGraph
+}
+
+export default connect(mapStoreToProps, mapDispatchToProps)(Root)

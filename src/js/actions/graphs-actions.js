@@ -58,15 +58,15 @@ export function removeGraph(graph) {
     }
 }
 
-export function patchGraph(graph) {
+export function patchGraph(patch) {
     return function(dispatch) {
-        dispatch({type: `${ActionType.PATCH_GRAPH}_PENDING`, payload: graph})
+        dispatch({type: `${ActionType.PATCH_GRAPH}_PENDING`, payload: patch})
         dispatch(netAction({
-            url: `${resourceURL}/${graph.id}`,
+            url: `${resourceURL}/${patch.id}`,
             method: 'patch',
-            body: graph,
-            onSuccess: () => dispatch({type: `${ActionType.PATCH_GRAPH}_OK`, payload: graph}),
-            onError: error => dispatch({type: `${ActionType.PATCH_GRAPH}_FAIL`, payload: graph, error})
+            body: patch,
+            onSuccess: () => dispatch({type: `${ActionType.PATCH_GRAPH}_OK`, payload: patch}),
+            onError: error => dispatch({type: `${ActionType.PATCH_GRAPH}_FAIL`, payload: patch, error})
         }))
     } 
 } 

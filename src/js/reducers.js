@@ -64,7 +64,7 @@ import * as sessionReducers from './reducers/session-reducers'
 import * as graphsReducers from './reducers/graphs-reducers'
 import * as messageCenterReducers from './reducers/mcenter-reducers'
 import * as graphsExtraReducers from './reducers/graphs-extra-reducers'
-import * as crudReducers from './reducers/crud-reducers'
+import * as tapeReducers from './reducers/tape-reducers'
 import * as operateComponentReducers from './reducers/operate-component-reducers'
 
 export default {
@@ -73,6 +73,6 @@ export default {
     ...graphsReducers,
     ...messageCenterReducers,
     ...graphsExtraReducers,
-    ...crudReducers,
+    ...tapeReducers,
     ...operateComponentReducers
 }
