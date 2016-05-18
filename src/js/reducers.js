@@ -35,7 +35,7 @@ const state = {
         ]
     },
     graphsExtra: {
-        vizualAttributes: {
+        visualAttributes: {
             ['gid']: {
                 isFetching: false
             }

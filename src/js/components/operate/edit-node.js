@@ -44,8 +44,9 @@ class EditNode extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.node !== this.props.node && nextProps.node) {
-            let type = Object.keys(NodeTypeInverted).filter(cl => nextProps.node.hasClass(cl))
-            type = type[0]
+            // let type = Object.keys(NodeTypeInverted).filter(cl => nextProps.node.hasClass(cl))
+            // type = type[0]
+            const type = nextProps.node.data('type')
             this.setState({
                 label: nextProps.node.data('label'),
                 note: nextProps.node.data('note'),
@@ -98,31 +99,34 @@ class EditNode extends React.Component {
             const id = this.props.node.id()
             if (this.state.label !== this.props.node.data('label') ||
                 this.state.note !== this.props.node.data('note') ||
-                NodeRole[this.state.type] !== this.props.node.data('active')) {
+                this.state.type !== this.props.node.data('type')) {
                 this.props.nodeUpdate(id, {
                     id,
                     active: NodeRole[this.state.type],
+                    type: this.state.type,
                     info: {
                         label: this.state.label,
                         comment: this.state.note
                     }
                 })
             }
-            if (!this.props.node.hasClass(this.state.type)) {
-                this.props.nodeTypeChange(id, this.state.type)
-            }
+            // if (this.state.type !== this.props.node.data('type')) {
+            //     this.props.nodeTypeChange(id, this.state.type)
+            // }
         } else {
             const id = uuid()
             this.props.nodeCreate({
                 id,
                 active: NodeRole[this.state.type],
+                type: this.state.type,
                 info: {
                     label: this.state.label,
                     comment: this.state.note
-                }
+                },
+                position: this.state.position
             })
-            this.props.nodePositionChange(id, this.state.position)
-            this.props.nodeTypeChange(id, this.state.type)
+            // this.props.nodePositionChange(id, this.state.position)
+            // this.props.nodeTypeChange(id, this.state.type)
         }
         ev.preventDefault()
     }

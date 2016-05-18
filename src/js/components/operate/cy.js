@@ -41,12 +41,26 @@ export default class Cy {
                 })
             }
         })
+        this.menus = new CyMenus(this)
+    }
+
+    _bindHandlers() {
         this.panHandlerID = null
         this.cy.on('pan', () => {
             clearTimeout(this.panHandlerID)
-            setTimeout(() => this.gvaPan(this.cy.pan()), 2)
+            this.panHandlerID = setTimeout(() => this.gvaPan(this.cy.pan()), 2000)
         })
-        this.menus = new CyMenus(this)
+        this.zoomHandlerID = null
+        this.cy.on('zoom', () => {
+            clearTimeout(this.zoomHandlerID)
+            this.zoomHandlerID = setTimeout(() => this.gvaZoom(this.cy.zoom()), 2000)
+        })
+        this.positionHandleID = {}
+        this.cy.on('position', 'node', ev => {
+            const nid = ev.cyTarget.id()
+            clearTimeout(this.positionHandleID[nid])
+            this.positionHandleID[nid] = setTimeout(() => this.nodePositionChange(nid, ev.cyTarget.position()), 2000)
+        })
     }
 
     destroy() {
@@ -61,46 +75,54 @@ export default class Cy {
     }
 
     populate(graph, visualAttributes, tape) {
-        const ifPanZoom = tape && tape
-            .map(a => a.type)
-            .filter(t => t === ActionType.GVA_ZOOM || t === ActionType.GVA_PAN)
-            .reduce((acc, val) => ({...acc, [val]: true}), {})
-            || {}
-        if (visualAttributes.zoom) {
-            this.cy.zoom(visualAttributes.zoom)
-        } else if (!ifPanZoom[ActionType.GVA_ZOOM]) {
-            this.gvaZoom(this.cy.zoom())
-        }
-        if (visualAttributes.pan) {
-            this.cy.pan(visualAttributes.pan)
-        } else if (!ifPanZoom[ActionType.GVA_PAN]) {
-            this.gvaPan(this.cy.pan())
+        const base = {
+            nodeCreations: {},
+            nodeUpdates: {},
+            nodeDeletions: {},
+            edgeCreations: {},
+            edgeUpdates: {},
+            edgeDeletions: {},
+            zoom: visualAttributes.zoom,
+            pan: visualAttributes.pan
         }
 
-        let edgeCreations = [], nodeCreations = []
+        // const ifPanZoom = tape && tape
+        //     .map(a => a.type)
+        //     .filter(t => t === ActionType.GVA_ZOOM || t === ActionType.GVA_PAN)
+        //     .reduce((acc, val) => ({...acc, [val]: true}), {})
+        //     || {}
+        // if (visualAttributes.zoom) {
+        //     this.cy.zoom(visualAttributes.zoom)
+        // } else if (!ifPanZoom[ActionType.GVA_ZOOM]) {
+        //     this.gvaZoom(this.cy.zoom())
+        // }
+        // if (visualAttributes.pan) {
+        //     this.cy.pan(visualAttributes.pan)
+        // } else if (!ifPanZoom[ActionType.GVA_PAN]) {
+        //     this.gvaPan(this.cy.pan())
+        // }
+
         if (graph && graph.edges) {
-            edgeCreations = graph.edges
-                .map(e => Cy.edgeConverter(e))
-                .reduce((acc, val) => ({...acc, [val.data.id]: val}), {})
+            base.edgeCreations = graph.edges.reduce((acc, val) => ({...acc, [val.id]: val}), {})
         }
         if (graph && graph.nodes) {
+            let nodeCreations = graph.nodes.slice(0)
             if (visualAttributes.positions) {
-                nodeCreations = graph.nodes.map(n => ({...n, position: visualAttributes.positions[n.id] || {x:0, y:0}}))
+                nodeCreations = nodeCreations.map(n => ({...n, position: visualAttributes.positions[n.id] || {x:0, y:0}}))
                 //TODO set ini positions for old graphs
             }
             if (visualAttributes.nodeTypes) {
                 nodeCreations = nodeCreations.map(n => ({...n, type: visualAttributes.nodeTypes[n.id]}))
             }
-            nodeCreations = nodeCreations
-                .map(e => Cy.nodeConverter(e))
-                .reduce((acc, val) => ({...acc, [val.data.id]: val}), {})
+            base.nodeCreations = nodeCreations.reduce((acc, val) => ({...acc, [val.id]: val}), {})
         }
-        this.applyChanges(tape, {nodeCreations, edgeCreations})
+        this.applyChanges(tape, base)
+        this._bindHandlers()
     }
 
     applyChanges(tape, base) {
-        if (tape) {
-            const correction = tapeToCorrection(tape, base)
+        if (tape || base) {
+            const correction = tapeToCorrection({tape, base})
             const nodes = Object.values(correction.nodeCreations).map(node => Cy.nodeConverter(node))
             const edges = base && Object.values(correction.edgeCreations).map(edge => Cy.edgeConverter(edge)) || []
             this.cy.startBatch()
@@ -120,8 +142,10 @@ export default class Cy {
 
             this.cy.collection(Object.values(correction.edgeDeletions)).remove()
             this.cy.collection(Object.values(correction.nodeDeletions)).remove()
-            correction.zoom && this.cy.zoom(correction.zoom)
-            correction.pan && this.cy.pan(correction.pan)
+            if (base) {
+                correction.zoom && this.cy.zoom(correction.zoom)
+                correction.pan && this.cy.pan(correction.pan)
+            }
             this.cy.endBatch()
         }
     }
@@ -204,9 +228,10 @@ export default class Cy {
         const converted = {
             data: {
                 id: node.id,
-                label: node.info.label,
-                note: node.info.comment,
-                active: node.active
+                label: node.info && node.info.label,
+                note: node.info && node.info.comment,
+                active: node.active,
+                type: node.type || node.active
                 // label: node.info.label + '(' + node.level + ')',
                 // attr: node.info.atrib,
                 // status: node.info.status,
@@ -235,13 +260,14 @@ export default class Cy {
         const converted = {
             data: {
                 id: edge.id,
-                label: edge.info && edge.info.label || null,
-                note: edge.info && edge.info.comment || null,
+                label: edge.info && edge.info.label,
+                note: edge.info && edge.info.comment,
                 // attr: edge.info.atrib,
                 // status: edge.info.status,
                 // cclabel: edge.cclabel,
                 source: edge.source,
-                target: edge.target
+                target: edge.target,
+                cclabel: edge.cclabel
             // },
             // scratch: {
                 // src: edge

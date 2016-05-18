@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import page from 'page'
 
-import { Action, ActionType, Mode, NodeType } from './actions'
+import { Action, ActionType, Mode, NodeRole } from './actions'
 
 
 /**
@@ -102,15 +102,18 @@ export function uuid(a /*placeholder*/){
         )
 }
 
-export function tapeToCorrection(tape, base) {
+export function tapeToCorrection({tape, base, patch}) {
+    if(!tape) {
+        return base
+    }
     const nodeCreations = base && base.nodeCreations || {}
     const nodeUpdates = {}
     const nodeDeletions = {}
     const edgeCreations = base && base.edgeCreations || {}
     const edgeUpdates = {}
     const edgeDeletions = {}
-    let zoom = undefined
-    let pan = undefined
+    let zoom = base && base.zoom
+    let pan = base && base.pan
 
 
     tape.forEach(action => {
@@ -145,7 +148,7 @@ export function tapeToCorrection(tape, base) {
                     nodeCreations[nid].position = action.payload.position
                 } else if (nodeUpdates[nid]) {
                     nodeUpdates[nid].position = action.payload.position
-                } else {
+                } else if (patch) {
                     nodeUpdates[nid] = {id: nid, position: action.payload.position}
                 }
                 break
@@ -153,10 +156,16 @@ export function tapeToCorrection(tape, base) {
             case ActionType.NODE_TYPE_CHANGE:
                 if (nodeCreations[nid]) {
                     nodeCreations[nid].type = action.payload.type
+                    nodeCreations[nid].active = NodeRole[action.payload.type]
                 } else if (nodeUpdates[nid]) {
                     nodeUpdates[nid].type = action.payload.type
+                    nodeUpdates[nid].active = NodeRole[action.payload.type]
                 } else {
-                    nodeUpdates[nid] = {id: nid, type: action.payload.type}
+                    nodeUpdates[nid] = {
+                        id: nid,
+                        active: NodeRole[action.payload.type],
+                        type: action.payload.type
+                    }
                 }
                 break
 

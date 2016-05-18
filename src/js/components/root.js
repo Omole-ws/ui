@@ -17,6 +17,8 @@ class Root extends React.Component {
     constructor(props) {
         super(props)
         this.state = {mainView: null}
+        this.sync = new Sync(props.tape, props.patchGraph)
+        this.sync.run()
     }
 
     static propTypes = {
@@ -34,23 +36,21 @@ class Root extends React.Component {
 
     componentWillMount() {
         Root.modeViewLoaders[this.props.mode]().then(view => this.setState({mainView: view.default}))
-        this.sync = new Sync(this.props.tape, this.props.patchGraph)
-        if (this.props.mode !== Mode.LOGIN || this.props.mode !== Mode.REGISTRATION) {
-            this.sync.run()
-        }
+        // if (this.props.mode !== Mode.LOGIN || this.props.mode !== Mode.REGISTRATION) {
+        // }
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.mode !== this.props.mode) {
             Root.modeViewLoaders[nextProps.mode]().then(view => this.setState({mainView: view.default}))
-            if (nextProps.mode !== Mode.LOGIN || nextProps.mode !== Mode.REGISTRATION) {
-                this.sync.changeTape(nextProps.tape)
-                this.sync.run()
-            } else {
-                this.sync.stop()
-            }
+            // if (nextProps.mode !== Mode.LOGIN || nextProps.mode !== Mode.REGISTRATION) {
+            //     this.sync.changeTape(nextProps.tape)
+            //     this.sync.run()
+            // } else {
+            //     this.sync.stop()
+            // }
         }
-        if (nextProps.tape !== this.props.tape && this.syncing) {
+        if (nextProps.tape !== this.props.tape) {
             this.sync.changeTape(nextProps.tape)
         }
     }
