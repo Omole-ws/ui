@@ -241,7 +241,7 @@ export default class Cy {
                 // status: edge.info.status,
                 // cclabel: edge.cclabel,
                 source: edge.source,
-                target: edge.target,
+                target: edge.target
             // },
             // scratch: {
                 // src: edge
