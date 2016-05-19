@@ -4,6 +4,7 @@ import * as sessionActions from './actions/session-actions'
 import * as graphsActions from './actions/graphs-actions'
 import * as graphsExtraActions from './actions/graphs-extra-actions'
 import * as crudActions from './actions/crud-actions'
+import * as algosActions from './actions/algos-actions'
 import * as operateComponentActions from './actions/operate-component-actions'
 import * as messageCenterActions from './actions/mcenter-actions'
 
@@ -14,6 +15,7 @@ export const Action = {
     ...graphsActions,
     ...graphsExtraActions,
     ...crudActions,
+    ...algosActions,
     ...operateComponentActions,
     ...messageCenterActions
 }

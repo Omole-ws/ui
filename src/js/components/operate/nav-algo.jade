@@ -1,0 +1,10 @@
+.ui.simple.dropdown.item
+    | Algorythms
+    i.dropdown.icon
+    if !algos
+        .ui.active.dimmer
+            .ui.small.loader
+    .ui.vertical.menu(class=algos?'':'disabled')
+        .link.item
+            i.right.floated.sign.out.icon
+            | Logout

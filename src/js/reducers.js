@@ -45,11 +45,19 @@ const state = {
     tape: {
         ['gid']: []
     },
+    algos: {
+        definitions: null,
+        isFetching: false
+    },
     operating: {
         nodeEditor: {
             onScreen: false,
             node: true,
             position: {x: 0, y: 0}
+        },
+        edgeEditor: {
+            onScreen: false,
+            edge: null
         },
         deskMode: 'node-create' || 'connect' || 'basic'
     },
@@ -65,6 +73,7 @@ import * as graphsReducers from './reducers/graphs-reducers'
 import * as messageCenterReducers from './reducers/mcenter-reducers'
 import * as graphsExtraReducers from './reducers/graphs-extra-reducers'
 import * as tapeReducers from './reducers/tape-reducers'
+import * as algosReducers from './reducers/algos-reducers'
 import * as operateComponentReducers from './reducers/operate-component-reducers'
 
 export default {
@@ -74,5 +83,6 @@ export default {
     ...messageCenterReducers,
     ...graphsExtraReducers,
     ...tapeReducers,
+    ...algosReducers,
     ...operateComponentReducers
 }

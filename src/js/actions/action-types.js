@@ -42,6 +42,10 @@ const crudActionType = {
     NODE_TYPE_CHANGE: 'NODE_TYPE_CHANGE'
 }
 
+const algosActionType = {
+    ALGO_FETCH_DEF: 'ALGO_FETCH_DEF'
+}
+
 const operateComponentActionType = {
     SET_DESK_MODE: 'SET_DESK_MODE',
     NODE_DIALOG: 'NODE_DIALOG',
@@ -62,6 +66,7 @@ export default {
     ...graphsActionType,
     ...graphsExtraActionType,
     ...crudActionType,
+    ...algosActionType,
     ...operateComponentActionType,
     ...messageCenterActionType
 }
