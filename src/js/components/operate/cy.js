@@ -1,3 +1,5 @@
+/* global $ */
+
 import loadCytoscape from 'promise?bluebird!cytoscape'
 // import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
 import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
@@ -5,7 +7,7 @@ import loadEdgeHandles from 'promise?bluebird!cytoscape-edgehandles'
 
 import style from '!raw!./cy-style.css'
 
-import { ActionType, NodeType, EdgeType, EdgeTypeInverted } from '../../actions'
+import { NodeType, EdgeType, EdgeTypeInverted } from '../../actions'
 import { uuid, tapeToCorrection } from '../../helpers'
 import CyMenus from './cy-menus.js'
 
@@ -36,7 +38,7 @@ export default class Cy {
                 this.edgeCreate({
                     id: addedEntities.id(),
                     source: sourceNode.id(),
-                    target: targetNodes.id(), 
+                    target: targetNodes.id(),
                     cclabel: EdgeTypeInverted[this.menus.type]
                 })
             }
@@ -164,15 +166,17 @@ export default class Cy {
     }
 
 
-// ++++++++++++++++++++++++++++++++
-// +++++++++++ STATICS ++++++++++++
-// ++++++++++++++++++++++++++++++++
+//       _______ _______ _______ _______ _____ _______ _______
+//       |______    |    |_____|    |      |   |       |______
+//       ______|    |    |     |    |    __|__ |_____  ______|
+
+// Prior
 
     static edgeHandlesDefaults = {
         preview: true, // whether to show added edges preview before releasing selection
         stackOrder: 4, // Controls stack order of edgehandles canvas element by setting it's z-index
         handleSize: 10, // the size of the edge handle put on nodes
-        handleColor: '#ff0000', // the colour of the handle and the line drawn from it
+        handleColor: '#f00', // the colour of the handle and the line drawn from it
         handleLineType: 'ghost', // can be 'ghost' for real edge, 'straight' for a straight line, or 'draw' for a draw-as-you-go line
         handleLineWidth: 1, // width of handle line in pixels
         handleNodes: 'node', // selector/filter function for whether edges can be made from a given node

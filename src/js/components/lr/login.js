@@ -42,7 +42,6 @@ class Login extends React.Component {
 
     /**
      * Maps form fields to local state
-     * @arg {string} name of local state parameter to update from name form field
      * @arg {object} ev event triggered
      * @return {void}
      */

@@ -1,3 +1,5 @@
+/* global $ */
+
 import '../../../semantic/dist/components/container.css'
 
 import React from 'react'
@@ -59,7 +61,7 @@ class Root extends React.Component {
         if (this.props.mode === Mode.LOGIN || this.props.mode === Mode.REGISTRATION) {
             $('body').css({'background-color': '#fffaf2'})
         } else {
-            $('body').css({'background-color': '#ffffff'})
+            $('body').css({'background-color': '#fff'})
         }
     }
 
@@ -67,7 +69,7 @@ class Root extends React.Component {
         if (this.props.mode === Mode.LOGIN || this.props.mode === Mode.REGISTRATION) {
             $('body').css({'background-color': '#fffaf2'})
         } else {
-            $('body').css({'background-color': '#ffffff'})
+            $('body').css({'background-color': '#fff'})
         }
     }
 
@@ -89,7 +91,9 @@ class Root extends React.Component {
 }
 
 
-// ===================  CONNECTED ======== 
+//  +-+-+-+-+-+-+-+-+-+
+//  |C|O|N|N|E|C|T|E|D|
+//  +-+-+-+-+-+-+-+-+-+
 
 const mapStoreToProps = store => {
     return {

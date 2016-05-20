@@ -1,88 +1,49 @@
-.container{
-    &.main {
-        padding-top: 3em;
-    }
+.container {
+  &.main {
+    padding-top: 3em;
+  }
 }
+
 .message pre {
-    font-size: 0.9rem;
+  font-size: 0.9rem;
 }
+
 .menu .logo {
-    width: 15px;
-    height: 25px;
+  width: 15px;
+  height: 25px;
 }
+
 .cytoscape {
-    position: absolute !important;
-    top: 3em;
-    bottom: 0;
+  position: absolute !important;
+  top: 3em;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  & > h1 {
+    position: absolute;
+    top: 3rem;
     left: 0;
     right: 0;
-    z-index: 100;
-    & > h1 {
-        position: absolute;
-        top: 3rem;
-        left: 0;
-        right: 0;
-        text-align: center;
-        z-index: 0;
-    }
+    text-align: center;
+    z-index: 0;
+  }
 }
 
 .mcenter {
-    // padding-top: 3em;
-    top: 3em;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: auto !important;
-    // width: 300px;
-    position: fixed;
-    // z-index: 101;
-    .segment {
-        padding: 5px 0px 15px;
-        .message {
-            margin: 5px 0px;
-        }
+  // padding-top: 3em;
+  top: 3em;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: auto !important;
+  // width: 300px;
+  position: fixed;
+  // z-index: 101;
+  .segment {
+    padding: 5px 0 15px;
+    .message {
+      margin: 5px 0;
     }
+  }
 }
-
-// .container {
-//     margin-top: 55px;
-//     margin-bottom: 55px;
-// }
-
-// .nav-input {
-//     padding: 3px 20px;
-//     border-width: 0;
-//     margin: 0;
-// }
-// .err-plate {
-//     position: absolute;
-//     z-index: 99;
-//     top: 55px;
-//     right: 0px;
-// }
-// #viz {
-//     transition: width cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-//     position: fixed;
-//     top: 55px;
-//     bottom: 55px;
-//     right: 0;
-//     .visual {
-//         width: 100%;
-//     }
-//     .editor {
-//         width: 72%;
-//     }
-// }
-// #opts {
-//     position: absolute;
-//     // top: 50px;
-//     left: 10px;
-//     opacity: 0.8;
-//     z-index: 99;
-// }
-// #opts::after {
-//     content: ".";
-//     padding: 25px 0;
-// }
-

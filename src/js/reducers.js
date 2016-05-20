@@ -1,5 +1,5 @@
 // STATE OBJECT REPRESENTATION
-const state = {
+export const state = {
     router: {
         path: '',
         params: null

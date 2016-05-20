@@ -52,9 +52,6 @@ class Register extends React.Component {
 
     /**
      * fire async login action
-     * @arg {string} [login] accaunt name
-     * @arg {string} [mail]  accaunt e-mail
-     * @arg {string} [password] accaunt password
      * @arg {Object} ev submit event that have triggered login action
      * @return {void}
      */

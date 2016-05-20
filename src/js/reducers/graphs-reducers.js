@@ -52,10 +52,11 @@ function graph(store = {isFetching: false, lastUpdated: null}, action) {
 
         case `${ActionType.FETCH_GRAPH}_FAIL`:
             if (_.isEqual(store, {id: action.payload.id})) {return null}
+            // break is omitted intentionally
         case `${ActionType.PATCH_GRAPH}_FAIL`:
         case `${ActionType.REMOVE_GRAPH}_FAIL`:
             return {...store, isFetching: false}
-        
+
         default:
             return store
     }
@@ -89,6 +90,7 @@ export function graphs(store = {isFetching: false, list: []}, action) {
 
         case `${ActionType.FETCH_GRAPH}_PENDING`:
             if (!store.list.some(g => g.id === action.payload.id)) {store.list.push({id: action.payload.id, info: {label: ''}})}
+            // break is omitted intentionally
         case `${ActionType.FETCH_GRAPH}_OK`:
         case `${ActionType.FETCH_GRAPH}_FAIL`:
         case `${ActionType.PATCH_GRAPH}_PENDING`:

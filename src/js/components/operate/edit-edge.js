@@ -1,3 +1,5 @@
+/* global $ */
+
 import '../../../../semantic/dist/components/button.css'
 import '../../../../semantic/dist/components/label.css'
 import '../../../../semantic/dist/components/dropdown'
@@ -105,7 +107,7 @@ function mapStoreToProps(store) {
         onScreen: store.operating.edgeEditor.onScreen,
         edge: store.operating.edgeEditor.edge,
         position: store.operating.edgeEditor.position
-    } 
+    }
 }
 
 const mapDispatchToProps = {

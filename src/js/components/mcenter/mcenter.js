@@ -1,3 +1,5 @@
+/* global $ */
+
 import '../../../../semantic/dist/components/rail.css'
 import '../../../../semantic/dist/components/segment.css'
 import '../../../../semantic/dist/components/sidebar.css'
@@ -69,7 +71,7 @@ class MessageCenter extends React.Component {
             <div ref={r => this.context = r} className="pushable mcenter">
                 <div ref={r => this.ref = r} className="ui right sidebar black segment">
                     {
-                        this.props.messages.map((m, i) => 
+                        this.props.messages.map((m, i) =>
                             <MessageTmpl key={i} type={m.type} icons={MessageCenter.icon}>
                                 {m.msg}
                             </MessageTmpl>

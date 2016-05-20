@@ -1,25 +1,25 @@
 node {
   shape: ellipse;
-  color: #ffffff;
+  color: #fff;
   label: data(label);
   background-color: #546e7a;
-  background-opacity: 1.0;
+  background-opacity: 1;
   border-color: #546e7a;
   border-width: 2px;
   text-valign: center;
   text-halign: center;
-  text-opacity: 1.0;
+  text-opacity: 1;
   text-outline-width: 2;
   text-outline-color: #546e7a;
   min-zoomed-font-size: 9;
 }
 
 .subject {
-  background-opacity: 1.0;
+  background-opacity: 1;
 }
 
 .object {
-  background-opacity: 0.0;
+  background-opacity: 0;
 }
 
 .subject-or-object {
@@ -29,44 +29,54 @@ node {
 .user {
   shape: ellipse;
 }
+
 .programm {
   shape: diamond;
 }
+
 .buffer {
   shape: rhomboid;
 }
+
 .data-or-file {
   shape: roundrectangle;
 }
+
 .storage {
   shape: ellipse;
   width: 40;
   height: 20;
 }
+
 .removable_media {
   shape: vee;
 }
+
 .server {
   shape: rectangle;
   width: 40;
   height: 20;
 }
+
 .client {
   shape: rectangle;
   width: 20;
   height: 40;
 }
+
 .firewall {
   shape: star;
 }
+
 .gate {
   shape: heptagon;
 }
+
 .tmp {
   shape: pentagon;
   shape: hexagon;
   shape: triangle;
-  shape: octagon;  
+  shape: octagon;
 }
 
 .group {
@@ -79,9 +89,10 @@ node {
   text-halign: center;
   background-color: #eceff1;
   border-width: 1;
-  border-color: #000000;
+  border-color: #000;
   border-style: dotted;
 }
+
 .zone {
   background-color: #eceff1;
 }
@@ -135,7 +146,6 @@ edge {
   target-arrow-color: #bc00ff;
 }
 
-
 :selected {
   border-width: 5px;
   border-color: black;
@@ -153,27 +163,34 @@ edge {
 .dim {
   opacity: 0.2;
 }
+
 .group.dim {
   opacity: 1;
 }
+
 .hl {
   opacity: 1;
-  /*line-style: dotted;*/
+
+  /* line-style: dotted; */
 }
+
 .hl-active {
   opacity: 1;
   line-style: dashed;
 }
-/*edge.take.hl-active, edge.grant.hl-active {
+
+/* edge.take.hl-active, edge.grant.hl-active {
   width: 4px;
 }
 edge.read.hl-active, edge.write.hl-active {
   width: 2px;
 }
 */
+
 .hl-start {
   background-color: green;
 }
+
 .hl-end {
   background-color: red;
 }

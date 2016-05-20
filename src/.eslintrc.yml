@@ -55,7 +55,11 @@ rules:
     - warn
   require-yield:
     - error
-
+  no-fallthrough:
+    - error
+    - commentPattern: "break[\\s\\w]*omitted"
+  no-console:
+    - warn
   valid-jsdoc:
     - warn
   # react/no-deprecated:

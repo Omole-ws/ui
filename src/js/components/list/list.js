@@ -1,3 +1,5 @@
+/* global $ */
+
 import '../../../../semantic/dist/components/item.css'
 import '../../../../semantic/dist/components/icon.css'
 import '../../../../semantic/dist/components/rail.css'

@@ -1,3 +1,5 @@
+/* global $ */
+
 import '../../../../semantic/dist/components/button.css'
 import '../../../../semantic/dist/components/label.css'
 import '../../../../semantic/dist/components/dropdown'
@@ -137,7 +139,7 @@ function mapStoreToProps(store) {
         onScreen: store.operating.nodeEditor.onScreen,
         node: store.operating.nodeEditor.node,
         position: store.operating.nodeEditor.position
-    } 
+    }
 }
 
 const mapDispatchToProps = {

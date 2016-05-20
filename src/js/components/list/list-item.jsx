@@ -1,3 +1,5 @@
+/* global $ */
+
 import '../../../../semantic/dist/components/button.css'
 import '../../../../semantic/dist/components/icon.css'
 import '../../../../semantic/dist/components/label.css'
@@ -40,7 +42,7 @@ export default class ListItem extends React.Component {
         return !_.isEqual(nextProps.graph, this.props.graph)
     }
 
-    _exportGraph(graph, ev) {
+    _exportGraph(graph) {
         this.props.fetchGraph(graph)
     }
     render() {

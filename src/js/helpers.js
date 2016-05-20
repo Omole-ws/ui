@@ -1,3 +1,5 @@
+/* global production */
+
 import _ from 'lodash'
 import page from 'page'
 
@@ -7,6 +9,8 @@ import { Action, ActionType, Mode, NodeRole } from './actions'
 /**
  * Creates error message object from response returned by fetch
  * @arg {object} response fetch result
+ * @arg {object} error preconstructed error object
+ * @arg {object} contentType extracted content-type for given response
  * @return {object} error message object {error: '...', message: '...'} wrapped with Promise.reject
  */
 function createFetchError(response, error, contentType) {
