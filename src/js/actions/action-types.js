@@ -23,10 +23,7 @@ const graphsActionType = {
 }
 
 const graphsExtraActionType = {
-    FETCH_GVA: 'FETCH_GVA',
-    UPDATE_GVA: 'UPDATE_GVA',
-    POST_NEW_GVA: 'POST_NEW_GVA',
-    REMOVE_GVA: 'REMOVE_GVA'
+    FETCH_GVA: 'FETCH_GVA'
 }
 
 const crudActionType = {
@@ -46,6 +43,12 @@ const algosActionType = {
     ALGO_FETCH_DEF: 'ALGO_FETCH_DEF'
 }
 
+const tasksActionType = {
+    CREATE_TASK: 'CREATE_TASK',
+    FETCH_TASK: 'FETCH_TASK',
+    FETCH_TASK_LIST: 'FETCH_TASK_LIST'
+}
+
 const operateComponentActionType = {
     SET_DESK_MODE: 'SET_DESK_MODE',
     NODE_DIALOG: 'NODE_DIALOG',
@@ -61,12 +64,13 @@ const messageCenterActionType = {
 
 
 export default {
-    ...routerActionType, 
-    ...sessionActionType, 
+    ...routerActionType,
+    ...sessionActionType,
     ...graphsActionType,
     ...graphsExtraActionType,
     ...crudActionType,
     ...algosActionType,
+    ...tasksActionType,
     ...operateComponentActionType,
     ...messageCenterActionType
 }

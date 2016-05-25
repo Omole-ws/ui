@@ -46,8 +46,11 @@ export const state = {
         ['gid']: []
     },
     algos: {
-        definitions: null,
+        definitions: [],
         isFetching: false
+    },
+    tasks: {
+        list: {}
     },
     operating: {
         nodeEditor: {
@@ -59,6 +62,7 @@ export const state = {
             onScreen: false,
             edge: null
         },
+        
         deskMode: 'node-create' || 'connect' || 'basic'
     },
     mcenter: {
@@ -67,13 +71,14 @@ export const state = {
     }
 }
 
-import * as routerReducers from './reducers/router-reducers'
-import * as sessionReducers from './reducers/session-reducers'
-import * as graphsReducers from './reducers/graphs-reducers'
+import * as routerReducers from './reducers/router-reducers'  // router, mode
+import * as sessionReducers from './reducers/session-reducers'  // session
+import * as graphsReducers from './reducers/graphs-reducers'  // graphs, currentGraph
 import * as messageCenterReducers from './reducers/mcenter-reducers'
-import * as graphsExtraReducers from './reducers/graphs-extra-reducers'
-import * as tapeReducers from './reducers/tape-reducers'
+import * as graphsExtraReducers from './reducers/graphs-extra-reducers' // graphsExtra
+import * as tapeReducers from './reducers/tape-reducers' // tape
 import * as algosReducers from './reducers/algos-reducers'
+import * as tasksReducers from './reducers/tasks-reducers'
 import * as operateComponentReducers from './reducers/operate-component-reducers'
 
 export default {
@@ -84,5 +89,6 @@ export default {
     ...graphsExtraReducers,
     ...tapeReducers,
     ...algosReducers,
+    ...tasksReducers,
     ...operateComponentReducers
 }

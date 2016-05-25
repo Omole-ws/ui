@@ -17,7 +17,7 @@ export function register({login, mail, password}) {
             },
             onError: error => dispatch({type: `${ActionType.REGISTER}_FAIL`, error})
         }))
-    } 
+    }
 }
 
 export function login(login, password) {
@@ -41,7 +41,7 @@ export function login(login, password) {
 }
 
 export function logout() {
-    return dispatch => {
+    return function(dispatch) {
         dispatch({type: `${ActionType.LOGOUT}_PENDING`})
         dispatch(netAction({
             url: '/auth/logout',
@@ -56,7 +56,7 @@ export function logout() {
 }
 
 export function fetchSessionDetails() {
-    return dispatch => {
+    return function(dispatch) {
         dispatch({type: `${ActionType.FETCH_SESSION_DETAILS}_PENDING`})
         dispatch(netAction({
             url: '/auth/check',

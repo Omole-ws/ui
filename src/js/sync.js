@@ -4,8 +4,6 @@ export default class Sync {
     constructor(tape, patchGraph) {
         this.tape = tape
         this.patchGraph = patchGraph
-
-        console.log('SYNC CONSTRUCT')
     }
 
     changeTape(tape) {
@@ -14,7 +12,6 @@ export default class Sync {
 
     run() {
         this.workerHandle = setInterval(this.worker.bind(this), 10000)
-        console.log('SYNC RUN')
     }
 
     stop() {
@@ -22,7 +19,6 @@ export default class Sync {
     }
 
     worker() {
-        console.log('SYNC GONA HAPPEN')
         for (const gid in this.tape) {
             if (this.tape[gid].length > 0) {
                 const correction = tapeToCorrection({tape: this.tape[gid], patch: true})

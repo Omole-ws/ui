@@ -11,7 +11,7 @@ function definitionsFetching(store = false, action) {
             return false
         default:
             return store
-    } 
+    }
 }
 
 function definitionsList(store = null, action) {
@@ -20,10 +20,10 @@ function definitionsList(store = null, action) {
             return action.payload
         default:
             return store
-    } 
+    }
 }
 
-const definitions = combineReducers({list: definitionsList, isFetching: definitionsFetching})
+export const algos = combineReducers({definitions: definitionsList, isFetching: definitionsFetching})
 
 
-export const algos = combineReducers({definitions})
+// export const algos = combineReducers({definitions})

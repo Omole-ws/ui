@@ -22,8 +22,9 @@ import Root from './js/components/root'
 //     thunkMiddleware
 // )(createStore)
 // const store = createStoreWithMiddleware(combineReducers(reducers))
-const store = createStore(combineReducers(reducers), applyMiddleware(loggerMiddleware(), thunkMiddleware))
+export const store = createStore(combineReducers(reducers), applyMiddleware(loggerMiddleware(), thunkMiddleware))
 // const store = applyMiddleware(loggerMiddleware(), thunkMiddleware)(createStore)(combineReducers(reducers))
+
 
 configureRouter(store)
 

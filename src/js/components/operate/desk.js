@@ -7,8 +7,6 @@ import { connect } from 'react-redux'
 import _ from 'lodash/fp'
 
 import { Action, DeskMode } from '../../actions'
-import EditNode from './edit-node'
-import EditEdge from './edit-edge'
 import Cy from './cy'
 
 class Desk extends React.Component {
@@ -29,16 +27,7 @@ class Desk extends React.Component {
         tape: React.PropTypes.array,
         deskMode: React.PropTypes.string.isRequired,
         fetchGraph: React.PropTypes.func.isRequired,
-        fetchGVA: React.PropTypes.func.isRequired,
-        setDeskMode: React.PropTypes.func.isRequired,
-        nodeDialog: React.PropTypes.func.isRequired,
-        nodeDelete: React.PropTypes.func.isRequired,
-        edgeDialog: React.PropTypes.func.isRequired,
-        edgeCreate: React.PropTypes.func.isRequired,
-        edgeDelete: React.PropTypes.func.isRequired,
-        nodePositionChange: React.PropTypes.func.isRequired,
-        gvaZoom: React.PropTypes.func.isRequired,
-        gvaPan: React.PropTypes.func.isRequired
+        fetchGVA: React.PropTypes.func.isRequired
     }
 
     componentWillReceiveProps(nextProps) {
@@ -74,15 +63,6 @@ class Desk extends React.Component {
     componentDidMount() {
         this.loadGraphData(this.props.graph, this.props.visualAttributes)
         Cy.create(this.cytoscapeElement, cy => {
-            cy.setDeskMode = this.props.setDeskMode
-            cy.nodeDialog = this.props.nodeDialog
-            cy.nodeDelete = this.props.nodeDelete
-            cy.edgeDialog = this.props.edgeDialog
-            cy.edgeCreate = this.props.edgeCreate
-            cy.edgeDelete = this.props.edgeDelete
-            cy.nodePositionChange = this.props.nodePositionChange
-            cy.gvaZoom = this.props.gvaZoom
-            cy.gvaPan = this.props.gvaPan
             cy.setMenus(this.props.deskMode)
             this.setState({cy})
         })
@@ -97,13 +77,11 @@ class Desk extends React.Component {
     render() {
         return (
             <div ref={c => this.cytoscapeElement = c}
-                    className={`ui blurring dimmable ${this.state.isDataReady && this.state.cy ? '' : 'dimmed'} cytoscape`}
-                    style={{cursor: this.props.deskMode === DeskMode.NODE_CREATE ? 'crosshair' : 'auto'}}>
+                className={`ui blurring dimmable ${this.state.isDataReady && this.state.cy ? '' : 'dimmed'} cytoscape`}
+                style={{cursor: this.props.deskMode === DeskMode.NODE_CREATE ? 'crosshair' : 'auto'}}>
                 <h1 className={`ui disabled center alligned ${this.props.tape && this.props.tape.length > 0 ? 'red' : 'green'} header`}>
                     {_.get('graph.info.label')(this.props)}
                 </h1>
-                <EditNode/>
-                <EditEdge/>
                 <div className="ui simple inverted dimmer">
                     <div className="ui large text loader">
                         Loading data  ...
@@ -134,16 +112,7 @@ function mapStoreToProps(store, ownProps) {
 
 const mapDispatchToProps = {
     fetchGraph: Action.fetchGraph,
-    fetchGVA: Action.fetchGVA,
-    setDeskMode: Action.setDeskMode,
-    nodeDialog: Action.nodeDialog,
-    nodeDelete: Action.nodeDelete,
-    edgeDialog: Action.edgeDialog,
-    edgeCreate: Action.edgeCreate,
-    edgeDelete: Action.edgeDelete,
-    nodePositionChange: Action.nodePositionChange,
-    gvaZoom: Action.gvaZoom,
-    gvaPan: Action.gvaPan
+    fetchGVA: Action.fetchGVA
 }
 
 export default connect(mapStoreToProps, mapDispatchToProps)(Desk)

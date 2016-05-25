@@ -5,9 +5,13 @@ import * as graphsActions from './actions/graphs-actions'
 import * as graphsExtraActions from './actions/graphs-extra-actions'
 import * as crudActions from './actions/crud-actions'
 import * as algosActions from './actions/algos-actions'
+import * as tasksActions from './actions/tasks-actions'
 import * as operateComponentActions from './actions/operate-component-actions'
 import * as messageCenterActions from './actions/mcenter-actions'
 
+export const DataURI = '/app/r/graphs'
+export const GvaURI = '/app/r/vizattrs'
+export const AlgoURI = '/app/t'
 
 export const Action = {
     ...routerActions,
@@ -16,6 +20,7 @@ export const Action = {
     ...graphsExtraActions,
     ...crudActions,
     ...algosActions,
+    ...tasksActions,
     ...operateComponentActions,
     ...messageCenterActions
 }

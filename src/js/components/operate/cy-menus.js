@@ -166,10 +166,11 @@ export default class CyMenus {
     }
 
 
-// ++++++++++++++++++++++++++++++++
-// ++++++++++ STATICS +++++++++++++
-// ++++++++++++++++++++++++++++++++
 
+// ____ ___ ____ ___ _ ____ ____
+// [__   |  |__|  |  | |    [__
+// ___]  |  |  |  |  | |___ ___]
+//
     static cxtMenuDefaults = {
         menuRadius: 80, // the radius of the circular menu in pixels
         selector: '', // elements matching this Cytoscape.js selector will trigger cxtmenus

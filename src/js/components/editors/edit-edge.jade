@@ -15,8 +15,8 @@
                     i.ui.dropdown.icon
                     .default.text Select node type
                     .menu
-                        each val in Types
-                            .item(key=val, data-value=val)= val.charAt(0).toUpperCase() + val.slice(1)
+                        each val, index in Types
+                            .item(key=index, data-value=val)= val.charAt(0).toUpperCase() + val.slice(1)
 
             .ui.right.aligned.grid
                 .row
