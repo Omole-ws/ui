@@ -1,5 +1,5 @@
 // STATE OBJECT REPRESENTATION
-export const state = {
+export const store_EX = {
     router: {
         path: '',
         params: null
@@ -52,6 +52,11 @@ export const state = {
     tasks: {
         list: {}
     },
+    pendingAlgo: {
+        onScreen: false,
+        title: '',
+        kind: ''
+    },
     operating: {
         nodeEditor: {
             onScreen: false,
@@ -62,7 +67,7 @@ export const state = {
             onScreen: false,
             edge: null
         },
-        
+
         deskMode: 'node-create' || 'connect' || 'basic'
     },
     mcenter: {

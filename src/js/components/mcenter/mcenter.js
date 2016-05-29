@@ -85,7 +85,7 @@ class MessageCenter extends React.Component {
 }
 
 
-function mapStoreToProps(store) {
+function mapStateToProps(store) {
     return {
         onScreen: store.mcenter.onScreen,
         messages: store.mcenter.messages
@@ -95,4 +95,4 @@ function mapStoreToProps(store) {
 const mapDispatchToProps = {
     hide: Action.hideMessageCenter
 }
-export default connect(mapStoreToProps, mapDispatchToProps)(MessageCenter)
+export default connect(mapStateToProps, mapDispatchToProps)(MessageCenter)

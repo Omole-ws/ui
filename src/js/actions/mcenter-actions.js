@@ -3,9 +3,9 @@ import { ActionType } from '../actions'
 // import { createFetchError } from './helpers'
 
 export function showMessageCenter() {
-    return {type: ActionType.SHOW_MSG_CENTER}
+    return {type: ActionType.MSG_CENTER_SHOW}
 }
 
 export function hideMessageCenter() {
-    return {type: ActionType.HIDE_MSG_CENTER} 
+    return {type: ActionType.MSG_CENTER_HIDE} 
 }

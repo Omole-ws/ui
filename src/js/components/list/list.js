@@ -110,10 +110,10 @@ class ListView extends React.Component {
 
 
 
-const mapStoreToProps = store => {
+function mapStateToProps(state) {
     return {
-        list: store.graphs.list,
-        isFetching: store.graphs.isFetching
+        list: state.graphs.list,
+        isFetching: state.graphs.isFetching
     }
 }
 
@@ -128,4 +128,4 @@ const mapDispatchToProps = {
     showMessageCenter: Action.showMessageCenter
 }
 
-export default connect(mapStoreToProps, mapDispatchToProps)(ListView)
+export default connect(mapStateToProps, mapDispatchToProps)(ListView)

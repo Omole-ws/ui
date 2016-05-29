@@ -1,26 +1,26 @@
 import { ActionType, Mode } from '../actions'
 
 
-export function router(store = { path: '#!/', prevPath: '#!/' }, action) {
+export function router(state = { path: '#!/', prevPath: '#!/' }, action) {
     switch (action.type) {
         case ActionType.ROUTE_CHANGED:
             return {
-                ...store,
+                ...state,
                 path: action.payload,
-                prevPath: store.path === '/login' || store.path === '/registration' ? '/' : store.path
+                prevPath: state.path === '/login' || state.path === '/registration' ? '/' : state.path
             }
 
         default:
-            return store
+            return state
     }
 }
 
-export function mode(store = Mode.LIST, action) {
+export function mode(state = Mode.LIST, action) {
     switch (action.type) {
-        case ActionType.SET_MODE:
+        case ActionType.MODE_SET:
             return action.payload
 
         default:
-            return store
+            return state
     }
 }

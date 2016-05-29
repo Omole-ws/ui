@@ -7,7 +7,7 @@ import React from 'react'
 
 import NavProfileTmpl from '!jade-react!./nav-profile.jade'
 
-class VisibleNavProfile extends React.Component {
+class NavProfile extends React.Component {
 
     static propTypes = {
         name:                React.PropTypes.string,
@@ -29,7 +29,7 @@ class VisibleNavProfile extends React.Component {
     }
 
     render() {
-        return( 
+        return(
             <NavProfileTmpl username={this.props.name} isFetching={this.props.isFetching} logout={this.props.logout}/>
         )
     }
@@ -43,7 +43,7 @@ import { connect } from 'react-redux'
 
 import { Action } from '../../actions'
 
-function mapStoreToProps(store) {
+function mapStateToProps(store) {
     return {
         name: store.session.account.name,
         isFetching: store.session.account.isFetching
@@ -55,4 +55,4 @@ const mapDispatchToProps = {
     fetchSessionDetails: Action.fetchSessionDetails
 }
 
-export default connect(mapStoreToProps, mapDispatchToProps)(VisibleNavProfile)
+export default connect(mapStateToProps, mapDispatchToProps)(NavProfile)

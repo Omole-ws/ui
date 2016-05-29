@@ -2,24 +2,24 @@ import { combineReducers } from 'redux'
 
 import { ActionType } from '../actions'
 
-function definitionsFetching(store = false, action) {
+function definitionsFetching(state = false, action) {
     switch (action.type) {
-        case `${ActionType.ALGO_FETCH_DEF}_PENDING`:
+        case `${ActionType.ALGO_DEF_GET}_PENDING`:
             return true
-        case `${ActionType.ALGO_FETCH_DEF}_OK`:
-        case `${ActionType.ALGO_FETCH_DEF}_FAIL`:
+        case `${ActionType.ALGO_DEF_GET}_OK`:
+        case `${ActionType.ALGO_DEF_GET}_FAIL`:
             return false
         default:
-            return store
+            return state
     }
 }
 
-function definitionsList(store = null, action) {
+function definitionsList(state = null, action) {
     switch (action.type) {
-        case `${ActionType.ALGO_FETCH_DEF}_OK`:
+        case `${ActionType.ALGO_DEF_GET}_OK`:
             return action.payload
         default:
-            return store
+            return state
     }
 }
 

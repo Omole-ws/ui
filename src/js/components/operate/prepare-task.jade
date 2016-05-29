@@ -1,0 +1,16 @@
+.ui.card.cy-widget(ref=setRef, class=['', 'tl', 'tr', 'br', 'bl'][quater])
+    .content
+        i.large.left.floated.square.icon(onClick=snapTo(1), class=(quater===1? 'disabled': 'orange'))
+        i.large.right.floated.square.icon(onClick=snapTo(2), class=(quater===2? 'disabled': 'orange'))
+        .center.aligned.header Task parameters
+    .content
+        .grouped.fields
+            label(for="label") Select LABEL
+            each val, idx in ['READ', 'WRITE']
+                .field(key=idx)
+                    .ui.radio.checkbox
+                        input(type="radio" name="label" checked=val===label tabindex="0" value=val, onChange=handleFieldChange)
+                        label= val
+    .content
+        i.large.left.floated.square.icon(onClick=snapTo(4), class=(quater===4? 'disabled': 'orange'))
+        i.large.right.floated.square.icon(onClick=snapTo(3), class=(quater===3? 'disabled': 'orange'))

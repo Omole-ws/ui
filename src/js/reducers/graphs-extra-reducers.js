@@ -3,24 +3,24 @@ import { combineReducers } from 'redux'
 
 import { ActionType } from '../actions'
 
-function vaItem(store, action) {
+function vaItem(state, action) {
     switch (action.type) {
-        case `${ActionType.FETCH_GVA}_PENDING`:
-            return store ? {...store, isFetching: true} : null
+        case `${ActionType.GVA_GET}_PENDING`:
+            return state ? {...state, isFetching: true} : null
 
-        case `${ActionType.FETCH_GVA}_OK`:
+        case `${ActionType.GVA_GET}_OK`:
             return {...action.payload, isFetching: false}
 
-        case `${ActionType.FETCH_GVA}_FAIL`:
-            return {positions: null, ...store, isFetching: false}
+        case `${ActionType.GVA_GET}_FAIL`:
+            return {positions: null, ...state, isFetching: false}
     }
 }
 
-function visualAttributes (store = {}, action) {
-    if(action.type.startsWith(ActionType.FETCH_GVA)) {
-        return _.omitBy({...store, [action.payload.gid]: vaItem(store[action.payload.gid], action)}, v => v === null)
+function visualAttributes (state = {}, action) {
+    if(action.type.startsWith(ActionType.GVA_GET)) {
+        return _.omitBy({...state, [action.payload.gid]: vaItem(state[action.payload.gid], action)}, v => v === null)
     } else {
-        return store
+        return state
     }
 }
 

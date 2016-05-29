@@ -21,7 +21,7 @@ export default class Sync {
     worker() {
         for (const gid in this.tape) {
             if (this.tape[gid].length > 0) {
-                const correction = tapeToCorrection({tape: this.tape[gid], patch: true})
+                const correction = tapeToCorrection({ tape: this.tape[gid], patch: true })
                 const patch = this._correctionToPatch(correction)
                 patch.id = gid
                 patch.length = this.tape[gid].length
@@ -31,36 +31,41 @@ export default class Sync {
     }
 
     _correctionToPatch(correction) {
-        const gInserts = {nodes: {}, edges: {}}
-        const gUpdates = {nodes: {}, edges: {}}
-        const gDeletions = {nodes: {}, edges: {}}
-        const gvaUpserts = {positions: {}, nodeTypes: {}}
-        const gvaDeletions = {positions: {}, nodeTypes: {}}
-        Object.values(correction.nodeCreations).forEach(({type, position, ...upsert}) => {
-            gInserts.nodes[upsert.id] = upsert
-            gvaUpserts.positions[upsert.id] = position
-            gvaUpserts.nodeTypes[upsert.id] = type
-        })
-        Object.values(correction.nodeUpdates).forEach(({type, position, ...upsert}) => {
-            if (Reflect.ownKeys(upsert).length > 1) {
-                gUpdates.nodes[upsert.id] = upsert
-            }
-            if (position) {
+        const gInserts = { nodes: {}, edges: {} }
+        const gUpdates = { nodes: {}, edges: {} }
+        const gDeletions = { nodes: {}, edges: {} }
+        const gvaUpserts = { positions: {}, nodeTypes: {} }
+        const gvaDeletions = { positions: {}, nodeTypes: {} }
+        Object.values(correction.nodeCreations)
+            .forEach(({ type, position, ...upsert }) => {
+                gInserts.nodes[upsert.id] = upsert
                 gvaUpserts.positions[upsert.id] = position
-            }
-            if (type) {
                 gvaUpserts.nodeTypes[upsert.id] = type
-            }
-        })
-        Reflect.ownKeys(correction.nodeDeletions).forEach(nid => {
-            gDeletions.nodes[nid] = true
-            gvaDeletions.positions[nid] = true
-            gvaDeletions.nodeTypes[nid] = true
-        })
+            })
+        Object.values(correction.nodeUpdates)
+            .forEach(({ type, position, ...upsert }) => {
+                if (Reflect.ownKeys(upsert)
+                    .length > 1) {
+                    gUpdates.nodes[upsert.id] = upsert
+                }
+                if (position) {
+                    gvaUpserts.positions[upsert.id] = position
+                }
+                if (type) {
+                    gvaUpserts.nodeTypes[upsert.id] = type
+                }
+            })
+        Reflect.ownKeys(correction.nodeDeletions)
+            .forEach(nid => {
+                gDeletions.nodes[nid] = true
+                gvaDeletions.positions[nid] = true
+                gvaDeletions.nodeTypes[nid] = true
+            })
         gInserts.edges = correction.edgeCreations
         gUpdates.edges = correction.edgeUpdates
-        Reflect.ownKeys(correction.edgeDeletions).forEach(eid => gDeletions.edges[eid] = true)
+        Reflect.ownKeys(correction.edgeDeletions)
+            .forEach(eid => gDeletions.edges[eid] = true)
 
-        return {gInserts, gUpdates, gDeletions, gvaUpserts, gvaDeletions, zoom: correction.zoom, pan: correction.pan}
+        return { gInserts, gUpdates, gDeletions, gvaUpserts, gvaDeletions, zoom: correction.zoom, pan: correction.pan }
     }
 }

@@ -101,12 +101,12 @@ class Desk extends React.Component {
     }
 }
 
-function mapStoreToProps(store, ownProps) {
+function mapStateToProps(state, ownProps) {
     return {
-        graph: store.graphs.list.find(g => g.id === ownProps.gid),
-        visualAttributes: store.graphsExtra.visualAttributes[ownProps.gid],
-        tape: store.tape[ownProps.gid],
-        deskMode: store.operating.deskMode
+        graph: state.graphs.list.find(g => g.id === ownProps.gid),
+        visualAttributes: state.graphsExtra.visualAttributes[ownProps.gid],
+        tape: state.tape[ownProps.gid],
+        deskMode: state.operating.deskMode
     }
 }
 
@@ -115,4 +115,4 @@ const mapDispatchToProps = {
     fetchGVA: Action.fetchGVA
 }
 
-export default connect(mapStoreToProps, mapDispatchToProps)(Desk)
+export default connect(mapStateToProps, mapDispatchToProps)(Desk)

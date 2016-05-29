@@ -38,19 +38,11 @@ class Root extends React.Component {
 
     componentWillMount() {
         Root.modeViewLoaders[this.props.mode]().then(view => this.setState({mainView: view.default}))
-        // if (this.props.mode !== Mode.LOGIN || this.props.mode !== Mode.REGISTRATION) {
-        // }
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.mode !== this.props.mode) {
             Root.modeViewLoaders[nextProps.mode]().then(view => this.setState({mainView: view.default}))
-            // if (nextProps.mode !== Mode.LOGIN || nextProps.mode !== Mode.REGISTRATION) {
-            //     this.sync.changeTape(nextProps.tape)
-            //     this.sync.run()
-            // } else {
-            //     this.sync.stop()
-            // }
         }
         if (nextProps.tape !== this.props.tape) {
             this.sync.changeTape(nextProps.tape)
@@ -95,10 +87,10 @@ class Root extends React.Component {
 //  |C|O|N|N|E|C|T|E|D|
 //  +-+-+-+-+-+-+-+-+-+
 
-const mapStoreToProps = store => {
+function mapStateToProps(state) {
     return {
-        mode: store.mode,
-        tape: store.tape
+        mode: state.mode,
+        tape: state.tape
     }
 }
 
@@ -106,4 +98,4 @@ const mapDispatchToProps = {
     patchGraph: Action.patchGraph
 }
 
-export default connect(mapStoreToProps, mapDispatchToProps)(Root)
+export default connect(mapStateToProps, mapDispatchToProps)(Root)

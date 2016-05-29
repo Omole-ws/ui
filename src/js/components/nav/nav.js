@@ -96,12 +96,12 @@ class Nav extends React.Component {
 }
 
 
-const mapStoreToProps = (store) => ({
-    mode: store.mode
-})
+function mapStateToProps(state) {
+    return { mode: state.mode }
+}
 
 const mapDispatchToProps = {
     showMessageCenter: Action.showMessageCenter
 }
 
-export default connect(mapStoreToProps, mapDispatchToProps)(Nav)
+export default connect(mapStateToProps, mapDispatchToProps)(Nav)

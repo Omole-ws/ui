@@ -31,7 +31,7 @@ class Register extends React.Component {
             mail: '',
             password: ''
         }
-        this.changeField = (...args) => this._changeField(...args)
+        this.handleFieldChange = (...args) => this._handleFieldChange(...args)
         this.register = (...args) => this._register(...args)
     }
 
@@ -46,7 +46,7 @@ class Register extends React.Component {
      * @arg {object} ev event triggered
      * @return {void}
      */
-    _changeField(ev) {
+    _handleFieldChange(ev) {
         this.setState({[ev.target.name]: ev.target.value})
     }
 
@@ -64,7 +64,7 @@ class Register extends React.Component {
         return (
             <div>
                 <Nav mode={Mode.LOGIN}/>
-                <RegisterTmpl logo={logo} changeField={this.changeField} register={this.register}
+                <RegisterTmpl logo={logo} handleFieldChange={this.handleFieldChange} register={this.register}
                     error={this.props.error} clearError={this.props.clearError}/>
             </div>
         )
@@ -72,13 +72,13 @@ class Register extends React.Component {
 }
 
 
-const mapStoreToProps = store => ({
-    error: store.session.loginError
-})
+function mapStateToProps(state) {
+    return { error: state.session.loginError }
+}
 
 const mapDispatchToProps = {
     register: Action.register,
     clearError: Action.clearLoginError
 }
 
-export default connect(mapStoreToProps, mapDispatchToProps)(Register)
+export default connect(mapStateToProps, mapDispatchToProps)(Register)

@@ -1,6 +1,6 @@
 const routerActionType = {
     ROUTE_CHANGED: 'ROUTE_CHANGED',
-    SET_MODE:      'SET_MODE'
+    MODE_SET:      'MODE_SET'
 }
 
 const sessionActionType = {
@@ -8,22 +8,22 @@ const sessionActionType = {
     REGISTER:              'REGISTER',
     LOGIN:                 'LOGIN',
     LOGOUT:                'LOGOUT',
-    FETCH_SESSION_DETAILS: 'FETCH_SESSION_DETAILS',
+    SESSION_DETAILS_GET: 'SESSION_DETAILS_GET',
     CLEAR_LOGIN_ERROR:     'CLEAR_LOGIN_ERROR'
 }
 
 const graphsActionType = {
     SET_CURRENT_GRAPH: 'SET_CURRENT_GRAPH',
-    FETCH_GRAPHS_LIST: 'FETCH_GRAPHS_LIST',
-    FETCH_GRAPH:       'FETCH_GRAPH',
-    POST_NEW_GRAPH:    'POST_NEW_GRAPH',
-    PATCH_GRAPH:       'PATCH_GRAPH',
-    REMOVE_GRAPH:      'REMOVE_GRAPH',
-    DUPLICATE_GRAPH:   'DUPLICATE_GRAPH'
+    GRAPHS_LIST_GET: 'GRAPHS_LIST_GET',
+    GRAPH_GET:       'GRAPH_GET',
+    GRAPH_POST:    'GRAPH_POST',
+    GRAPH_PATCH:       'GRAPH_PATCH',
+    GRAPH_DELETE:      'GRAPH_DELETE',
+    GRAPH_DUPLICATE:   'GRAPH_DUPLICATE'
 }
 
 const graphsExtraActionType = {
-    FETCH_GVA: 'FETCH_GVA'
+    GVA_GET: 'GVA_GET'
 }
 
 const crudActionType = {
@@ -40,13 +40,15 @@ const crudActionType = {
 }
 
 const algosActionType = {
-    ALGO_FETCH_DEF: 'ALGO_FETCH_DEF'
+    ALGO_DEF_GET: 'ALGO_DEF_GET'
 }
 
 const tasksActionType = {
-    CREATE_TASK: 'CREATE_TASK',
-    FETCH_TASK: 'FETCH_TASK',
-    FETCH_TASK_LIST: 'FETCH_TASK_LIST'
+    TASK_PREPARE: 'TASK_PREPARE',
+    TASK_PREPARE_CANCEL: 'TASK_PREPARE_CANCEL',
+    TASK_CREATE: 'TASK_CREATE',
+    TASK_GET: 'TASK_GET',
+    TASK_LIST_GET: 'TASK_LIST_GET'
 }
 
 const operateComponentActionType = {
@@ -58,8 +60,8 @@ const operateComponentActionType = {
 }
 
 const messageCenterActionType = {
-    SHOW_MSG_CENTER: 'SHOW_MSG_CENTER',
-    HIDE_MSG_CENTER: 'HIDE_MSG_CENTER'
+    MSG_CENTER_SHOW: 'MSG_CENTER_SHOW',
+    MSG_CENTER_HIDE: 'MSG_CENTER_HIDE'
 }
 
 

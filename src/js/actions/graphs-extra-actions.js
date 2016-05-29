@@ -3,11 +3,11 @@ import { netAction } from '../helpers'
 
 export function fetchGVA(graph) {
     return function(dispatch) {
-        dispatch({type: `${ActionType.FETCH_GVA}_PENDING`, payload: {gid: graph.id}})
+        dispatch({type: `${ActionType.GVA_GET}_PENDING`, payload: {gid: graph.id}})
         dispatch(netAction({
             url: `${GvaURI}/${graph.id}`,
-            onSuccess: payload => dispatch({type: `${ActionType.FETCH_GVA}_OK`, payload}),
-            onError: error => dispatch({type: `${ActionType.FETCH_GVA}_FAIL`, payload: {gid: graph.id}, error})
+            onSuccess: payload => dispatch({type: `${ActionType.GVA_GET}_OK`, payload}),
+            onError: error => dispatch({type: `${ActionType.GVA_GET}_FAIL`, payload: {gid: graph.id}, error})
         }))
     }
 }

@@ -6,6 +6,7 @@ import NavAlgo from '../nav/nav-algo'
 import MessageCenter from '../mcenter/mcenter'
 import EditNode from '../editors/edit-node'
 import EditEdge from '../editors/edit-edge'
+import PrepareTask from './prepare-task'
 
 import Desk from './desk'
 
@@ -24,6 +25,7 @@ class Operating extends React.Component {
                 <MessageCenter/>
                 <EditNode/>
                 <EditEdge/>
+                <PrepareTask/>
                 <Desk gid={this.props.gid}/>
             </div>
         )
@@ -31,10 +33,10 @@ class Operating extends React.Component {
 }
 
 
-const mapStoreToProps = store => {
+function mapStateToProps(state) {
     return {
-        gid: store.currentGraph
+        gid: state.currentGraph
     }
 }
 
-export default connect(mapStoreToProps, null)(Operating)
+export default connect(mapStateToProps)(Operating)

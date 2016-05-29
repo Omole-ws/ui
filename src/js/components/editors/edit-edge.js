@@ -101,12 +101,12 @@ class EditEdge extends React.Component {
     }
 }
 
-function mapStoreToProps(store) {
+function mapStateToProps(state) {
     return {
-        gid: store.currentGraph,
-        onScreen: store.operating.edgeEditor.onScreen,
-        edge: store.operating.edgeEditor.edge,
-        position: store.operating.edgeEditor.position
+        gid: state.currentGraph,
+        onScreen: state.operating.edgeEditor.onScreen,
+        edge: state.operating.edgeEditor.edge,
+        position: state.operating.edgeEditor.position
     }
 }
 
@@ -115,4 +115,4 @@ const mapDispatchToProps = {
     edgeUpdate: Action.edgeUpdate
 }
 
-export default connect(mapStoreToProps, mapDispatchToProps)(EditEdge)
+export default connect(mapStateToProps, mapDispatchToProps)(EditEdge)

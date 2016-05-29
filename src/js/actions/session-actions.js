@@ -57,11 +57,11 @@ export function logout() {
 
 export function fetchSessionDetails() {
     return function(dispatch) {
-        dispatch({type: `${ActionType.FETCH_SESSION_DETAILS}_PENDING`})
+        dispatch({type: `${ActionType.SESSION_DETAILS_GET}_PENDING`})
         dispatch(netAction({
             url: '/auth/check',
-            onSuccess: payload => dispatch({type: `${ActionType.FETCH_SESSION_DETAILS}_OK`, payload}),
-            onError: error => dispatch({type: `${ActionType.FETCH_SESSION_DETAILS}_FAIL`, error})
+            onSuccess: payload => dispatch({type: `${ActionType.SESSION_DETAILS_GET}_OK`, payload}),
+            onError: error => dispatch({type: `${ActionType.SESSION_DETAILS_GET}_FAIL`, error})
         }))
     }
 }

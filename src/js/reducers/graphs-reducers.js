@@ -29,96 +29,96 @@ function _patch(graph, patch) {
     return patchedGraph
 }
 
-function graph(store = {isFetching: false, lastUpdated: null}, action) {
+function graph(state = {isFetching: false, lastUpdated: null}, action) {
 
-    // if (store.id !== action.payload.id) {
-    //     return store
+    // if (state.id !== action.payload.id) {
+    //     return state
     // }
     switch(action.type) {
-        case `${ActionType.FETCH_GRAPH}_PENDING`:
-        case `${ActionType.PATCH_GRAPH}_PENDING`:
-        case `${ActionType.REMOVE_GRAPH}_PENDING`:
-            return {...store, isFetching: true}
+        case `${ActionType.GRAPH_GET}_PENDING`:
+        case `${ActionType.GRAPH_PATCH}_PENDING`:
+        case `${ActionType.GRAPH_DELETE}_PENDING`:
+            return {...state, isFetching: true}
 
-        case `${ActionType.FETCH_GRAPH}_OK`:
+        case `${ActionType.GRAPH_GET}_OK`:
             return {...action.payload, isFetching: false}
 
-        case `${ActionType.PATCH_GRAPH}_OK`:
-            return _patch(store, action.payload)
-            // return {...store, ...action.payload, info: {...store.info, ...action.payload.info}, isFetching: false}
+        case `${ActionType.GRAPH_PATCH}_OK`:
+            return _patch(state, action.payload)
+            // return {...state, ...action.payload, info: {...state.info, ...action.payload.info}, isFetching: false}
 
-        case `${ActionType.REMOVE_GRAPH}_OK`:
+        case `${ActionType.GRAPH_DELETE}_OK`:
             return null
 
-        case `${ActionType.FETCH_GRAPH}_FAIL`:
-            if (_.isEqual(store, {id: action.payload.id})) {return null}
+        case `${ActionType.GRAPH_GET}_FAIL`:
+            if (_.isEqual(state, {id: action.payload.id})) {return null}
             // break is omitted intentionally
-        case `${ActionType.PATCH_GRAPH}_FAIL`:
-        case `${ActionType.REMOVE_GRAPH}_FAIL`:
-            return {...store, isFetching: false}
+        case `${ActionType.GRAPH_PATCH}_FAIL`:
+        case `${ActionType.GRAPH_DELETE}_FAIL`:
+            return {...state, isFetching: false}
 
         default:
-            return store
+            return state
     }
 }
 
-export function graphs(store = {isFetching: false, list: []}, action) {
+export function graphs(state = {isFetching: false, list: []}, action) {
 
     switch(action.type) {
-        case `${ActionType.FETCH_GRAPHS_LIST}_PENDING`:
-            return {...store, isFetching: true}
+        case `${ActionType.GRAPHS_LIST_GET}_PENDING`:
+            return {...state, isFetching: true}
 
-        case `${ActionType.FETCH_GRAPHS_LIST}_OK`:
+        case `${ActionType.GRAPHS_LIST_GET}_OK`:
             return {
                 list: action.payload.map(g => ({
-                    ...store.list.find(gr => gr.id === g.id),
+                    ...state.list.find(gr => gr.id === g.id),
                     ...g
                 })),
                 isFetching: false
             }
 
-        case `${ActionType.FETCH_GRAPHS_LIST}_FAIL`:
-            return {...store, isFetching: false}
+        case `${ActionType.GRAPHS_LIST_GET}_FAIL`:
+            return {...state, isFetching: false}
 
 
 
-        case `${ActionType.POST_NEW_GRAPH}_OK`:
+        case `${ActionType.GRAPH_POST}_OK`:
             return {
-                isFetching: store.isFetching,
-                list: store.list.concat(action.payload)
+                isFetching: state.isFetching,
+                list: state.list.concat(action.payload)
             }
 
-        case `${ActionType.FETCH_GRAPH}_PENDING`:
-            if (!store.list.some(g => g.id === action.payload.id)) {store.list.push({id: action.payload.id, info: {label: ''}})}
+        case `${ActionType.GRAPH_GET}_PENDING`:
+            if (!state.list.some(g => g.id === action.payload.id)) {state.list.push({id: action.payload.id, info: {label: ''}})}
             // break is omitted intentionally
-        case `${ActionType.FETCH_GRAPH}_OK`:
-        case `${ActionType.FETCH_GRAPH}_FAIL`:
-        case `${ActionType.PATCH_GRAPH}_PENDING`:
-        case `${ActionType.PATCH_GRAPH}_OK`:
-        case `${ActionType.PATCH_GRAPH}_FAIL`:
-        case `${ActionType.REMOVE_GRAPH}_PENDING`:
-        case `${ActionType.REMOVE_GRAPH}_OK`:
-        case `${ActionType.REMOVE_GRAPH}_FAIL`:
+        case `${ActionType.GRAPH_GET}_OK`:
+        case `${ActionType.GRAPH_GET}_FAIL`:
+        case `${ActionType.GRAPH_PATCH}_PENDING`:
+        case `${ActionType.GRAPH_PATCH}_OK`:
+        case `${ActionType.GRAPH_PATCH}_FAIL`:
+        case `${ActionType.GRAPH_DELETE}_PENDING`:
+        case `${ActionType.GRAPH_DELETE}_OK`:
+        case `${ActionType.GRAPH_DELETE}_FAIL`:
             return {
-                isFetching: store.isFetching,
-                list: store.list.map(g => g.id === action.payload.id ? graph(g, action) : g).filter(g => g !== null)
+                isFetching: state.isFetching,
+                list: state.list.map(g => g.id === action.payload.id ? graph(g, action) : g).filter(g => g !== null)
             }
 
-        case `${ActionType.DUPLICATE_GRAPH}_OK`:
+        case `${ActionType.GRAPH_DUPLICATE}_OK`:
             return {
-                isFetching: store.isFetching,
-                list: store.list.concat(action.payload)
+                isFetching: state.isFetching,
+                list: state.list.concat(action.payload)
             }
 
         default:
-            return store
+            return state
     }
 }
 
-export function currentGraph(store = null, action) {
+export function currentGraph(state = null, action) {
     if (action.type === ActionType.SET_CURRENT_GRAPH) {
         return action.payload
     } else {
-        return store
+        return state
     }
 }

@@ -134,11 +134,11 @@ class EditNode extends React.Component {
     }
 }
 
-function mapStoreToProps(store) {
+function mapStateToProps(state) {
     return {
-        onScreen: store.operating.nodeEditor.onScreen,
-        node: store.operating.nodeEditor.node,
-        position: store.operating.nodeEditor.position
+        onScreen: state.operating.nodeEditor.onScreen,
+        node: state.operating.nodeEditor.node,
+        position: state.operating.nodeEditor.position
     }
 }
 
@@ -150,4 +150,4 @@ const mapDispatchToProps = {
     nodeTypeChange: Action.nodeTypeChange
 }
 
-export default connect(mapStoreToProps, mapDispatchToProps)(EditNode)
+export default connect(mapStateToProps, mapDispatchToProps)(EditNode)

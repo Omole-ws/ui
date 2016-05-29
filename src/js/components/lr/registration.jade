@@ -9,15 +9,15 @@
         .field
           .ui.left.icon.input(class=error? 'error' : '')
             i.user.icon
-            input(type="text" name="login" placeholder="Login" onChange=changeField)
+            input(type="text" name="login" placeholder="Login" onChange=handleFieldChange)
         .field
           .ui.left.icon.input(class=error? 'error' : '')
             i.mail.icon
-            input(type="email" name="mail" placeholder="E-mail" onChange=changeField)
+            input(type="email" name="mail" placeholder="E-mail" onChange=handleFieldChange)
         .field
           .ui.left.icon.input(class=error? 'error' : '')
             i.lock.icon
-            input(type="password" name="password" placeholder="Password" onChange=changeField)
+            input(type="password" name="password" placeholder="Password" onChange=handleFieldChange)
         input.ui.fluid.large.orange.submit.button(type="submit", value="Login")
       if error
         .ui.bottom.attached.small.error.message

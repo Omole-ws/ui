@@ -11,7 +11,7 @@ export function routeChanged(path) {
 
 export function setMode(mode) {
     return {
-        type: ActionType.SET_MODE,
+        type: ActionType.MODE_SET,
         payload: mode
     }
 }

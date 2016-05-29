@@ -37,11 +37,11 @@ class NavAlgo extends React.Component {
 }
 
 
-function mapStoreToProps(store) {
+function mapStateToProps(state) {
     return {
-        gid: store.currentGraph,
-        algosDef: store.algos.definitions,
-        isFetchingAlgosDef: store.algos.isFetching
+        gid: state.currentGraph,
+        algosDef: state.algos.definitions,
+        isFetchingAlgosDef: state.algos.isFetching
     }
 }
 
@@ -51,4 +51,4 @@ const mapDispatchToProps = {
     createTask: Action.createTask
 }
 
-export default connect(mapStoreToProps, mapDispatchToProps)(NavAlgo)
+export default connect(mapStateToProps, mapDispatchToProps)(NavAlgo)
