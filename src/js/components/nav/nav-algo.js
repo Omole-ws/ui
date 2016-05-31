@@ -7,7 +7,7 @@ import NavAlgoTmpl from '!jade-react!./nav-algo.jade'
 class NavAlgo extends React.Component {
     constructor(props) {
         super(props)
-        this.prepareTask = algo => this._prepareTask(algo)
+        this.taskPrepare = algo => this._taskPrepare(algo)
     }
 
     static propTypes = {
@@ -15,7 +15,7 @@ class NavAlgo extends React.Component {
         algosDef: React.PropTypes.array,
         isFetchingAlgosDef: React.PropTypes.bool.isRequired,
         algosFetchDef: React.PropTypes.func.isRequired,
-        prepareTask: React.PropTypes.func.isRequired,
+        taskPrepare: React.PropTypes.func.isRequired,
         createTask: React.PropTypes.func.isRequired
     }
 
@@ -24,14 +24,14 @@ class NavAlgo extends React.Component {
     }
 
     render() {
-        return <NavAlgoTmpl isFetching={this.props.isFetchingAlgosDef} algos={this.props.algosDef} prepareTask={this.prepareTask}/>
+        return <NavAlgoTmpl isFetching={this.props.isFetchingAlgosDef} algos={this.props.algosDef} taskPrepare={this.taskPrepare}/>
     }
 
-    _prepareTask(algo) {
+    _taskPrepare(algo) {
         if (algo.inputParam === 'INPUT_GID') {
             this.props.createTask({algo, params: {gid: this.props.gid}})
         } else {
-            this.props.prepareTask(algo)
+            this.props.taskPrepare(algo)
         }
     }
 }
@@ -47,7 +47,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = {
     algosFetchDef: Action.algosFetchDef,
-    prepareTask: Action.prepareTask,
+    taskPrepare: Action.taskPrepare,
     createTask: Action.createTask
 }
 

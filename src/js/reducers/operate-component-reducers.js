@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 
-import { ActionType, Mode, DeskMode } from '../actions'
+import { ActionType, Mode, DeskMode, AlgoInputType } from '../actions'
 
 
 function nodeEditorOnScreen(state = false, action) {
@@ -79,6 +79,17 @@ function deskMode(state = DeskMode.BASIC, action) {
 
         case ActionType.MODE_SET:
             return action.payload === Mode.OPERATE ? DeskMode.BASIC : state
+
+        case ActionType.TASK_PREPARE:
+            if (action.payload.inputParam === AlgoInputType.GLFT) {
+                return DeskMode.SELECT_FROM_TO
+            } else {
+                return state
+            }
+
+        case `${ActionType.TASK_CREATE}_PENDING`:
+        case ActionType.TASK_PREPARE_CANCEL:
+            return DeskMode.BASIC
 
         default:
             return state

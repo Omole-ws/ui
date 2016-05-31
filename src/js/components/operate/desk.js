@@ -56,14 +56,14 @@ class Desk extends React.Component {
             this.isEmpty =false
         }
         if (nextProps.deskMode !== this.props.deskMode) {
-            nextState.cy.setMenus(nextProps.deskMode)
+            nextState.cy.setMode(nextProps.deskMode)
         }
     }
 
     componentDidMount() {
         this.loadGraphData(this.props.graph, this.props.visualAttributes)
         Cy.create(this.cytoscapeElement, cy => {
-            cy.setMenus(this.props.deskMode)
+            cy.setMode(this.props.deskMode)
             this.setState({cy})
         })
     }

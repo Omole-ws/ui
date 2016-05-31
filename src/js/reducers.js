@@ -68,7 +68,7 @@ export const store_EX = {
             edge: null
         },
 
-        deskMode: 'node-create' || 'connect' || 'basic'
+        deskMode: 'NODE_CREATE' || 'CONNECT' || 'BASIC' || 'SELECT_FROM_TO'
     },
     mcenter: {
         onScreen: false,

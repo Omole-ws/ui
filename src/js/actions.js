@@ -38,7 +38,14 @@ export const Mode = {
 export const DeskMode = {
     BASIC: 'BASIC',
     NODE_CREATE: 'NODE_CREATE',
-    CONNECT: 'CONNECT'
+    CONNECT: 'CONNECT',
+    SELECT_FROM_TO: 'SELECT_FROM_TO'
+}
+
+export const AlgoInputType = {
+    G: 'INPUT_GID',
+    GL: 'INPUT_GID_LABEL',
+    GLFT: 'INPUT_GID_FROM_TO_LABEL'
 }
 
 export const NodeType = {

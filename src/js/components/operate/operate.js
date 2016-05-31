@@ -32,6 +32,9 @@ class Operating extends React.Component {
     }
 }
 
+//  +-+-+-+-+-+-+-+
+//  |c|o|n|n|e|c|t|
+//  +-+-+-+-+-+-+-+
 
 function mapStateToProps(state) {
     return {

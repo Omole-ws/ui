@@ -7,5 +7,5 @@
     else        
         .ui.vertical.menu(class=algos?'':'disabled')
             each val in algos
-                .item(key=val.name, onClick=prepareTask(val))
+                .item(key=val.name, onClick=taskPrepare(val))
                     = val.name + (val.inputParam !== 'INPUT_GID' ? ' ...' : '')

@@ -24,6 +24,15 @@ class PrepareTask extends React.Component {
     static propTypes = {
         onScreen: React.PropTypes.bool.isRequired,
         title: React.PropTypes.string,
+        kind: React.PropTypes.string,
+        from: React.PropTypes.shape({
+            id: React.PropTypes.string,
+            name: React.PropTypes.string
+        }),
+        to: React.PropTypes.shape({
+            id: React.PropTypes.string,
+            name: React.PropTypes.string
+        }),
         cancel: React.PropTypes.func.isRequired
     }
 
@@ -41,9 +50,13 @@ class PrepareTask extends React.Component {
         return <PrepareTaskTmpl setRef = { r => this.ref = r }
             snapTo = { this.snapTo }
             handleFieldChange = { this.handleFieldChange }
+            cancel = { this.props.cancel }
             label = { this.state.label }
             quater = { this.state.quater }
-            title = { this.props.title } />
+            title = { this.props.title }
+            kind = { this.props.kind }
+            fromName = { this.props.from.name }
+            toName = { this.props.to.name } />
     }
 
     _snapTo(quater) {
@@ -63,7 +76,10 @@ function mapStateToProps(state) {
     return {
         // gr
         onScreen: state.pendingAlgo.onScreen,
-        title: state.pendingAlgo.title
+        title: state.pendingAlgo.title,
+        kind: state.pendingAlgo.kind,
+        from: state.pendingAlgo.from,
+        to: state.pendingAlgo.to
     }
 }
 

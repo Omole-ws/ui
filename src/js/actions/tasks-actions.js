@@ -4,7 +4,7 @@ import { netAction } from '../helpers'
 const TaskListURI = '/app/t/cctasklist'
 const TaskURI = '/app/t/cctasklist'
 
-export function prepareTask(payload) {
+export function taskPrepare(payload) {
     return { type: ActionType.TASK_PREPARE, payload }
 }
 

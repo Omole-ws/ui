@@ -17,7 +17,7 @@ function onScreen(state = false, action) {
 }
 
 function title(state = '', action) {
-    if (ActionType === ActionType.TASK_PREPARE) {
+    if (action.type === ActionType.TASK_PREPARE) {
         return action.payload.name
     } else {
         return state
@@ -25,14 +25,30 @@ function title(state = '', action) {
 }
 
 function kind(state = '', action) {
-    if (ActionType === ActionType.TASK_PREPARE) {
+    if (action.type === ActionType.TASK_PREPARE) {
         return action.payload.inputParam
     } else {
         return state
     }
 }
 
-export const pendingAlgo = combineReducers({ onScreen, title, kind })
+function from(state = {}, action) {
+    if (action.type === ActionType.SELECT_FROM) {
+        return action.payload
+    } else {
+        return state
+    }
+}
+
+function to(state = {}, action) {
+    if (action.type === ActionType.SELECT_TO) {
+        return action.payload
+    } else {
+        return state
+    }
+}
+
+export const pendingAlgo = combineReducers({ onScreen, title, kind, from, to })
 
 export function tasks(state = [], action) {
     return state

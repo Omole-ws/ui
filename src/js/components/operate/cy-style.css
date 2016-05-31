@@ -79,6 +79,21 @@ node {
   shape: octagon;
 }
 
+:selected {
+  border-width: 25px;
+  border-color: orange;
+  border-style: dotted;
+}
+
+.from:selected {
+  border-color: #f00;
+}
+
+.to {
+  border-width: 5px;
+  border-color: #0f0;
+}
+
 .group {
   padding-top: 10px;
   padding-left: 10px;

@@ -56,7 +56,9 @@ const operateComponentActionType = {
     NODE_DIALOG: 'NODE_DIALOG',
     NODE_DIALOG_CLOSE: 'NODE_DIALOG_CLOSE',
     EDGE_DIALOG: 'EDGE_DIALOG',
-    EDGE_DIALOG_CLOSE: 'EDGE_DIALOG_CLOSE'
+    EDGE_DIALOG_CLOSE: 'EDGE_DIALOG_CLOSE',
+    SELECT_FROM: 'SELECT_FROM',
+    SELECT_TO: 'SELECT_TO'
 }
 
 const messageCenterActionType = {

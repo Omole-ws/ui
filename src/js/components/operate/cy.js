@@ -6,13 +6,15 @@ import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
 import loadEdgeHandles from 'promise?bluebird!cytoscape-edgehandles'
 
 import { store } from '../../../index'
-import { Action } from '../../actions'
+import { Action, DeskMode } from '../../actions'
 
 import style from '!raw!./cy-style.css'
 
 import { NodeType, EdgeType, EdgeTypeInverted } from '../../actions'
 import { uuid, tapeToCorrection } from '../../helpers'
+
 import CyMenus from './cy-menus.js'
+import CySelectFromTo from './cy-select-from-to'
 
 const cytoscape = Promise.all([loadCytoscape(), loadCxtMenu(), loadEdgeHandles()])
     .then(([cytoscape, cxtmenu, edgehandles]) => {
@@ -47,18 +49,7 @@ export default class Cy {
             }
         })
         this.menus = new CyMenus(this)
-
-
-        // cy.setDeskMode = this.props.setDeskMode
-        // cy.nodeDialog = this.props.nodeDialog
-        // cy.nodeDelete = this.props.nodeDelete
-        // cy.edgeDialog = this.props.edgeDialog
-        // cy.edgeCreate = this.props.edgeCreate
-        // cy.edgeDelete = this.props.edgeDelete
-        // cy.nodePositionChange = this.props.nodePositionChange
-        // cy.gvaZoom = this.props.gvaZoom
-        // cy.gvaPan = this.props.gvaPan
-
+        this.modeHandlers = []
     }
 
     setDeskMode(...args) {
@@ -114,10 +105,39 @@ export default class Cy {
         if (this.menus) {
             this.menus.destroy()
         }
+        this.modeHandlers.forEach(handler => handler.destroy())
+        this.modeHandlers = []
     }
 
-    setMenus(mode) {
+    setMode(mode, oldMode) {
         this.menus.setup(mode)
+        this.modeHandlers = this.modeHandlers.filter(handler => {
+            const ifPersist = handler.shouldPersist(mode, oldMode)
+            if (!ifPersist) {
+                handler.destroy()
+            }
+            return ifPersist
+        })
+        switch (mode) {
+            case DeskMode.SELECT_FROM_TO:
+                this.modeHandlers.push(new CySelectFromTo(this.cy))
+                break
+        }
+        // if (this.modeHandlers) {
+        //     Reflect
+        //     .ownKeys(this.modeHandlers)
+        //     .forEach(selector => {
+        //         if (this.modeHandlers[selector]) {
+        //             this.modeHandlers[selector].forEach(handler => {
+        //                 if (selector === '') {
+        //                     this.cy.off(handler.events, handler.handler)
+        //                 } else {
+        //                     this.cy.off(handler.events, handler.selector, handler.handler)
+        //                 }
+        //             })
+        //         }
+        //     })
+        // }
     }
 
     populate(graph, visualAttributes, tape) {
