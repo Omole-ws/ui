@@ -48,7 +48,9 @@ const tasksActionType = {
     TASK_PREPARE_CANCEL: 'TASK_PREPARE_CANCEL',
     TASK_CREATE: 'TASK_CREATE',
     TASK_GET: 'TASK_GET',
-    TASK_LIST_GET: 'TASK_LIST_GET'
+    TASK_LIST_GET: 'TASK_LIST_GET',
+    TASK_RESULTS_GET: 'TASK_RESULTS_GET',
+    SHOW_GROUPS: 'SHOW_GROUPS'
 }
 
 const operateComponentActionType = {
@@ -58,7 +60,8 @@ const operateComponentActionType = {
     EDGE_DIALOG: 'EDGE_DIALOG',
     EDGE_DIALOG_CLOSE: 'EDGE_DIALOG_CLOSE',
     SELECT_FROM: 'SELECT_FROM',
-    SELECT_TO: 'SELECT_TO'
+    SELECT_TO: 'SELECT_TO',
+    RB_TOGGLE: 'RB_TOGGLE'
 }
 
 const messageCenterActionType = {

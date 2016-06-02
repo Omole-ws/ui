@@ -23,78 +23,39 @@ class Nav extends React.Component {
         showMessageCenter: React.PropTypes.func.isRequired
     }
 
-    // computeChildren(mode) {
-    //     let menu = [<NavProfile key="-1"/>]
-    //     switch(mode) {
-    //         case Mode.LOGIN:
-    //         case Mode.REGISTRATION:
-    //             menu = [
-    //                 <a key="1" className={`orange item${mode === Mode.LOGIN ? ' active' : ''}`} href="#!/login">
-    //                     Sign In
-    //                 </a>,
-    //                 <a key="2" className={`orange item${mode === Mode.REGISTRATION ? ' active' : ''}`} href="#!/registration">
-    //                     Registration
-    //                 </a>
-    //             ]
-    //             break
-    //         case Mode.LIST:
-    //             menu = [
-    //                 <div key="1" className="orange link item" onClick={() => this.props.setCreatingGraph(true)}>
-    //                     <i className="add circle icon"></i>
-    //                     New
-    //                 </div>,
-    //                 <div key="2" className="orange link item" onClick={this.props.setCreatingGraph}>
-    //                     <i className="add circle icon"></i>
-    //                     New
-    //                 </div>,
-    //                 ...menu
-    //             ]
-    //             break
-    //         case Mode.OPERATE:
-    //             menu = [
-    //                 <a key="1" className="orange link item" href="#!/"> List </a>,
-    //                 ...menu
-    //             ]
-    //             break
-    //     }
-    //     // this.setState({menu: menu})
-    //     return menu
-    // }
-
-    // componentWillMount() {
-    //     this.computeChildren(this.props.mode)
-    // }
-
-    // componentWillReceiveProps(nextProps) {
-    //     if (nextProps.mode != this.props.mode) {
-    //         this.computeChildren(nextProps.mode)
-    //     }
-    // }
-    // shouldComponentUpdate(nextProps) {
-        // return nextProps.mode !== this.props.mode
-    // }
-
-                    // {this.props.mode !== Mode.LOGIN && this.props.mode !== Mode.REGISTRATION ?
-                    //     <div className="ui div right inverted menu">
-                    //         <div className="ui link item" onClick={() => this.props.showMessageCenter()}>
-                    //             <i className="ui large mail icon"></i>
-                    //         </div>
-                    //         <NavProfile/>
-                    //     </div>
-                    // :
-                    //     null
-                    // }
     render() {
-        // let menu = this.computeChildren(this.props.mode)
+        let  leftChildren = null, rightChildren = null
+        if (this.props.children) {
+            leftChildren = this.props.children
+                .filter(e => !e.props.right)
+                .map((e, i) => ({ ...e, key: i }))
+            rightChildren = this.props.children
+                .filter(e => e.props.right)
+                .concat(<NavProfile/>)
+                .map((e, i) => ({ ...e, key: i }))
+        }
         return (
-                <NavTmpl logo={logo} restrict={() => this.props.mode === Mode.LOGIN || this.props.mode === Mode.REGISTRATION}
-                    showMC={this.props.showMessageCenter} profile={<NavProfile/>}>
-                    {this.props.children}
+                <NavTmpl logo={ logo }
+                    restrict={ () => this.props.mode === Mode.LOGIN || this.props.mode === Mode.REGISTRATION }
+                    rightChildren={ rightChildren }
+                    profile={<NavProfile/>}>
+                    { leftChildren }
                 </NavTmpl>
         )
     }
 }
 
+//                                                      888
+//                                                      888
+//                                                      888
+//  .d8888b .d88b.  88888b.  88888b.   .d88b.   .d8888b 888888
+// d88P"   d88""88b 888 "88b 888 "88b d8P  Y8b d88P"    888
+// 888     888  888 888  888 888  888 88888888 888      888
+// Y88b.   Y88..88P 888  888 888  888 Y8b.     Y88b.    Y88b.
+//  "Y8888P "Y88P"  888  888 888  888  "Y8888   "Y8888P  "Y888
+//
+//
+//
 
 function mapStateToProps(state) {
     return { mode: state.mode }

@@ -37,7 +37,7 @@ export default class Import extends React.Component {
 
     _activate(graph) {
         if(graph) {
-            this.setState({graph: graph, title: graph.info.label || '', description: graph.info.comment || ''}, this.show)
+            this.setState({graph: graph, title: graph.label || '', description: graph.comment || ''}, this.show)
         } else {
             this.setState({graph: null, title: '', description: ''}, this.show)
         }
@@ -60,9 +60,9 @@ export default class Import extends React.Component {
                 const fileName = ev.target.files[0].name
                 fr.onload = e => {
                     let graph = JSON.parse(e.target.result)
-                    graph = _.merge(graph, {id: null, uid: null, info: {tstamp: null}})
-                    const title = this.state.title || graph.info.label || fileName.replace(/\.(json|JSON)$/, '')
-                    const description = graph.info.comment || ''
+                    graph = _.merge(graph, {id: null, uid: null, tstamp: null})
+                    const title = this.state.title || graph.label || fileName.replace(/\.(json|JSON)$/, '')
+                    const description = graph.comment || ''
                     this.setState({graph, title, description, file: fileName})
                 }
                 fr.readAsText(ev.target.files[0])
@@ -73,7 +73,10 @@ export default class Import extends React.Component {
     }
 
     _submit(ev) {
-        this.props.postNewGraph(_.merge(this.state.graph, {info: {label: this.state.title, comment: this.state.description}}))
+        this.props.postNewGraph(_.merge(this.state.graph, {
+            label: this.state.title,
+            comment: this.state.description
+        }))
         ev.preventDefault()
     }
 

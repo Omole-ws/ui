@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 
-import { ActionType } from '../actions'
+import { ActionType, TaskStatus } from '../actions'
 
 function onScreen(state = false, action) {
     switch (action.type) {
@@ -16,40 +16,73 @@ function onScreen(state = false, action) {
     }
 }
 
-function title(state = '', action) {
+function algo(state = {}, action) {
     if (action.type === ActionType.TASK_PREPARE) {
-        return action.payload.name
-    } else {
-        return state
-    }
-}
-
-function kind(state = '', action) {
-    if (action.type === ActionType.TASK_PREPARE) {
-        return action.payload.inputParam
-    } else {
-        return state
-    }
-}
-
-function from(state = {}, action) {
-    if (action.type === ActionType.SELECT_FROM) {
         return action.payload
     } else {
         return state
+    }
+}
+
+// function kind(state = '', action) {
+//     if (action.type === ActionType.TASK_PREPARE) {
+//         return action.payload.inputParam
+//     } else {
+//         return state
+//     }
+// }
+
+function from(state = {}, action) {
+    switch (action.type) {
+        case ActionType.SELECT_FROM:
+            return action.payload
+
+        case ActionType.TASK_PREPARE:
+            return {}
+
+        default:
+            return state
     }
 }
 
 function to(state = {}, action) {
-    if (action.type === ActionType.SELECT_TO) {
-        return action.payload
-    } else {
-        return state
+    switch (action.type) {
+        case ActionType.SELECT_TO:
+            return action.payload
+
+        case ActionType.TASK_PREPARE:
+            return {}
+
+        default:
+            return state
     }
 }
 
-export const pendingAlgo = combineReducers({ onScreen, title, kind, from, to })
+export const pendingAlgo = combineReducers({ onScreen, algo, from, to })
 
-export function tasks(state = [], action) {
-    return state
+export function tasks(state = {}, action) {
+    switch (action.type) {
+        case `${ActionType.TASK_CREATE}_OK`:
+        case `${ActionType.TASK_GET}_OK`:
+            return { ...state, [action.payload.tid]: action.payload }
+
+        case `${ActionType.TASK_RESULTS_GET}_OK`:
+            return {
+                ...state,
+                [action.payload.tid]: {
+                    ...state[action.payload.tid],
+                    results: action.payload.results,
+                    loaded: true
+                }
+            }
+
+        case `${ActionType.TASK_GET}_PENDING`:
+            return { ...state, [action.payload]: { ...state[action.payload], status: TaskStatus.TS_FETCHING } }
+
+        case `${ActionType.TASK_GET}_FAIL`:
+            return { ...state, [action.payload]: { ...state[action.payload], status: TaskStatus.TS_RUNNING } }
+
+        default:
+            return state
+    }
 }

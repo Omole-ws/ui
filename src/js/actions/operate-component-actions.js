@@ -27,3 +27,7 @@ export function selectFrom({ id, name }) {
 export function selectTo({ id, name }) {
     return { type: ActionType.SELECT_TO, payload: { id, name } }
 }
+
+export function toggleResultBoard() {
+    return { type: ActionType.RB_TOGGLE }
+}

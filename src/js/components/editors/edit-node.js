@@ -106,10 +106,8 @@ class EditNode extends React.Component {
                     id,
                     active: NodeRole[this.state.type],
                     type: this.state.type,
-                    info: {
-                        label: this.state.label,
-                        comment: this.state.note
-                    }
+                    label: this.state.label,
+                    comment: this.state.note
                 })
             }
             // if (this.state.type !== this.props.node.data('type')) {
@@ -121,10 +119,8 @@ class EditNode extends React.Component {
                 id,
                 active: NodeRole[this.state.type],
                 type: this.state.type,
-                info: {
-                    label: this.state.label,
-                    comment: this.state.note
-                },
+                label: this.state.label,
+                comment: this.state.note,
                 position: this.state.position
             })
             // this.props.nodePositionChange(id, this.state.position)

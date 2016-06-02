@@ -4,9 +4,8 @@ import { ActionType } from '../actions'
 
 function _patch(graph, patch) {
     const patchedGraph = {...graph, isFetching: false}
-    if (patch.info) {
-        patchedGraph.info = {...graph.info, ...patch.info}
-    }
+    patchedGraph.label = patch.label || patchedGraph.label
+    patchedGraph.comment = patch.comment || patchedGraph.comment
     if (patch.gInserts) {
         let nodes = graph.nodes
         if (Reflect.ownKeys(patch.gDeletions.nodes).length > 0) {
@@ -45,7 +44,6 @@ function graph(state = {isFetching: false, lastUpdated: null}, action) {
 
         case `${ActionType.GRAPH_PATCH}_OK`:
             return _patch(state, action.payload)
-            // return {...state, ...action.payload, info: {...state.info, ...action.payload.info}, isFetching: false}
 
         case `${ActionType.GRAPH_DELETE}_OK`:
             return null
@@ -89,7 +87,9 @@ export function graphs(state = {isFetching: false, list: []}, action) {
             }
 
         case `${ActionType.GRAPH_GET}_PENDING`:
-            if (!state.list.some(g => g.id === action.payload.id)) {state.list.push({id: action.payload.id, info: {label: ''}})}
+            if (!state.list.some(g => g.id === action.payload.id)) {
+                state.list.push({ id: action.payload.id, label: '' })
+            }
             // break is omitted intentionally
         case `${ActionType.GRAPH_GET}_OK`:
         case `${ActionType.GRAPH_GET}_FAIL`:

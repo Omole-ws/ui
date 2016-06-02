@@ -40,7 +40,7 @@ export default class EditGraphList extends React.Component {
 
     _activate(graph) {
         if(graph) {
-            this.setState({graph: graph, title: graph.info.label || '', description: graph.info.comment || ''}, this.show)
+            this.setState({graph: graph, title: graph.label || '', description: graph.comment || ''}, this.show)
         } else {
             this.setState({graph: null, title: '', description: ''}, this.show)
         }
@@ -61,9 +61,18 @@ export default class EditGraphList extends React.Component {
 
     _submit(ev) {
         if (this.state.graph) {
-            this.props.patchGraph({id: this.state.graph.id, info: {label: this.state.title, comment: this.state.description}})
+            this.props.patchGraph({
+                id: this.state.graph.id,
+                label: this.state.title,
+                comment: this.state.description
+            })
         } else {
-            this.props.postNewGraph({info: {label: this.state.title, comment: this.state.description}, nodes: [], edges: []})
+            this.props.postNewGraph({
+                label: this.state.title,
+                comment: this.state.description,
+                nodes: [],
+                edges: []
+            })
         }
         ev.preventDefault()
     }
@@ -71,7 +80,7 @@ export default class EditGraphList extends React.Component {
     render() {
         return <EditGraphListTmpl setRef={this.setRref} ifNew={this.state.graph === null}
             title={this.state.title} description={this.state.description}
-            timeStamp={this.state.graph ? new Date(Number.parseInt(this.state.graph.info.tstamp)).toString() : null}
+            timeStamp={this.state.graph ? new Date(Number.parseInt(this.state.graph.tstamp)).toString() : null}
             handleFieldChange={this.handleFieldChange} submit={this.submit}/>
     }
 }

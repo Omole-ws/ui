@@ -25,6 +25,8 @@ class Desk extends React.Component {
         graph: React.PropTypes.object,
         visualAttributes: React.PropTypes.object,
         tape: React.PropTypes.array,
+        groups: React.PropTypes.object,
+        paths: React.PropTypes.object,
         deskMode: React.PropTypes.string.isRequired,
         fetchGraph: React.PropTypes.func.isRequired,
         fetchGVA: React.PropTypes.func.isRequired
@@ -35,6 +37,12 @@ class Desk extends React.Component {
             const news = _.difference(nextProps.tape)(this.props.tape)
             this.state.cy.applyChanges(news)
         }
+
+        if (nextProps.groups !== this.props.groups) {
+            this.props.groups && this.state.cy.hideGroups(this.props.groups)
+            nextProps.groups && this.state.cy.showGroups(nextProps.groups)
+        }
+
         this.setState({isDataReady:
             _.flow(_.at(['graph.isFetching', 'visualAttributes.isFetching']), _.all(e => e === false))(nextProps)})
     }
@@ -80,7 +88,7 @@ class Desk extends React.Component {
                 className={`ui blurring dimmable ${this.state.isDataReady && this.state.cy ? '' : 'dimmed'} cytoscape`}
                 style={{cursor: this.props.deskMode === DeskMode.NODE_CREATE ? 'crosshair' : 'auto'}}>
                 <h1 className={`ui disabled center alligned ${this.props.tape && this.props.tape.length > 0 ? 'red' : 'green'} header`}>
-                    {_.get('graph.info.label')(this.props)}
+                    { this.props.graph && this.props.graph.label }
                 </h1>
                 <div className="ui simple inverted dimmer">
                     <div className="ui large text loader">
@@ -106,6 +114,8 @@ function mapStateToProps(state, ownProps) {
         graph: state.graphs.list.find(g => g.id === ownProps.gid),
         visualAttributes: state.graphsExtra.visualAttributes[ownProps.gid],
         tape: state.tape[ownProps.gid],
+        groups: state.operating.groups,
+        paths: state.operating.paths,
         deskMode: state.operating.deskMode
     }
 }

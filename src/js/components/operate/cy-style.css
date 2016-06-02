@@ -80,18 +80,17 @@ node {
 }
 
 :selected {
-  border-width: 25px;
-  border-color: orange;
-  border-style: dotted;
+  border-width: 5px;
+  border-color: black;
+  border-style: double;
 }
 
 .from:selected {
-  border-color: #f00;
+  border-color: #0f0;
 }
 
-.to {
-  border-width: 5px;
-  border-color: #0f0;
+.to:selected {
+  border-color: #f00;
 }
 
 .group {
@@ -161,6 +160,7 @@ edge {
   target-arrow-color: #bc00ff;
 }
 
+/*
 :selected {
   border-width: 5px;
   border-color: black;
@@ -182,17 +182,18 @@ edge {
 .group.dim {
   opacity: 1;
 }
+*/
 
+/*
 .hl {
   opacity: 1;
-
-  /* line-style: dotted; */
 }
 
 .hl-active {
   opacity: 1;
   line-style: dashed;
 }
+*/
 
 /* edge.take.hl-active, edge.grant.hl-active {
   width: 4px;
@@ -202,6 +203,7 @@ edge.read.hl-active, edge.write.hl-active {
 }
 */
 
+/*
 .hl-start {
   background-color: green;
 }
@@ -209,3 +211,4 @@ edge.read.hl-active, edge.write.hl-active {
 .hl-end {
   background-color: red;
 }
+*/

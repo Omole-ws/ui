@@ -1,14 +1,14 @@
 .ui.card.cy-widget(ref=setRef, class=['', 'tl', 'tr', 'br', 'bl'][quater])
     .content
-        i.large.left.floated.square.icon(onClick=snapTo(1), class=(quater===1? 'disabled': 'orange'))
-        i.large.right.floated.square.icon(onClick=snapTo(2), class=(quater===2? 'disabled': 'orange'))
+        i.large.left.floated.square.icon(onClick=snapTo(1), class=(quater === 1 ? 'disabled' : 'orange'))
+        i.large.right.floated.square.icon(onClick=snapTo(2), class=(quater === 2 ? 'disabled' : 'orange'))
         .center.aligned.header Task
     .content
         form.ui.form
-            .field
+            .inline.field
                 label Algorythm
                 .ui.transparent.input
-                    input(type="text", readonly, value=title, readOnly)
+                    input(type="text", readonly, value=algo.name, readOnly)
             .grouped.fields
                 label(for="label") Select LABEL
                 each val, idx in ['READ', 'WRITE']
@@ -16,18 +16,19 @@
                         .ui.radio.checkbox
                             input(type="radio" name="label" checked=val===label tabindex="0" value=val, onChange=handleFieldChange)
                             label= val
-            .field
-                label From
-                .ui.transparent.input
-                    input(type="text", readonly, value=fromName, readOnly)
-            .field
-                label To
-                .ui.transparent.input
-                    input(type="text", readonly, value=toName, readOnly)
+            if algo.inputParam === ftType
+                .inline.field
+                    label From
+                    .ui.transparent.input
+                        input(type="text", readonly, value=fromName, readOnly)
+                .inline.field
+                    label To
+                    .ui.transparent.input
+                        input(type="text", readonly, value=toName, readOnly)
             
     .content
-        i.large.left.floated.square.icon(onClick=snapTo(4), class=(quater===4? 'disabled': 'orange'))
-        i.large.right.floated.square.icon(onClick=snapTo(3), class=(quater===3? 'disabled': 'orange'))
+        i.large.left.floated.square.icon(onClick=snapTo(4), class=(quater === 4 ? 'disabled' : 'orange'))
+        i.large.right.floated.square.icon(onClick=snapTo(3), class=(quater === 3 ? 'disabled' : 'orange'))
         .center.aligned
-            button.ui.green.button Launch
-            button.ui.red.button(onClick=cancel) Cancel
+            .ui.green.compact.basic.button(class=(label && (algo.inputParam !== ftType || fromName && toName) ? '' : 'disabled'), onClick=launch) Launch
+            .ui.red.compact.basic.button(onClick=cancel) Cancel

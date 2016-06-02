@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 
-import { ActionType, Mode, DeskMode, AlgoInputType } from '../actions'
+import { ActionType, Mode, DeskMode, AlgoInputType, TaskStatus } from '../actions'
 
 
 function nodeEditorOnScreen(state = false, action) {
@@ -72,6 +72,62 @@ function edge(state = null, action) {
 
 const edgeEditor = combineReducers({onScreen: edgeEditorOnScreen, edge})
 
+function rbOnScreen(state = false, action) {
+    switch (action.type) {
+        case ActionType.RB_TOGGLE:
+            return !state
+
+        default:
+            return state
+    }
+}
+
+function hasNew(state = false, action) {
+    switch (action.type) {
+        case `${ActionType.TASK_CREATE}_OK`:
+        case `${ActionType.TASK_GET}_OK`:
+            return action.payload.status === TaskStatus.TS_COMPLETED
+
+        case ActionType.RB_TOGGLE:
+            return false
+
+        default:
+            return state
+    }
+}
+
+function groupByType(state = false, action) {
+    // TODO implement RB_GROUP_BY_TYPE reducer
+    return state
+}
+
+function filter(state = null, action) {
+    // TODO implement RB_FILTER reducer
+    return state
+}
+
+const resultBoard = combineReducers({onScreen: rbOnScreen, hasNew, groupByType, filter})
+
+function groups(state = null, action) {
+    switch (action.type) {
+        case ActionType.SHOW_GROUPS:
+            return action.payload
+
+        default:
+            return state
+    }
+}
+
+function paths(state = null, action) {
+    switch (action.type) {
+        case ActionType.SHOW_PATHS:
+            return action.payload
+
+        default:
+            return state
+    }
+}
+
 function deskMode(state = DeskMode.BASIC, action) {
     switch (action.type) {
         case ActionType.SET_DESK_MODE:
@@ -96,4 +152,4 @@ function deskMode(state = DeskMode.BASIC, action) {
     }
 }
 
-export const operating = combineReducers({nodeEditor, edgeEditor, deskMode})
+export const operating = combineReducers({nodeEditor, edgeEditor, resultBoard, groups, paths, deskMode})

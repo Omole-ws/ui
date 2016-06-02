@@ -9,9 +9,12 @@ import * as tasksActions from './actions/tasks-actions'
 import * as operateComponentActions from './actions/operate-component-actions'
 import * as messageCenterActions from './actions/mcenter-actions'
 
-export const DataURI = '/app/r/graphs'
-export const GvaURI = '/app/r/vizattrs'
-export const AlgoURI = '/app/t'
+export const DataURL = '/app/r/graphs'
+export const GvaURL = '/app/r/vizattrs'
+export const AlgoURL = '/app/t'
+export const TaskListURL = '/app/t/cctasks'
+export const TRNodeGroupURL = '/app/r/nodegroups'
+export const TRPathsURL = '/app/r/paths'
 
 export const Action = {
     ...routerActions,
@@ -46,6 +49,18 @@ export const AlgoInputType = {
     G: 'INPUT_GID',
     GL: 'INPUT_GID_LABEL',
     GLFT: 'INPUT_GID_FROM_TO_LABEL'
+}
+
+export const TaskStatus = {
+    TS_START: 'TSTART',
+    TS_COMPLETED: 'TCOMPLETE',
+    TS_RUNNING: 'TRUN',
+    TS_ERROR: 'TERROR',
+    TS_FETCHING: '_FETCH'
+}
+export const TaskResultsType = {
+    TR_NODE_GROUP: 'OUTPUT_VERTEXMAP',
+    TR_PATHS: 'OUTPUT_PATHES'
 }
 
 export const NodeType = {

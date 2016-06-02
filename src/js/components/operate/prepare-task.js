@@ -3,12 +3,10 @@ import '../../../../semantic/dist/components/card.css'
 import '../../../../semantic/dist/components/checkbox.css'
 import '../../../../semantic/dist/components/checkbox.js'
 
-import _ from 'lodash'
-
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Action, DeskMode } from '../../actions'
+import { Action, AlgoInputType } from '../../actions'
 import PrepareTaskTmpl from '!jade-react!./prepare-task.jade'
 
 class PrepareTask extends React.Component {
@@ -20,11 +18,18 @@ class PrepareTask extends React.Component {
         }
         this.snapTo = q => this._snapTo(q)
         this.handleFieldChange = e => this._handleFieldChange(e)
+        this.launch = () => this._launch()
     }
     static propTypes = {
         onScreen: React.PropTypes.bool.isRequired,
-        title: React.PropTypes.string,
-        kind: React.PropTypes.string,
+        algo: React.PropTypes.shape({
+            name: React.PropTypes.string.isRequired,
+            url: React.PropTypes.string.isRequired,
+            help: React.PropTypes.string,
+            inputParam: React.PropTypes.string.isRequired,
+            outputParam: React.PropTypes.string.isRequired
+        }),
+        gid: React.PropTypes.string.isRequired,
         from: React.PropTypes.shape({
             id: React.PropTypes.string,
             name: React.PropTypes.string
@@ -33,6 +38,7 @@ class PrepareTask extends React.Component {
             id: React.PropTypes.string,
             name: React.PropTypes.string
         }),
+        createTask: React.PropTypes.func.isRequired,
         cancel: React.PropTypes.func.isRequired
     }
 
@@ -42,7 +48,6 @@ class PrepareTask extends React.Component {
             .checkbox()
     }
 
-
     render() {
         if (!this.props.onScreen) {
             return null
@@ -50,13 +55,14 @@ class PrepareTask extends React.Component {
         return <PrepareTaskTmpl setRef = { r => this.ref = r }
             snapTo = { this.snapTo }
             handleFieldChange = { this.handleFieldChange }
+            launch = { this.launch }
             cancel = { this.props.cancel }
-            label = { this.state.label }
             quater = { this.state.quater }
-            title = { this.props.title }
-            kind = { this.props.kind }
+            label = { this.state.label }
+            algo = { this.props.algo }
             fromName = { this.props.from.name }
-            toName = { this.props.to.name } />
+            toName = { this.props.to.name }
+            ftType = { AlgoInputType.GLFT } />
     }
 
     _snapTo(quater) {
@@ -64,7 +70,17 @@ class PrepareTask extends React.Component {
     }
 
     _handleFieldChange(ev) {
-        this.setState({[ev.target.name]: ev.target.value})
+        this.setState({
+            [ev.target.name]: ev.target.value
+        })
+    }
+
+    _launch() {
+        let params = { gid: this.props.gid, cclabel: this.state.label }
+        if (this.props.algo.inputParam === AlgoInputType.GLFT) {
+            params = { ...params, from: this.props.from.id, to: this.props.to.id }
+        }
+        this.props.createTask({ algo: this.props.algo, params })
     }
 }
 
@@ -74,16 +90,16 @@ class PrepareTask extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        // gr
         onScreen: state.pendingAlgo.onScreen,
-        title: state.pendingAlgo.title,
-        kind: state.pendingAlgo.kind,
+        algo: state.pendingAlgo.algo,
+        gid: state.currentGraph,
         from: state.pendingAlgo.from,
         to: state.pendingAlgo.to
     }
 }
 
 const mapDispatchToProps = {
+    createTask: Action.createTask,
     cancel: Action.cancelTaskPrepare
 }
 

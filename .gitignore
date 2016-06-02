@@ -8,3 +8,4 @@ semantic/src/*
 !semantic/src/site
 semantic.json
 src/img/tmp
+dist

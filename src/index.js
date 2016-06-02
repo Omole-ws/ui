@@ -16,6 +16,8 @@ import configureRouter from './js/router'
 import reducers from './js/reducers'
 import Root from './js/components/root'
 
+import { taskCheck } from './js/tasker'
+
 
 // const createStoreWithMiddleware = applyMiddleware(
 //     loggerMiddleware(),
@@ -27,6 +29,8 @@ export const store = createStore(combineReducers(reducers), applyMiddleware(logg
 
 
 configureRouter(store)
+
+store.subscribe(taskCheck)
 
 ReactDOM.render(
     <Provider store={store}>

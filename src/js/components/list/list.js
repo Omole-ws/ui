@@ -64,7 +64,7 @@ class ListView extends React.Component {
         return(
             <div>
                 <Nav>
-                    <div className="ui dropdown item" ref={r => this.dropdowns.push(r)}>
+                    {[<div className="ui dropdown item" key="11" ref={r => this.dropdowns.push(r)}>
                         Graph
                         <i className="ui dropdown icon"></i>
                         <div className="ui menu">
@@ -77,7 +77,7 @@ class ListView extends React.Component {
                                 Import
                             </div>
                         </div>
-                    </div>
+                    </div>]}
                 </Nav>
 
                 <MessageCenter/>

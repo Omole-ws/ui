@@ -36,6 +36,7 @@ export default class Cy {
             // autounselectify: true,
             motionBlur: true
         })
+
         this.cy.edgehandles({
             ...Cy.edgeHandlesDefaults,
             edgeParams: () => ({ data: { id: uuid() }, classes: this.menus.type }),
@@ -84,13 +85,25 @@ export default class Cy {
     _bindHandlers() {
         this.panHandlerID = null
         this.cy.on('pan', () => {
-            clearTimeout(this.panHandlerID)
-            this.panHandlerID = setTimeout(() => this.gvaPan(this.cy.pan()), 2000)
+            const pan = this.cy.pan()
+            if (pan.x !== this.pan.x || pan.y !== pan.y) {
+                clearTimeout(this.panHandlerID)
+                this.panHandlerID = setTimeout(() => {
+                    this.gvaPan(this.cy.pan())
+                    this.pan = pan
+                }, 2000)
+            }
         })
         this.zoomHandlerID = null
         this.cy.on('zoom', () => {
-            clearTimeout(this.zoomHandlerID)
-            this.zoomHandlerID = setTimeout(() => this.gvaZoom(this.cy.zoom()), 2000)
+            const zoom = this.cy.zoom()
+            if (zoom !== this.zoom) {
+                clearTimeout(this.zoomHandlerID)
+                this.zoomHandlerID = setTimeout(() => {
+                    this.gvaZoom(this.cy.zoom())
+                    this.zoom = zoom
+                }, 2000)
+            }
         })
         this.positionHandleID = {}
         this.cy.on('position', 'node', ev => {
@@ -183,6 +196,8 @@ export default class Cy {
             base.nodeCreations = nodeCreations.reduce((acc, val) => ({...acc, [val.id]: val }), {})
         }
         this.applyChanges(tape, base)
+        this.pan = this.cy.pan()
+        this.zoom = this.cy.zoom()
         this._bindHandlers()
     }
 
@@ -233,6 +248,25 @@ export default class Cy {
         })
     }
 
+    showGroups(groups) {
+        Reflect.ownKeys(groups)
+        .forEach(g => {
+            const id = g.replace(/:/g, '-')
+            this.cy.add({group: 'nodes', data: { id, label: g}, classes: 'group' })
+            groups[g].forEach(nid => {
+                this.cy.$(`#${nid}`).move({parent: id})
+            })
+        })
+    }
+
+    hideGroups(groups) {
+        Reflect.ownKeys(groups)
+        .forEach(g => {
+            const groupRoot = this.cy.$(`#${g.replace(/:/g, '-')}`)
+            groupRoot.children().move({ parent: null })
+            this.cy.remove(groupRoot)
+        })
+    }
 
     //       _______ _______ _______ _______ _____ _______ _______
     //       |______    |    |_____|    |      |   |       |______
@@ -300,19 +334,10 @@ export default class Cy {
         const converted = {
             data: {
                 id: node.id,
-                label: node.info && node.info.label,
-                note: node.info && node.info.comment,
+                label: node.label,
+                note: node.comment,
                 active: node.active,
                 type: node.type || node.active
-                    // label: node.info.label + '(' + node.level + ')',
-                    // attr: node.info.atrib,
-                    // status: node.info.status,
-                    // active: node.active,
-                    // level: node.level,
-                    // zone: node.zone
-                    // },
-                    // scratch: {
-                    // src: node
             },
             position: node.position || { x: 0, y: 0 }
         }
@@ -321,7 +346,7 @@ export default class Cy {
             converted.classes = `${converted.classes} ${node.type}`
         }
         if (opts && opts.ifShowLevel) {
-            converted.data.label = `${node.info.label}(${node.level})`
+            converted.data.label = `${node.label}(${node.level})`
         }
         return converted
     }
@@ -332,17 +357,11 @@ export default class Cy {
         const converted = {
             data: {
                 id: edge.id,
-                label: edge.info && edge.info.label,
-                note: edge.info && edge.info.comment,
-                // attr: edge.info.atrib,
-                // status: edge.info.status,
-                // cclabel: edge.cclabel,
+                label: edge.label,
+                note: edge.comment,
                 source: edge.source,
                 target: edge.target,
                 cclabel: edge.cclabel
-                    // },
-                    // scratch: {
-                    // src: edge
             }
         }
         converted.classes = EdgeType[edge.cclabel]

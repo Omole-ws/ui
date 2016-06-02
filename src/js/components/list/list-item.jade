@@ -1,14 +1,14 @@
 - var link = "#!/" + graph.id + "/operate"
-- var timeStamp = new Date(Number.parseInt(graph.info.tstamp)).toString()
+- var timeStamp = new Date(Number.parseInt(graph.tstamp)).toString()
 // - var timeStamp = (new Date()).toString()
 .item.blurring.dimmable(ref=setRef, class=graph.isFetching?'dimmed':'')
     i.large.clockwise.rotated.orange.fork.icon
     .content
-        a.header(href=link)= graph.info.label
+        a.header(href=link)= graph.label
         .meta
             .ui.small.basic.label Last modified
                 .detail= timeStamp
-        .description!= graph.info.comment ? graph.info.comment.replace(/\n/g, '<br>') : ''
+        .description!= graph.comment ? graph.comment.replace(/\n/g, '<br>') : ''
         .extra
             .ui.compact.small.basic.button(onClick=edit(graph))
                 i.edit.icon
@@ -16,7 +16,7 @@
             .ui.compact.small.basic.button(onClick=duplicate(graph))
                 i.copy.icon
                 | Duplicate
-            a.ui.compact.small.basic.button(href='/app/r/graphs/' + graph.id, download=graph.info.label + '.json')
+            a.ui.compact.small.basic.button(href='/app/r/graphs/' + graph.id, download=graph.label + '.json')
                 i.cloud.download.icon
                 | Export
             .ui.compact.small.basic.button(onClick=remove(graph))

@@ -1,0 +1,11 @@
+//- TODO revrite
+div
+    =task.name
+    br
+    =task.tid
+    div
+        if !task.loaded
+            .ui.red.compact.basic.button(onClick=getTaskResults(task)) Load
+        .ui.red.compact.basic.icon.button(onClick=showResults(task.tid))
+            i.ui.unhide.icon
+        

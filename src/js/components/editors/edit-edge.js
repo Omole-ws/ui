@@ -91,10 +91,8 @@ class EditEdge extends React.Component {
             this.props.edgeUpdate(id, {
                 id,
                 cclabel: EdgeTypeInverted[this.state.type],
-                info: {
-                    label: this.state.label,
-                    comment: this.state.note
-                }
+                label: this.state.label,
+                comment: this.state.note
             })
         }
         ev.preventDefault()

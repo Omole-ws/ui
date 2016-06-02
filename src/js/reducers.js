@@ -28,7 +28,8 @@ export const store_EX = {
                 isFetching: false,
                 id: 'str',
                 uid: 'str',
-                info: {label: 'str', comment:''},
+                label: 'str',
+                comment:'',
                 nodes: [],
                 edges: []
             }
@@ -54,8 +55,9 @@ export const store_EX = {
     },
     pendingAlgo: {
         onScreen: false,
-        title: '',
-        kind: ''
+        algo: {},
+        from: { id: '', name: ''},
+        to: { id: '', name: ''}
     },
     operating: {
         nodeEditor: {
@@ -67,7 +69,14 @@ export const store_EX = {
             onScreen: false,
             edge: null
         },
-
+        resultBoard: {
+            onScreen: false,
+            hasNew: false,
+            groupByType: true,
+            filter: 'LOADED' & 'NEW'
+        },
+        group: null,
+        paths: null,
         deskMode: 'NODE_CREATE' || 'CONNECT' || 'BASIC' || 'SELECT_FROM_TO'
     },
     mcenter: {

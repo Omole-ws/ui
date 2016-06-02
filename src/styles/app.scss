@@ -15,8 +15,8 @@
 
 .cytoscape {
   position: fixed !important;
-  z-index: 100;
-  top: 3rem;
+  z-index: 1;
+  top: 0;
   right: 0;
   bottom: 0;
   left: 0;
@@ -62,8 +62,7 @@
   left: 0;
 
   height: auto !important;
-  // z-index: 101;
-  .segment {
+  & .segment {
     padding: 5px 0 15px;
     .message {
       margin: 5px 0;
