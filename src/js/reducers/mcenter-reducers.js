@@ -10,6 +10,9 @@ function onScreen(state = false, action) {
         case ActionType.MSG_CENTER_HIDE:
             return false
 
+        case `${ActionType.LOGOUT}_OK`:
+            return false
+
         default:
             return state
     }
@@ -43,6 +46,9 @@ function messages(state = [], action) {
                 type: 'error',
                 msg: `Update of graph '${action.payload.id}' has failed. (${action.payload.error})`
             })
+
+        case `${ActionType.LOGOUT}_OK`:
+            return []
 
         default:
             return state

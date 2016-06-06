@@ -8,7 +8,6 @@ node {
   border-width: 2px;
   text-valign: center;
   text-halign: center;
-  text-opacity: 1;
   text-outline-width: 2;
   text-outline-color: #546e7a;
   min-zoomed-font-size: 9;
@@ -79,6 +78,49 @@ node {
   shape: octagon;
 }
 
+.group {
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+  label: data(label);
+  color: #000;
+  text-valign: top;
+  text-halign: center;
+  text-outline-width: 0;
+  background-color: #eceff1;
+  border-width: 1;
+  border-color: #000;
+  border-style: dashed;
+}
+
+/*
+.zone {
+  background-color: #eceff1;
+}
+
+.level {
+  background-color: #fff9c4;
+}
+*/
+
+node.path {
+  font-style: italic;
+  opacity: 1;
+}
+
+node.path-from {
+  border-width: 5px;
+  border-style: solid;
+  border-color: #0f0;
+}
+
+node.path-to {
+  border-width: 5px;
+  border-style: solid;
+  border-color: #f00;
+}
+
 :selected {
   border-width: 5px;
   border-color: black;
@@ -91,28 +133,6 @@ node {
 
 .to:selected {
   border-color: #f00;
-}
-
-.group {
-  padding-top: 10px;
-  padding-left: 10px;
-  padding-bottom: 10px;
-  padding-right: 10px;
-  label: data(label);
-  text-valign: top;
-  text-halign: center;
-  background-color: #eceff1;
-  border-width: 1;
-  border-color: #000;
-  border-style: dotted;
-}
-
-.zone {
-  background-color: #eceff1;
-}
-
-.level {
-  background-color: #fff9c4;
 }
 
 edge {
@@ -160,6 +180,33 @@ edge {
   target-arrow-color: #bc00ff;
 }
 
+edge.path {
+  opacity: 1;
+}
+
+edge.path-hl {
+  width: 3px;
+  label: data(plabel);
+  font-style: italic;
+  font-size: 10;
+  color: #000;
+  text-background-color: orange;
+  text-background-opacity: 1;
+  text-background-shape: roundrectangle;
+}
+
+.dim {
+  opacity: 0.2;
+}
+
+.group.dim {
+  opacity: 1;
+}
+
+.path.dim {
+  opacity: 1;
+}
+
 /*
 :selected {
   border-width: 5px;
@@ -175,13 +222,6 @@ edge {
   border-color: red;
 }
 
-.dim {
-  opacity: 0.2;
-}
-
-.group.dim {
-  opacity: 1;
-}
 */
 
 /*

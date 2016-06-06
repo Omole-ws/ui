@@ -26,6 +26,8 @@ export function tape(state = {}, action) {
         // return _.omitBy({...state, [action.payload.gid]: [...state[action.payload.gid], action]}, v => v === null)
         const gid = action.payload.gid || action.payload.id
         return _.omitBy({...state, [gid]: record(state[gid], action)}, v => v === null)
+    } else if (action.type === `${ActionType.LOGOUT}_OK`) {
+        return {}
     } else {
         return state
     }

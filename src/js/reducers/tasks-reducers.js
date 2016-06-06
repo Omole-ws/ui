@@ -11,6 +11,9 @@ function onScreen(state = false, action) {
         case `${ActionType.TASK_CREATE}_PENDING`:
             return false
 
+        case `${ActionType.LOGOUT}_OK`:
+            return false
+
         default:
             return state
     }
@@ -81,6 +84,9 @@ export function tasks(state = {}, action) {
 
         case `${ActionType.TASK_GET}_FAIL`:
             return { ...state, [action.payload]: { ...state[action.payload], status: TaskStatus.TS_RUNNING } }
+
+        case `${ActionType.LOGOUT}_OK`:
+            return {}
 
         default:
             return state

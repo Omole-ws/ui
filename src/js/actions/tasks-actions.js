@@ -21,39 +21,39 @@ export function createTask({ algo, params }) {
             })
             .concat(`ts=${getState().graphs.list.find(g => g.id === params.gid).tstamp}`)
             .join('&')
-        dispatch(netAction({
+        netAction({
             url: `${AlgoURL}/${algo.url}?${qs}`,
             onSuccess: payload => dispatch({ type: `${ActionType.TASK_CREATE}_OK`, payload }),
             onError: error => dispatch({ type: `${ActionType.TASK_CREATE}_FAIL`, error, payload: { algo, params } })
-        }))
+        })
     }
 }
 
 export function fetchTaskList() {
     return function (dispatch) {
         dispatch({ type: `${ActionType.TASK_LIST_GET}_PENDING` })
-        dispatch(netAction({
+        netAction({
             url: TaskListURL,
             onSuccess: payload => dispatch({ type: `${ActionType.TASK_LIST_GET}_OK`, payload }),
             onError: error => dispatch({ type: `${ActionType.TASK_LIST_GET}_FAIL`, error })
-        }))
+        })
     }
 }
 
 export function fetchTask(id) {
     return function (dispatch) {
         dispatch({ type: `${ActionType.TASK_GET}_PENDING`, payload: id })
-        dispatch(netAction({
+        netAction({
             url: `${TaskListURL}/${encodeURIComponent(id)}`,
             onSuccess: payload => dispatch({ type: `${ActionType.TASK_GET}_OK`, payload }),
             onError: error => dispatch({ type: `${ActionType.TASK_GET}_FAIL`, error, payload: id })
-        }))
+        })
     }
 }
 
 export function getTaskResults(task) {
     return function (dispatch, getState) {
-        const algo = getState().algos.definitions.find(a => a.name === task.name)
+        const algo = getState().algos.definitions[task.name]
         let url = null
         switch (algo.outputParam) {
             case TaskResultsType.TR_NODE_GROUP:
@@ -69,7 +69,7 @@ export function getTaskResults(task) {
         }
 
         dispatch({ type: `${ActionType.TASK_RESULTS_GET}_PENDING`, payload: task })
-        dispatch(netAction({
+        netAction({
             url,
             onSuccess: results => {
                 if (algo.outputParam === TaskResultsType.TR_NODE_GROUP) {
@@ -81,22 +81,6 @@ export function getTaskResults(task) {
                 })
             },
             onError: error => dispatch({type: `${ActionType.TASK_RESULTS_GET}_FAIL`, payload: task, error })
-        }))
-    }
-}
-
-export function showResults(tid) {
-    return function (dispatch, getState) {
-        const task = getState().tasks[tid]
-        const algo = getState().algos.definitions.find(a => a.name === task.name)
-        switch (algo.outputParam) {
-            case TaskResultsType.TR_NODE_GROUP:
-                dispatch({ type: ActionType.SHOW_GROUPS, payload: task.results.mappings })
-                break
-
-            case TaskResultsType.TR_PATHS:
-                dispatch({ type: ActionType.SHOW_PATHS, tid })
-                break
-        }
+        })
     }
 }

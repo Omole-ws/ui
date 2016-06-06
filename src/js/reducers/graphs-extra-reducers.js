@@ -19,6 +19,8 @@ function vaItem(state, action) {
 function visualAttributes (state = {}, action) {
     if(action.type.startsWith(ActionType.GVA_GET)) {
         return _.omitBy({...state, [action.payload.gid]: vaItem(state[action.payload.gid], action)}, v => v === null)
+    } else if (action.type === `${ActionType.LOGOUT}_OK`) {
+        return {}
     } else {
         return state
     }

@@ -50,7 +50,9 @@ const tasksActionType = {
     TASK_GET: 'TASK_GET',
     TASK_LIST_GET: 'TASK_LIST_GET',
     TASK_RESULTS_GET: 'TASK_RESULTS_GET',
-    SHOW_GROUPS: 'SHOW_GROUPS'
+    SHOW_GROUPS: 'SHOW_GROUPS',
+    SHOW_PATHS: 'SHOW_PATHS',
+    HIGHLIGHT_PATH: 'HIGHLIGHT_PATH'
 }
 
 const operateComponentActionType = {

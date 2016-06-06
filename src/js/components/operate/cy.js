@@ -39,6 +39,12 @@ export default class Cy {
 
         this.cy.edgehandles({
             ...Cy.edgeHandlesDefaults,
+            edgeType: (source, target) => {
+                if (source.edgesTo(target).filterFn(e => e.hasClass(this.menus.type)).length > 0) {
+                    return null
+                }
+                return 'flat'
+            },
             edgeParams: () => ({ data: { id: uuid() }, classes: this.menus.type }),
             complete: (sourceNode, targetNodes, addedEntities) => {
                 this.edgeCreate({
@@ -253,26 +259,75 @@ export default class Cy {
         .forEach(g => {
             const id = g.replace(/:/g, '-')
             this.cy.add({group: 'nodes', data: { id, label: g}, classes: 'group' })
-            groups[g].forEach(nid => {
-                this.cy.$(`#${nid}`).move({parent: id})
-            })
+            this.cy.$(groups[g].map(nid => `#${nid}`).join(',')).move({parent: id})
         })
     }
 
     hideGroups(groups) {
-        Reflect.ownKeys(groups)
-        .forEach(g => {
+        const gRepresentation = Reflect.ownKeys(groups)
+        .reduce((acc, g) => {
             const groupRoot = this.cy.$(`#${g.replace(/:/g, '-')}`)
-            groupRoot.children().move({ parent: null })
-            this.cy.remove(groupRoot)
+            return {
+                parents: acc.parents.add(groupRoot),
+                children: acc.children.add(groupRoot.children())
+            }
+        }, { parents: this.cy.collection(), children: this.cy.collection() })
+        gRepresentation.children.move({ parent: null })
+        this.cy.remove(gRepresentation.parents)
+    }
+
+    showPaths(paths) {
+        const selector = [...paths.reduce((acc, path) => {
+            return path.edges.reduce((accInner, edge) => accInner.add(edge), acc)
+        }, new Set())]
+        .map(eid => `#${eid}`).join(',')
+        let pathEles = this.cy.$(selector)
+        pathEles = pathEles.add(pathEles.connectedNodes())
+        this.cy.startBatch()
+        this.cy.elements().addClass('dim')
+        pathEles.addClass('path')
+        this.cy.endBatch()
+    }
+
+    hidePaths(paths) {
+        const selector = [...paths.reduce((acc, path) => {
+            return path.edges.reduce((accInner, edge) => accInner.add(edge), acc)
+        }, new Set())]
+        .map(eid => `#${eid}`).join(',')
+        let pathEles = this.cy.$(selector)
+        pathEles = pathEles.add(pathEles.connectedNodes())
+        this.cy.startBatch()
+        this.cy.elements().removeClass('dim')
+        pathEles.removeClass('path')
+        this.cy.endBatch()
+    }
+
+    highlightPath(path) {
+        this.cy.startBatch()
+        path.edges
+        .forEach((eid, i) => {
+            this.cy.$(`#${eid}`).addClass('path-hl').data('plabel', i + 1)
         })
+        this.cy.$(`#${path.from}`).addClass('path-from')
+        this.cy.$(`#${path.to}`).addClass('path-to')
+        this.cy.endBatch()
+    }
+
+    dimPath(path) {
+        this.cy.startBatch()
+        path.edges
+        .forEach(eid => {
+            this.cy.$(`#${eid}`).removeClass('path-hl').data('plabel', null)
+        })
+        this.cy.$(`#${path.from}`).removeClass('path-from')
+        this.cy.$(`#${path.to}`).removeClass('path-to')
+        this.cy.endBatch()
     }
 
     //       _______ _______ _______ _______ _____ _______ _______
     //       |______    |    |_____|    |      |   |       |______
     //       ______|    |    |     |    |    __|__ |_____  ______|
 
-    // Prior
 
     static edgeHandlesDefaults = {
         preview: true, // whether to show added edges preview before releasing selection
@@ -281,7 +336,7 @@ export default class Cy {
         handleColor: '#f00', // the colour of the handle and the line drawn from it
         handleLineType: 'ghost', // can be 'ghost' for real edge, 'straight' for a straight line, or 'draw' for a draw-as-you-go line
         handleLineWidth: 1, // width of handle line in pixels
-        handleNodes: 'node', // selector/filter function for whether edges can be made from a given node
+        handleNodes: (i, node) => node.isNode() && !node.isParent(), // selector/filter function for whether edges can be made from a given node
         hoverDelay: 150, // time spend over a target node before it is considered a target selection
         cxt: false, // whether cxt events trigger edgehandles (useful on touch)
         enabled: false, // whether to start the extension in the enabled state

@@ -47,7 +47,7 @@ export const store_EX = {
         ['gid']: []
     },
     algos: {
-        definitions: [],
+        definitions: {},
         isFetching: false
     },
     tasks: {

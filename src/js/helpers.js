@@ -4,6 +4,7 @@ import _ from 'lodash'
 import page from 'page'
 
 import { Action, ActionType, Mode, NodeRole } from './actions'
+import { store } from '../index'
 
 
 /**
@@ -35,56 +36,57 @@ function createFetchError(response, error, contentType) {
 }
 
 export function netAction(opts) {
-    return function (dispatch, getState) {
-        //TODO: parse form to query if GET or HEAD
-        const csrfHeader = !opts.registration ? {'x-xsrf-token': getState().session.csrf} : null
-        const contentType = _.isPlainObject(opts.body) && {'content-type': 'application/json'} ||
-            _.isString(opts.body) && {'content-type': 'application/json'} ||
-            null
-        const body = opts.body ? {body: _.isPlainObject(opts.body) ? JSON.stringify(opts.body) : opts.body} : null
-        fetch(opts.url, {
-            method: (opts.method || 'GET').toUpperCase(),
-            credentials: 'same-origin',
-            headers: {
-                ...csrfHeader,
-                ...contentType
-            },
-            ...body
-        })
-        .then(response => {
-            const contentType = (response.headers.get('content-type') || '').split(';')[0]
+    //TODO: parse form to query if GET or HEAD
+    const csrfHeader = !opts.registration ? {'x-xsrf-token': store.getState().session.csrf} : null
+    const contentType = _.isPlainObject(opts.body) && {'content-type': 'application/json'} ||
+        _.isString(opts.body) && {'content-type': 'application/json'} ||
+        null
+    const body = opts.body ? {body: _.isPlainObject(opts.body) ? JSON.stringify(opts.body) : opts.body} : null
+    fetch(opts.url, {
+        method: (opts.method || 'GET').toUpperCase(),
+        credentials: 'same-origin',
+        headers: {
+            ...csrfHeader,
+            ...contentType
+        },
+        ...body
+    })
+    .then(response => {
+        const contentType = (response.headers.get('content-type') || '').split(';')[0]
 
-            if(!response.ok) {
-                const error = new Error(`error(${response.status}) ${response.statusText}`)
-                error.auth = response.status === 401
-                error.http = response.status
-                if (!production) {
-                    return createFetchError(response, error, contentType)
-                } else {
-                    return Promise.reject(error)
-                }
+        if(!response.ok) {
+            const error = new Error(`error(${response.status}) ${response.statusText}`)
+            error.auth = response.status === 401
+            error.http = response.status
+            if (!production) {
+                return createFetchError(response, error, contentType)
+            } else {
+                return Promise.reject(error)
             }
+        }
 
-            const csrf = response.headers.get('x-xsrf-token')
-            if (csrf) {
-                dispatch(Action.changeCSRF(csrf))
-            }
+        const csrf = response.headers.get('x-xsrf-token')
+        if (csrf) {
+            store.dispatch(Action.changeCSRF(csrf))
+        }
 
-            if (contentType === 'application/json') {
-                return response.json()
-            } else if (contentType) {
-                return response.text()
-            }
-            return Promise.resolve(null)
-        })
-        .then(data => opts.onSuccess(data))
-        .catch(error => {
-            opts.onError(error)
-            if (error.auth && getState().mode !== Mode.LOGIN && !opts.registration) {
-                new Promise(() => page('#!/login'))
-            }
-        })
-    }
+        if (contentType === 'application/json') {
+            return response.json()
+        } else if (contentType) {
+            return response.text()
+        }
+        return Promise.resolve(null)
+    })
+    .then(data => opts.onSuccess(data))
+    .catch(error => {
+        opts.onError(error)
+        if (error.auth && store.getState().mode !== Mode.LOGIN && !opts.registration) {
+            new Promise(() => {
+                store.dispatch({type: `${ActionType.LOGOUT}_OK`})
+                page('#!/login')
+            })
+        }
+    })
 }
 
 

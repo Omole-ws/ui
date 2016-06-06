@@ -1,11 +1,11 @@
 .ui.simple.dropdown.item
     | Algorythms
     i.dropdown.icon
-    if !algos
+    if isFetching
         .ui.active.dimmer
             .ui.small.loader
     else        
-        .ui.vertical.menu(class=algos?'':'disabled')
-            each val in algos
-                .item(key=val.name, onClick=taskPrepare(val))
-                    = val.name + (val.inputParam !== 'INPUT_GID' ? ' ...' : '')
+        .ui.vertical.menu(class=isFetching ? 'disabled' : '')
+            each val in aNames
+                .item(key=val, onClick=taskPrepare(val))
+                    = val + (isShort(val) ? '' : ' ...')

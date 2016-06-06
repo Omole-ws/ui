@@ -11,6 +11,9 @@ function nodeEditorOnScreen(state = false, action) {
         case ActionType.NODE_DIALOG_CLOSE:
             return false
 
+        case `${ActionType.LOGOUT}_OK`:
+            return false
+
         default:
             return state
     }
@@ -24,6 +27,9 @@ function node(state = null, action) {
         case ActionType.NODE_DIALOG_CLOSE:
             return null
 
+        case `${ActionType.LOGOUT}_OK`:
+            return false
+
         default:
             return state
     }
@@ -36,6 +42,9 @@ function position(state = {x: 0, y: 0}, action) {
 
         case ActionType.NODE_DIALOG_CLOSE:
             return null
+
+        case `${ActionType.LOGOUT}_OK`:
+            return { x: 0, y: 0 }
 
         default:
             return state
@@ -52,6 +61,9 @@ function edgeEditorOnScreen(state = false, action) {
         case ActionType.EDGE_DIALOG_CLOSE:
             return false
 
+        case `${ActionType.LOGOUT}_OK`:
+            return false
+
         default:
             return state
     }
@@ -65,6 +77,8 @@ function edge(state = null, action) {
         case ActionType.EDGE_DIALOG_CLOSE:
             return null
 
+        case `${ActionType.LOGOUT}_OK`:
+            return null
         default:
             return state
     }
@@ -76,6 +90,9 @@ function rbOnScreen(state = false, action) {
     switch (action.type) {
         case ActionType.RB_TOGGLE:
             return !state
+
+        case `${ActionType.LOGOUT}_OK`:
+            return false
 
         default:
             return state
@@ -89,6 +106,9 @@ function hasNew(state = false, action) {
             return action.payload.status === TaskStatus.TS_COMPLETED
 
         case ActionType.RB_TOGGLE:
+            return false
+
+        case `${ActionType.LOGOUT}_OK`:
             return false
 
         default:
@@ -113,6 +133,9 @@ function groups(state = null, action) {
         case ActionType.SHOW_GROUPS:
             return action.payload
 
+        case `${ActionType.LOGOUT}_OK`:
+            return null
+
         default:
             return state
     }
@@ -121,7 +144,13 @@ function groups(state = null, action) {
 function paths(state = null, action) {
     switch (action.type) {
         case ActionType.SHOW_PATHS:
-            return action.payload
+            return { list: action.payload, idx: 0 }
+
+        case ActionType.HIGHLIGHT_PATH:
+            return { ...state, idx: action.payload }
+
+        case `${ActionType.LOGOUT}_OK`:
+            return null
 
         default:
             return state
@@ -145,6 +174,9 @@ function deskMode(state = DeskMode.BASIC, action) {
 
         case `${ActionType.TASK_CREATE}_PENDING`:
         case ActionType.TASK_PREPARE_CANCEL:
+            return DeskMode.BASIC
+
+        case `${ActionType.LOGOUT}_OK`:
             return DeskMode.BASIC
 
         default:

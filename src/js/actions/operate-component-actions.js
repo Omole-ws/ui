@@ -1,4 +1,4 @@
-import { ActionType } from '../actions'
+import { ActionType, TaskResultsType } from '../actions'
 
 export function setDeskMode(mode) {
     return { type: ActionType.SET_DESK_MODE, payload: mode }
@@ -30,4 +30,24 @@ export function selectTo({ id, name }) {
 
 export function toggleResultBoard() {
     return { type: ActionType.RB_TOGGLE }
+}
+
+export function showResults(tid) {
+    return function (dispatch, getState) {
+        const task = getState().tasks[tid]
+        const algo = getState().algos.definitions[task.name]
+        switch (algo.outputParam) {
+            case TaskResultsType.TR_NODE_GROUP:
+                dispatch({ type: ActionType.SHOW_GROUPS, payload: task.results })
+                break
+
+            case TaskResultsType.TR_PATHS:
+                dispatch({ type: ActionType.SHOW_PATHS, payload: task.results })
+                break
+        }
+    }
+}
+
+export function highlightPath(pn) {
+    return { type: ActionType.HIGHLIGHT_PATH, payload: pn }
 }

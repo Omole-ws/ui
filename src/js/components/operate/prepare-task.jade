@@ -11,7 +11,7 @@
                     input(type="text", readonly, value=algo.name, readOnly)
             .grouped.fields
                 label(for="label") Select LABEL
-                each val, idx in ['READ', 'WRITE']
+                each val, idx in ['READ', 'WRITE', 'TAKE', 'GRANT']
                     .field(key=idx)
                         .ui.radio.checkbox
                             input(type="radio" name="label" checked=val===label tabindex="0" value=val, onChange=handleFieldChange)

@@ -13,7 +13,7 @@ import '../../../../semantic/dist/components/rail.css'
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Action, TaskStatus } from '../../actions'
+import { Action, AlgoInputType, TaskStatus } from '../../actions'
 import ResultTmpl from '!jade-react!./result.jade'
 
 class ResultBoard extends React.Component {
@@ -27,9 +27,12 @@ class ResultBoard extends React.Component {
     static propTypes = {
         children: React.PropTypes.object,
         onScreen: React.PropTypes.bool.isRequired,
+        graph: React.PropTypes.object.isRequired,
+        algosDef: React.PropTypes.object.isRequired,
         tasks: React.PropTypes.arrayOf(React.PropTypes.object),
         getTaskResults: React.PropTypes.func.isRequired,
-        showResults: React.PropTypes.func.isRequired
+        showResults: React.PropTypes.func.isRequired,
+        highlightPath: React.PropTypes.func.isRequired
     }
 
     static icon = {
@@ -60,17 +63,36 @@ class ResultBoard extends React.Component {
         }
     }
 
+    _getTaskRepresentation(task) {
+        const algo = this.props.algosDef[task.name]
+        const repr = { name: task.name }
+        if (algo.inputParam === AlgoInputType.GL || algo.inputParam === AlgoInputType.GLFT) {
+            repr.label = task.secureLabel.toLowerCase()
+        }
+        if (algo.inputParam === AlgoInputType.GLFT) {
+            repr.from = this.props.graph.nodes.find(n => n.id === task.fromId).label
+            repr.to = this.props.graph.nodes.find(n => n.id === task.toId).label
+        }
+
+        return repr
+    }
+
     render() {
         return (
             <div ref={r => this.context = r} className="pushable mcenter">
                 <div ref={r => this.ref = r} className="ui right sidebar black segment">
-                    {
-                        this.props.tasks.map(task =>
-                            <ResultTmpl key={ task.tid } task={ task }
-                                getTaskResults={ this.props.getTaskResults }
-                                showResults={ this.props.showResults}/>
-                        )
-                    }
+                    <small>
+                        {
+                            this.props.tasks.map(task =>
+                                <ResultTmpl key={ task.tid }
+                                    task={ task }
+                                    tRepr={ this._getTaskRepresentation(task) }
+                                    getTaskResults={ this.props.getTaskResults }
+                                    showResults={ this.props.showResults}
+                                    highlightPath={ this.props.highlightPath }/>
+                            )
+                        }
+                    </small>
                 </div>
                 <div className="ui pusher">
                     { this.props.children }
@@ -92,17 +114,21 @@ class ResultBoard extends React.Component {
 //
 //
 
-function mapStateToProps(store) {
+function mapStateToProps(state) {
     return {
-        onScreen: store.operating.resultBoard.onScreen,
-        tasks: Reflect.ownKeys(store.tasks)
-            .filter(tid => store.tasks[tid].status === TaskStatus.TS_COMPLETED)
-            .map(tid => store.tasks[tid])
+        onScreen: state.operating.resultBoard.onScreen,
+        graph: state.graphs.list.find(g => g.id === state.currentGraph),
+        algosDef: state.algos.definitions,
+        tasks: Reflect.ownKeys(state.tasks)
+            .filter(tid => state.tasks[tid].status === TaskStatus.TS_COMPLETED)
+            .filter(tid => state.tasks[tid].gid === state.currentGraph)
+            .map(tid => state.tasks[tid])
     }
 }
 
 const mapDispatchToProps = {
     getTaskResults: Action.getTaskResults,
-    showResults: Action.showResults
+    showResults: Action.showResults,
+    highlightPath: Action.highlightPath
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ResultBoard)

@@ -26,7 +26,10 @@ class Desk extends React.Component {
         visualAttributes: React.PropTypes.object,
         tape: React.PropTypes.array,
         groups: React.PropTypes.object,
-        paths: React.PropTypes.object,
+        paths: React.PropTypes.shape({
+            list: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+            idx: React.PropTypes.number.isRequired
+        }),
         deskMode: React.PropTypes.string.isRequired,
         fetchGraph: React.PropTypes.func.isRequired,
         fetchGVA: React.PropTypes.func.isRequired
@@ -39,8 +42,18 @@ class Desk extends React.Component {
         }
 
         if (nextProps.groups !== this.props.groups) {
-            this.props.groups && this.state.cy.hideGroups(this.props.groups)
-            nextProps.groups && this.state.cy.showGroups(nextProps.groups)
+            this.props.groups && this.state.cy.hideGroups(this.props.groups.mappings)
+            nextProps.groups && this.state.cy.showGroups(nextProps.groups.mappings)
+        }
+
+        if (nextProps.paths.list !== this.props.paths.list) {
+            this.props.paths.list && this.state.cy.hidePaths(this.props.paths.list)
+            this.props.paths.list && this.state.cy.dimPath(this.props.paths.list[this.props.paths.idx])
+            nextProps.paths.list && this.state.cy.showPaths(nextProps.paths.list)
+            nextProps.paths.list && this.state.cy.highlightPath(nextProps.paths.list[nextProps.paths.idx])
+        } else if (nextProps.paths.idx !== this.props.paths.idx) {
+            this.state.cy.dimPath(this.props.paths.list[this.props.paths.idx])
+            this.state.cy.highlightPath(nextProps.paths.list[nextProps.paths.idx])
         }
 
         this.setState({isDataReady:
@@ -115,7 +128,7 @@ function mapStateToProps(state, ownProps) {
         visualAttributes: state.graphsExtra.visualAttributes[ownProps.gid],
         tape: state.tape[ownProps.gid],
         groups: state.operating.groups,
-        paths: state.operating.paths,
+        paths: state.operating.paths || {},
         deskMode: state.operating.deskMode
     }
 }

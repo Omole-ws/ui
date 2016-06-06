@@ -110,15 +110,23 @@ export function graphs(state = {isFetching: false, list: []}, action) {
                 list: state.list.concat(action.payload)
             }
 
+        case `${ActionType.LOGOUT}_OK`:
+            return { isFetching: false, list: [] }
+            
         default:
             return state
     }
 }
 
 export function currentGraph(state = null, action) {
-    if (action.type === ActionType.SET_CURRENT_GRAPH) {
-        return action.payload
-    } else {
-        return state
+    switch (action.type) {
+        case ActionType.SET_CURRENT_GRAPH:
+            return action.payload
+
+        case `${ActionType.LOGOUT}_OK`:
+            return null
+
+        default:
+            return state
     }
 }
