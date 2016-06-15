@@ -1,0 +1,28 @@
+.ui.small.modal(ref=setRef)
+    .ui.header= 'Edit relation'
+    .ui.content
+        form.ui.form(onSubmit=submit)
+            .field.required
+                label Label
+                input(type="text", name="label", onChange=handleFieldChange, value=label)
+            .field
+                label Note
+                textarea(rows="2", name="note", onChange=handleFieldChange, value=note)
+            .required.inline.field
+                label Type
+                .ui.floating.labeled.selection.dropdown
+                    input(type="hidden", name="type", defaultValue=type)
+                    i.ui.dropdown.icon
+                    .default.text Select node type
+                    .menu
+                        each val, index in Types
+                            .item(key=index, data-value=val)= val.charAt(0).toUpperCase() + val.slice(1)
+
+            .ui.right.aligned.grid
+                .row
+                    .column
+                        .actions
+                            .ui.cancel.black.button Cancel
+                            button.ui.ok.green.right.labeled.icon.button(type="submit")
+                                | Save
+                                i.save.icon

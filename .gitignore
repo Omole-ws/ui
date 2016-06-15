@@ -1,1 +1,10 @@
 .DS_Store
+node_modules
+npm-debug.log
+semantic/*
+!semantic/src
+semantic/src/*
+!semantic/src/theme.config
+!semantic/src/site
+semantic.json
+dist

@@ -1,0 +1,106 @@
+parser: babel-eslint
+root: true
+env:
+  browser: true
+  node: false
+  es6: true
+parserOptions:
+  ecmaFeatures:
+    experimentalObjectRestSpread: true
+    jsx: true
+  sourceType: module
+plugins:
+  - react
+extends:
+  - eslint:recommended
+  - plugin:react/recommended
+rules:
+  eqeqeq:
+    - error
+  indent:
+    - error
+    - 4
+    - SwitchCase: 1
+  linebreak-style:
+    - error
+    - unix
+  quotes:
+    - warn
+    - single
+    - avoid-escape
+  semi:
+    - error
+    - never
+  no-extra-parens:
+    - warn
+    - all
+  no-useless-constructor:
+    - warn
+  no-var:
+    - warn
+  jsx-quotes:
+    - warn
+    - prefer-double
+  prefer-reflect:
+    - warn
+  prefer-arrow-callback:
+    - warn
+  prefer-const:
+    - warn
+  prefer-rest-params:
+    - warn
+  prefer-spread:
+    - warn
+  prefer-template:
+    - warn
+  require-yield:
+    - error
+  no-fallthrough:
+    - error
+    - commentPattern: "break[\\s\\w]*omitted"
+  no-console:
+    - warn
+  valid-jsdoc:
+    - warn
+  # react/no-deprecated:
+  #   - error
+  #   - react: 15.0.1
+  # react/no-did-mount-set-state:
+  #   - warn
+  #   - allow-in-func
+  # react/no-did-update-set-state:
+  #   - warn
+  #   - allow-in-func
+  # react/no-direct-mutation-state:
+  #   - error
+  # react/no-is-mounted:
+  #   - error
+  # react/no-multi-comp:
+  #   - warn
+  #   - ignoreStateless: false
+  # react/no-string-refs:
+  #   - error
+  # react/no-unknown-property:
+  #   - error
+  # react/prefer-es6-class:
+  #   - error
+  #   - always
+  # react/prefer-stateless-function:
+  #   - warn
+  # react/prop-types:
+  #   - warn
+  # react/react-in-jsx-scope:
+  #   - warn
+  # react/require-extension:
+  #   - warn
+  #   - extensions:
+  #     - .js
+  #     - .jsx
+  # react/require-render-return:
+  #   - warn
+  # react/self-closing-comp:
+  #   - error
+  # react/sort-comp:
+  #   - warn
+  # react/wrap-multilines:
+  #   - warn

@@ -1,0 +1,21 @@
+//- TODO revrite
+.ui.small.message
+    .content
+        .ui.header= tRepr.name
+        if tRepr.label
+            br
+            .ui.orange.label= tRepr.label
+        if tRepr.from
+            br
+            .ui.label= tRepr.from
+            | -&gt;
+            .ui.label= tRepr.to
+        div
+            if !task.loaded
+                .ui.small.red.compact.basic.button(onClick=getTaskResults(task)) Load
+            .ui.small.red.compact.basic.icon.button(onClick=showResults(task.tid))
+                i.ui.unhide.icon
+        if tRepr.from
+            each val, i in task.results
+                .ui.small.black.compact.basic.button(onClick=highlightPath(i))= i
+        

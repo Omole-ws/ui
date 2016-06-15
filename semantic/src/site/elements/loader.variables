@@ -1,0 +1,6 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+
+@shapeBorderColor: orange orange black black;
+@invertedShapeBorderColor: orange orange grey grey;
