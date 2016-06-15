@@ -27,7 +27,7 @@ class ResultBoard extends React.Component {
     static propTypes = {
         children: React.PropTypes.object,
         onScreen: React.PropTypes.bool.isRequired,
-        graph: React.PropTypes.object.isRequired,
+        graph: React.PropTypes.object,
         algosDef: React.PropTypes.object.isRequired,
         tasks: React.PropTypes.arrayOf(React.PropTypes.object),
         getTaskResults: React.PropTypes.func.isRequired,

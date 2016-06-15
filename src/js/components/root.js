@@ -11,6 +11,7 @@ import loadLoginView from 'promise?bluebird!./lr/login'
 import loadRegistrationView from 'promise?bluebird!./lr/registration'
 import loadListView from 'promise?bluebird!./list/list'
 import loadOperateView from 'promise?bluebird!./operate/operate'
+import loadReportsView from 'promise?bluebird!./reports/reports'
 
 import Sync from '../sync'
 
@@ -33,7 +34,8 @@ class Root extends React.Component {
         [Mode.LOGIN]: loadLoginView,
         [Mode.REGISTRATION]: loadRegistrationView,
         [Mode.LIST]: loadListView,
-        [Mode.OPERATE]: loadOperateView
+        [Mode.OPERATE]: loadOperateView,
+        [Mode.REPORTS]: loadReportsView
     }
 
     componentWillMount() {

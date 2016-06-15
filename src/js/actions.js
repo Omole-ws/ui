@@ -35,7 +35,8 @@ export const Mode = {
     LOGIN: 'LOGIN',
     REGISTRATION: 'REGISTRATION',
     LIST: 'LIST',
-    OPERATE: 'OPERATE'
+    OPERATE: 'OPERATE',
+    REPORTS: 'REPORTS'
 }
 
 export const DeskMode = {

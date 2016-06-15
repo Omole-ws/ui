@@ -26,7 +26,7 @@ export function postNewGraph(graph) {
             url: DataURL,
             method: 'post',
             body: graph,
-            onSuccess: id => dispatch({type: `${ActionType.GRAPH_POST}_OK`, payload: {...graph, id}}),
+            onSuccess: info => dispatch({type: `${ActionType.GRAPH_POST}_OK`, payload: { ...graph, ...info }}),
             onError: error => dispatch({type: `${ActionType.GRAPH_POST}_FAIL`, payload: graph, error})
         })
     }
@@ -62,7 +62,7 @@ export function patchGraph(patch) {
             url: `${DataURL}/${patch.id}`,
             method: 'patch',
             body: patch,
-            onSuccess: () => dispatch({type: `${ActionType.GRAPH_PATCH}_OK`, payload: patch}),
+            onSuccess: info => dispatch({type: `${ActionType.GRAPH_PATCH}_OK`, payload: patch, info}),
             onError: error => dispatch({type: `${ActionType.GRAPH_PATCH}_FAIL`, payload: patch, error})
         })
     }

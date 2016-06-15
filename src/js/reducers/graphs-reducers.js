@@ -2,10 +2,10 @@ import _ from 'lodash'
 
 import { ActionType } from '../actions'
 
-function _patch(graph, patch) {
-    const patchedGraph = {...graph, isFetching: false}
-    patchedGraph.label = patch.label || patchedGraph.label
-    patchedGraph.comment = patch.comment || patchedGraph.comment
+function _patch(graph, patch, info) {
+    const patchedGraph = {...graph, ...info, isFetching: false}
+    // patchedGraph.label = patch.label || patchedGraph.label
+    // patchedGraph.comment = patch.comment || patchedGraph.comment
     if (patch.gInserts) {
         let nodes = graph.nodes
         if (Reflect.ownKeys(patch.gDeletions.nodes).length > 0) {
@@ -43,7 +43,7 @@ function graph(state = {isFetching: false, lastUpdated: null}, action) {
             return {...action.payload, isFetching: false}
 
         case `${ActionType.GRAPH_PATCH}_OK`:
-            return _patch(state, action.payload)
+            return _patch(state, action.payload, action.info)
 
         case `${ActionType.GRAPH_DELETE}_OK`:
             return null
@@ -112,7 +112,7 @@ export function graphs(state = {isFetching: false, list: []}, action) {
 
         case `${ActionType.LOGOUT}_OK`:
             return { isFetching: false, list: [] }
-            
+
         default:
             return state
     }

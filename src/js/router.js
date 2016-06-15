@@ -38,6 +38,10 @@ export default function configureRouter(store) {
         store.dispatch(Action.setCurrentGraph(ctx.params.gid))
         modeSetter(Mode.OPERATE)(ctx, next)
     })
+    page('/:gid/reports', (ctx, next) => {
+        store.dispatch(Action.setCurrentGraph(ctx.params.gid))
+        modeSetter(Mode.REPORTS)(ctx, next)
+    })
     page('*', ctx => {
         if(!ctx.state.ifModeSet) {
             page.redirect('/')

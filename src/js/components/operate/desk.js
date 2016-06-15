@@ -27,8 +27,8 @@ class Desk extends React.Component {
         tape: React.PropTypes.array,
         groups: React.PropTypes.object,
         paths: React.PropTypes.shape({
-            list: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-            idx: React.PropTypes.number.isRequired
+            list: React.PropTypes.arrayOf(React.PropTypes.object),
+            idx: React.PropTypes.number
         }),
         deskMode: React.PropTypes.string.isRequired,
         fetchGraph: React.PropTypes.func.isRequired,
@@ -38,7 +38,9 @@ class Desk extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.tape !== this.props.tape) {
             const news = _.difference(nextProps.tape)(this.props.tape)
-            this.state.cy.applyChanges(news)
+            if (news.length > 0) {
+                this.state.cy.applyChanges(news)
+            }
         }
 
         if (nextProps.groups !== this.props.groups) {

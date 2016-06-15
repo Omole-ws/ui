@@ -1,6 +1,7 @@
 // 'use strict';
 import webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+import autoprefixer from 'autoprefixer'
 
 const production = process.env.NODE_ENV == 'production'
 
@@ -13,7 +14,7 @@ const loaders = [
     },
     {
         test: /\.css$/,
-        loader: 'style!css'
+        loader: 'style!css!postcss'
     },
     {
         test: /\.jade$/,
@@ -23,7 +24,7 @@ const loaders = [
     {
         test: /\.(scss|sass)$/,
         exclude: 'node_modules',
-        loader: 'style!css!sass'
+        loader: 'style!css!postcss!sass'
     },
     {
         test: /\.less$/,
@@ -128,6 +129,10 @@ const config = {
     },
     module: {
         loaders
+    },
+    postcss: function () {
+        // "autoprefixer?browsers=last 2 version"
+        return [autoprefixer]
     },
     plugins,
     resolve: {

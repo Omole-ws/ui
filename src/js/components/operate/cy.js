@@ -113,6 +113,9 @@ export default class Cy {
         })
         this.positionHandleID = {}
         this.cy.on('position', 'node', ev => {
+            if (ev.cyTarget.hasClass('edgehandles-ghost')) {
+                return
+            }
             const nid = ev.cyTarget.id()
             clearTimeout(this.positionHandleID[nid])
             this.positionHandleID[nid] = setTimeout(() => this.nodePositionChange(nid, ev.cyTarget.position()), 2000)

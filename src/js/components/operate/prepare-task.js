@@ -23,12 +23,12 @@ class PrepareTask extends React.Component {
     static propTypes = {
         onScreen: React.PropTypes.bool.isRequired,
         algo: React.PropTypes.shape({
-            name: React.PropTypes.string.isRequired,
-            url: React.PropTypes.string.isRequired,
+            name: React.PropTypes.string,
+            url: React.PropTypes.string,
             help: React.PropTypes.string,
-            inputParam: React.PropTypes.string.isRequired,
-            outputParam: React.PropTypes.string.isRequired
-        }),
+            inputParam: React.PropTypes.string,
+            outputParam: React.PropTypes.string
+        }).isRequired,
         gid: React.PropTypes.string.isRequired,
         from: React.PropTypes.shape({
             id: React.PropTypes.string,

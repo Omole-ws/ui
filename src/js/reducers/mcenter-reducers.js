@@ -18,31 +18,23 @@ function onScreen(state = false, action) {
     }
 }
 
-
-    // LOGOUT:                'LOGOUT',
-    // SESSION_DETAILS_GET: 'SESSION_DETAILS_GET',
-    // GRAPHS_LIST_GET: 'GRAPHS_LIST_GET',
-    // GRAPH_GET:       'GRAPH_GET',
-    // GRAPH_POST:    'GRAPH_POST',
-    // GRAPH_DELETE:      'GRAPH_DELETE'
-
 function messages(state = [], action) {
     switch(action.type) {
         case `${ActionType.GRAPH_PATCH}_PENDING`:
             return state.concat({
                 type: 'info',
                 msg: `Updating graph '${action.payload.id}'`,
-                id: action.serial
+                id: action.payload
             })
 
         case `${ActionType.GRAPH_PATCH}_OK`:
-            return state.filter(m => m.id !== action.serial).concat({
+            return state.filter(m => m.id !== action.payload).concat({
                 type: 'success',
                 msg: `Graph '${action.payload.id}' has updated`
             })
 
         case `${ActionType.GRAPH_PATCH}_FAIL`:
-            return state.filter(m => m.id !== action.serial).concat({
+            return state.filter(m => m.id !== action.payload).concat({
                 type: 'error',
                 msg: `Update of graph '${action.payload.id}' has failed. (${action.payload.error})`
             })

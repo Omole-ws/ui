@@ -15,6 +15,8 @@
   "author": "masolkin@gmail.com",
   "license": "WTFPL",
   "devDependencies": {
+    "autoprefixer": "^6.3.6",
+    "autoprefixer-loader": "^3.2.0",
     "babel-core": "^6.9.1",
     "babel-loader": "^6.2.4",
     "babel-plugin-lodash": "^3.2.0",
