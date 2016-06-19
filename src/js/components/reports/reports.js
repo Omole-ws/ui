@@ -14,6 +14,14 @@ class Reports extends React.Component {
     }
 
     render() {
+        const aaa = Reflect.ownKeys(this.props.reports)
+            .map(rid => this.props.reports[rid])
+            .map(report =>
+                <button key={ report.name } onClick={ () => this.props.createTask({ algo: report, params: { gid: this.props.gid }}) }>
+                    {report.name}
+                </button>
+            )
+            console.log(aaa)
         return (
             <div>
                 <Nav>
@@ -21,11 +29,20 @@ class Reports extends React.Component {
                     <a className="item" href={`#!/${this.props.gid}/operate`}> Operate... </a>
                 </Nav>
                 <div>
-                    { Reflect.ownKeys(this.props.reports).map(report =>
-                        <button onClick={ this.props.createTask({ algo: report, params: { gid: this.props.gid }}) }>
-                            {report}
-                        </button>
-                    )}
+                    { aaa
+                    }
+                </div>
+                <div>
+                    {
+                        this.props.tasks.map(task =>
+                            <div>
+                                <h5>{ task.tid }</h5>
+                                <br/>
+                                <em>{ `${task.status} > compleated: ${task.procent}%` }</em>
+                                <a href={`/app/r/ccgetreport/${task.tid}/${task.result[0]}`} target="_blank">get</a>
+                            </div>
+                        )
+                    }
                 </div>
             </div>
         )
