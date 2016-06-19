@@ -1,5 +1,14 @@
 import _ from 'lodash'
-import { ActionType, AlgoURL, TaskListURL, TRNodeGroupURL, TRPathsURL, TaskResultsType } from '../actions'
+import {
+    ActionType,
+    AlgoURL,
+    ReportURL,
+    TaskListURL,
+    ReportTaskListURL,
+    TRNodeGroupURL,
+    TRPathsURL,
+    TaskResultsType
+} from '../actions'
 import { netAction } from '../helpers'
 
 export function taskPrepare(payload) {
@@ -13,6 +22,7 @@ export function cancelTaskPrepare() {
 export function createTask({ algo, params }) {
     return function (dispatch, getState) {
         dispatch({ type: `${ActionType.TASK_CREATE}_PENDING`, payload: { algo, params } })
+        const baseUrl = Reflect.has(getState().algos.definitions, algo.name) ? AlgoURL : ReportURL
         const qs = Reflect.ownKeys(params)
             .map(p => {
                 const name = encodeURIComponent(p)
@@ -22,14 +32,14 @@ export function createTask({ algo, params }) {
             .concat(`ts=${getState().graphs[params.gid].tstamp}`)
             .join('&')
         netAction({
-            url: `${AlgoURL}/${algo.url}?${qs}`,
+            url: `${baseUrl}/${algo.url}?${qs}`,
             onSuccess: payload => dispatch({ type: `${ActionType.TASK_CREATE}_OK`, payload }),
             onError: error => dispatch({ type: `${ActionType.TASK_CREATE}_FAIL`, error, payload: { algo, params } })
         })
     }
 }
 
-export function fetchTaskList() {
+export function getTaskList() {
     return function (dispatch) {
         dispatch({ type: `${ActionType.TASK_LIST_GET}_PENDING` })
         netAction({
@@ -37,14 +47,22 @@ export function fetchTaskList() {
             onSuccess: payload => dispatch({ type: `${ActionType.TASK_LIST_GET}_OK`, payload }),
             onError: error => dispatch({ type: `${ActionType.TASK_LIST_GET}_FAIL`, error })
         })
+        dispatch({ type: `${ActionType.TASK_LIST_GET}_PENDING` })
+        netAction({
+            url: ReportTaskListURL,
+            onSuccess: payload => dispatch({ type: `${ActionType.TASK_LIST_GET}_OK`, payload }),
+            onError: error => dispatch({ type: `${ActionType.TASK_LIST_GET}_FAIL`, error })
+        })
     }
 }
 
-export function fetchTask(id) {
-    return function (dispatch) {
+export function getTask(id) {
+    return function (dispatch, getState) {
+        const baseUrl =
+            Reflect.has(getState().algos.definitions, getState().tasks[id].name) ? TaskListURL : ReportTaskListURL
         dispatch({ type: `${ActionType.TASK_GET}_PENDING`, payload: id })
         netAction({
-            url: `${TaskListURL}/${encodeURIComponent(id)}`,
+            url: `${baseUrl}/${encodeURIComponent(id)}`,
             onSuccess: payload => dispatch({ type: `${ActionType.TASK_GET}_OK`, payload }),
             onError: error => dispatch({ type: `${ActionType.TASK_GET}_FAIL`, error, payload: id })
         })

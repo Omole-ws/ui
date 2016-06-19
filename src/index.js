@@ -16,7 +16,24 @@ import configureRouter from './js/router'
 import reducers from './js/reducers'
 import Root from './js/components/root'
 
+import { Action } from './js/actions'
 import { taskCheck } from './js/tasker'
+
+
+let authorized = undefined
+function init() {
+    const newAuthorized = store.getState().session.account.name ? true : false
+    if (newAuthorized === authorized) {
+        return
+    }
+    authorized = newAuthorized
+    if (authorized) {
+        store.dispatch(Action.getTaskList())
+        store.dispatch(Action.algosFetchDef())
+        store.dispatch(Action.reportsFetchDef())
+    }
+}
+
 
 
 // const createStoreWithMiddleware = applyMiddleware(
@@ -30,6 +47,7 @@ export const store = createStore(combineReducers(reducers), applyMiddleware(logg
 
 configureRouter(store)
 
+store.subscribe(init)
 store.subscribe(taskCheck)
 
 ReactDOM.render(

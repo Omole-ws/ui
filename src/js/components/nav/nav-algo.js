@@ -14,14 +14,14 @@ class NavAlgo extends React.Component {
         gid: React.PropTypes.string.isRequired,
         algosDef: React.PropTypes.object,
         isFetching: React.PropTypes.bool.isRequired,
-        algosFetchDef: React.PropTypes.func.isRequired,
+        // algosFetchDef: React.PropTypes.func.isRequired,
         taskPrepare: React.PropTypes.func.isRequired,
         createTask: React.PropTypes.func.isRequired
     }
 
-    componentWillMount() {
-        this.props.algosFetchDef()
-    }
+    // componentWillMount() {
+    //     this.props.algosFetchDef()
+    // }
 
     render() {
         return <NavAlgoTmpl
@@ -51,7 +51,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    algosFetchDef: Action.algosFetchDef,
+    // algosFetchDef: Action.algosFetchDef,
     taskPrepare: Action.taskPrepare,
     createTask: Action.createTask
 }

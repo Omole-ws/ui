@@ -1,7 +1,5 @@
-import _ from 'lodash'
 import { store } from '../index'
 import { Action, TaskStatus } from './actions'
-
 
 export function taskCheck() {
     const tasks = store.getState().tasks
@@ -13,5 +11,5 @@ export function taskCheck() {
 }
 
 function watch(tid) {
-    store.dispatch(Action.fetchTask(tid))
+    store.dispatch(Action.getTask(tid))
 }

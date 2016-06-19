@@ -6,7 +6,11 @@ import Nav from '../nav/nav'
 
 class Reports extends React.Component {
     static propTypes = {
-        gid: React.PropTypes.string.isRequired
+        gid: React.PropTypes.string.isRequired,
+        graph: React.PropTypes.object,
+        reports: React.PropTypes.object.isRequired,
+        tasks: React.PropTypes.arrayOf(React.PropTypes.object),
+        createTask: React.PropTypes.func.isRequired
     }
 
     render() {
@@ -16,6 +20,13 @@ class Reports extends React.Component {
                     <a className="item" href="#!/"> List </a>
                     <a className="item" href={`#!/${this.props.gid}/operate`}> Operate... </a>
                 </Nav>
+                <div>
+                    { Reflect.ownKeys(this.props.reports).map(report =>
+                        <button onClick={ this.props.createTask({ algo: report, params: { gid: this.props.gid }}) }>
+                            {report}
+                        </button>
+                    )}
+                </div>
             </div>
         )
     }
@@ -36,13 +47,18 @@ class Reports extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        gid: state.currentGraph
+        gid: state.currentGraph,
+        graph: state.graphs[state.currentGraph],
+        reports: state.reports.definitions,
+        tasks: Reflect.ownKeys(state.tasks)
+            .map(tid => state.tasks[tid])
+            .filter(task => Reflect.has(state.reports.definitions, task.name))
     }
 }
 
 const mapDispatchToProps = {
-    // getReports: Action.getReports
+    createTask: Action.createTask
 }
 
-export default connect(mapStateToProps)(Reports)
+export default connect(mapStateToProps, mapDispatchToProps)(Reports)
 // export default connect(mapStateToProps, mapDispatchToProps)(Reports)

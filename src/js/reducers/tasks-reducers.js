@@ -65,9 +65,18 @@ export const pendingAlgo = combineReducers({ onScreen, algo, from, to })
 
 export function tasks(state = {}, action) {
     switch (action.type) {
+        case `${ActionType.TASK_LIST_GET}_OK`:
+            return action.payload
+                .reduce((newState, task) => Object.defineProperty(newState, task.tid, {
+                    configurable: true,
+                    enumerable: true,
+                    writable: true,
+                    value: task
+                }), {...state })
+
         case `${ActionType.TASK_CREATE}_OK`:
         case `${ActionType.TASK_GET}_OK`:
-            return { ...state, [action.payload.tid]: action.payload }
+            return {...state, [action.payload.tid]: action.payload }
 
         case `${ActionType.TASK_RESULTS_GET}_OK`:
             return {
@@ -80,10 +89,10 @@ export function tasks(state = {}, action) {
             }
 
         case `${ActionType.TASK_GET}_PENDING`:
-            return { ...state, [action.payload]: { ...state[action.payload], status: TaskStatus.TS_FETCHING } }
+            return {...state, [action.payload]: {...state[action.payload], status: TaskStatus.TS_FETCHING } }
 
         case `${ActionType.TASK_GET}_FAIL`:
-            return { ...state, [action.payload]: { ...state[action.payload], status: TaskStatus.TS_RUNNING } }
+            return {...state, [action.payload]: {...state[action.payload], status: TaskStatus.TS_RUNNING } }
 
         case `${ActionType.LOGOUT}_OK`:
             return {}

@@ -90,6 +90,7 @@ import * as messageCenterReducers from './reducers/mcenter-reducers'
 import * as graphsExtraReducers from './reducers/graphs-extra-reducers' // graphsExtra
 import * as tapeReducers from './reducers/tape-reducers' // tape
 import * as algosReducers from './reducers/algos-reducers'
+import * as reportsReducers from './reducers/reports-reducers'
 import * as tasksReducers from './reducers/tasks-reducers'
 import * as listComponentReducers from './reducers/list-component-reducers'
 import * as operateComponentReducers from './reducers/operate-component-reducers'
@@ -102,6 +103,7 @@ export default {
     ...graphsExtraReducers,
     ...tapeReducers,
     ...algosReducers,
+    ...reportsReducers,
     ...tasksReducers,
     ...listComponentReducers,
     ...operateComponentReducers

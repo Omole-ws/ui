@@ -43,6 +43,10 @@ const algosActionType = {
     ALGO_DEF_GET: 'ALGO_DEF_GET'
 }
 
+const reportsActionType = {
+    REPORT_DEF_GET: 'REPORT_DEF_GET'
+}
+
 const tasksActionType = {
     TASK_PREPARE: 'TASK_PREPARE',
     TASK_PREPARE_CANCEL: 'TASK_PREPARE_CANCEL',
@@ -79,6 +83,7 @@ export default {
     ...graphsExtraActionType,
     ...crudActionType,
     ...algosActionType,
+    ...reportsActionType,
     ...tasksActionType,
     ...operateComponentActionType,
     ...messageCenterActionType
