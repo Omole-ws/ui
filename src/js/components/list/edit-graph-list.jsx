@@ -30,7 +30,7 @@ export default class EditGraphList extends React.Component {
     }
 
     static propTypes ={
-        postNewGraph: React.PropTypes.func.isRequired,
+        createGraph: React.PropTypes.func.isRequired,
         patchGraph: React.PropTypes.func.isRequired
     }
 
@@ -68,7 +68,7 @@ export default class EditGraphList extends React.Component {
                 length: 0
             })
         } else {
-            this.props.postNewGraph({
+            this.props.createGraph({
                 label: this.state.title,
                 comment: this.state.description,
                 nodes: [],

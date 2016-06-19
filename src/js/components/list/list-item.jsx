@@ -35,7 +35,7 @@ export default class ListItem extends React.Component {
         edit: React.PropTypes.func.isRequired,
         remove: React.PropTypes.func.isRequired,
         duplicate: React.PropTypes.func.isRequired,
-        fetchGraph: React.PropTypes.func.isRequired
+        getGraph: React.PropTypes.func.isRequired
     }
 
     shouldComponentUpdate(nextProps) {
@@ -43,7 +43,7 @@ export default class ListItem extends React.Component {
     }
 
     _exportGraph(graph) {
-        this.props.fetchGraph(graph)
+        this.props.getGraph(graph)
     }
     render() {
         return <ListItemTmpl graph={this.props.graph} setRef={r => this.ref = r}

@@ -33,18 +33,18 @@ class ListView extends React.Component {
         list:              React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
         isFetching:        React.PropTypes.bool.isRequired,
         changeCSRF:        React.PropTypes.func.isRequired,
-        fetchGraphList:    React.PropTypes.func.isRequired,
-        postNewGraph:      React.PropTypes.func.isRequired,
+        getGraphList:    React.PropTypes.func.isRequired,
+        createGraph:      React.PropTypes.func.isRequired,
         patchGraph:        React.PropTypes.func.isRequired,
-        removeGraph:       React.PropTypes.func.isRequired,
+        deleteGraph:       React.PropTypes.func.isRequired,
         duplicateGraph:    React.PropTypes.func.isRequired,
-        fetchGraph:    React.PropTypes.func.isRequired,
+        getGraph:    React.PropTypes.func.isRequired,
         showMessageCenter: React.PropTypes.func.isRequired
     }
 
     componentWillMount() {
         if (!this.props.isFetching) {
-            this.props.fetchGraphList()
+            this.props.getGraphList()
         }
     }
 
@@ -83,10 +83,10 @@ class ListView extends React.Component {
                 <MessageCenter/>
 
                 <Import ref={r => this.importComponent = r}
-                    postNewGraph={this.props.postNewGraph}/>
+                    createGraph={this.props.createGraph}/>
 
                 <EditGraphList ref={r => this.editComponent = r}
-                    postNewGraph={this.props.postNewGraph} patchGraph={this.props.patchGraph}/>
+                    createGraph={this.props.createGraph} patchGraph={this.props.patchGraph}/>
 
                 <ReactTransitionGroup component="div"
                     className={`ui divided items blurring dimmable${this.props.isFetching ? ' dimmed' : ''}`}>
@@ -94,9 +94,9 @@ class ListView extends React.Component {
                         this.props.list.map(g => {
                             return <ListItem key={g.id} graph={g}
                                 edit={this.editComponent.activate}
-                                remove={this.props.removeGraph}
+                                remove={this.props.deleteGraph}
                                 duplicate={this.props.duplicateGraph}
-                                fetchGraph={this.props.fetchGraph}/>
+                                getGraph={this.props.getGraph}/>
                         })
                     }
                     <div className="ui simple inverted dimmer">
@@ -109,22 +109,38 @@ class ListView extends React.Component {
 }
 
 
+function sortByAge(asc, a, b) {
+    return (b.tstamp - a.tstamp) * asc
+}
+function sortByAgeR(a, b) {
+    return b.tstamp - a.tstamp
+}
 
 function mapStateToProps(state) {
+    let comparator = () => 0
+    switch (state.list.sort.by) {
+        case 'age':
+            comparator = sortByAge.bind(undefined, state.list.sort.asc ? 1 : -1)
+    }
+    comparator = sortByAgeR
+    const list = Reflect.ownKeys(state.graphs)
+        .filter(key => key !== 'isFetching')
+        .map(gid => state.graphs[gid])
+        .sort(comparator)
     return {
-        list: state.graphs.list,
+        list,
         isFetching: state.graphs.isFetching
     }
 }
 
 const mapDispatchToProps = {
     changeCSRF: Action.changeCSRF,
-    fetchGraphList: Action.fetchGraphsList,
-    postNewGraph: Action.postNewGraph,
+    getGraphList: Action.getGraphList,
+    createGraph: Action.createGraph,
     patchGraph: Action.patchGraph,
-    removeGraph: Action.removeGraph,
+    deleteGraph: Action.deleteGraph,
     duplicateGraph: Action.duplicateGraph,
-    fetchGraph: Action.fetchGraph,
+    getGraph: Action.getGraph,
     showMessageCenter: Action.showMessageCenter
 }
 

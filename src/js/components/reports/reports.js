@@ -5,11 +5,16 @@ import { Action } from '../../actions'
 import Nav from '../nav/nav'
 
 class Reports extends React.Component {
+    static propTypes = {
+        gid: React.PropTypes.string.isRequired
+    }
+
     render() {
         return (
             <div>
                 <Nav>
                     <a className="item" href="#!/"> List </a>
+                    <a className="item" href={`#!/${this.props.gid}/operate`}> Operate... </a>
                 </Nav>
             </div>
         )
@@ -31,7 +36,7 @@ class Reports extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        reports: state
+        gid: state.currentGraph
     }
 }
 

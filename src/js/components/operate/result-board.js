@@ -117,7 +117,7 @@ class ResultBoard extends React.Component {
 function mapStateToProps(state) {
     return {
         onScreen: state.operating.resultBoard.onScreen,
-        graph: state.graphs.list.find(g => g.id === state.currentGraph),
+        graph: state.graphs[state.currentGraph],
         algosDef: state.algos.definitions,
         tasks: Reflect.ownKeys(state.tasks)
             .filter(tid => state.tasks[tid].status === TaskStatus.TS_COMPLETED)

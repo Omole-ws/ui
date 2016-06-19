@@ -1,11 +1,7 @@
-import _ from 'lodash'
-
 import { ActionType } from '../actions'
 
 function _patch(graph, patch, info) {
-    const patchedGraph = {...graph, ...info, isFetching: false}
-    // patchedGraph.label = patch.label || patchedGraph.label
-    // patchedGraph.comment = patch.comment || patchedGraph.comment
+    const patchedGraph = { ...graph, ...info }
     if (patch.gInserts) {
         let nodes = graph.nodes
         if (Reflect.ownKeys(patch.gDeletions.nodes).length > 0) {
@@ -28,90 +24,77 @@ function _patch(graph, patch, info) {
     return patchedGraph
 }
 
-function graph(state = {isFetching: false, lastUpdated: null}, action) {
-
-    // if (state.id !== action.payload.id) {
-    //     return state
-    // }
+function graph(state, action) {
     switch(action.type) {
+        case `${ActionType.GRAPHS_LIST_GET}_OK`:
+            return { ...state, ...action.payload }
+
         case `${ActionType.GRAPH_GET}_PENDING`:
+            if (state) {
+                return { ...state, isSyncing: true }
+            } else {
+                return state
+            }
+
         case `${ActionType.GRAPH_PATCH}_PENDING`:
         case `${ActionType.GRAPH_DELETE}_PENDING`:
-            return {...state, isFetching: true}
+            return { ...state, isSyncing: true }
 
+        case `${ActionType.GRAPH_CREATE}_OK`:
+        case `${ActionType.GRAPH_DUPLICATE}_OK`:
         case `${ActionType.GRAPH_GET}_OK`:
-            return {...action.payload, isFetching: false}
+            return { ...action.payload, isFetching: false }
 
         case `${ActionType.GRAPH_PATCH}_OK`:
-            return _patch(state, action.payload, action.info)
-
-        case `${ActionType.GRAPH_DELETE}_OK`:
-            return null
+            return { ..._patch(state, action.payload, action.info), isSyncing: false }
 
         case `${ActionType.GRAPH_GET}_FAIL`:
-            if (_.isEqual(state, {id: action.payload.id})) {return null}
-            // break is omitted intentionally
+            return { ...state, isFetching: false }
+
         case `${ActionType.GRAPH_PATCH}_FAIL`:
         case `${ActionType.GRAPH_DELETE}_FAIL`:
-            return {...state, isFetching: false}
-
-        default:
-            return state
+            return { ...state, isSyncing: false }
     }
 }
 
-export function graphs(state = {isFetching: false, list: []}, action) {
-
+export function graphs(state = { isFetching: false }, action) {
+    let newState
     switch(action.type) {
         case `${ActionType.GRAPHS_LIST_GET}_PENDING`:
-            return {...state, isFetching: true}
+            return { ...state, isFetching: true }
 
         case `${ActionType.GRAPHS_LIST_GET}_OK`:
-            return {
-                list: action.payload.map(g => ({
-                    ...state.list.find(gr => gr.id === g.id),
-                    ...g
-                })),
-                isFetching: false
-            }
+            return action.payload.reduce((newState, info) => ({
+                ...newState,
+                [info.id]: graph(state[info.id], { type: action.type, payload: info })
+            }), { ...state, isFetching: false })
 
         case `${ActionType.GRAPHS_LIST_GET}_FAIL`:
-            return {...state, isFetching: false}
+            return { ...state, isFetching: false }
 
 
-
-        case `${ActionType.GRAPH_POST}_OK`:
-            return {
-                isFetching: state.isFetching,
-                list: state.list.concat(action.payload)
-            }
-
+        case `${ActionType.GRAPH_CREATE}_OK`:
+        case `${ActionType.GRAPH_DUPLICATE}_OK`:
         case `${ActionType.GRAPH_GET}_PENDING`:
-            if (!state.list.some(g => g.id === action.payload.id)) {
-                state.list.push({ id: action.payload.id, label: '' })
-            }
-            // break is omitted intentionally
         case `${ActionType.GRAPH_GET}_OK`:
         case `${ActionType.GRAPH_GET}_FAIL`:
         case `${ActionType.GRAPH_PATCH}_PENDING`:
         case `${ActionType.GRAPH_PATCH}_OK`:
         case `${ActionType.GRAPH_PATCH}_FAIL`:
         case `${ActionType.GRAPH_DELETE}_PENDING`:
-        case `${ActionType.GRAPH_DELETE}_OK`:
         case `${ActionType.GRAPH_DELETE}_FAIL`:
             return {
-                isFetching: state.isFetching,
-                list: state.list.map(g => g.id === action.payload.id ? graph(g, action) : g).filter(g => g !== null)
+                ...state,
+                [action.payload.id]: graph(state[action.payload.id], action)
             }
 
-        case `${ActionType.GRAPH_DUPLICATE}_OK`:
-            return {
-                isFetching: state.isFetching,
-                list: state.list.concat(action.payload)
-            }
+        case `${ActionType.GRAPH_DELETE}_OK`:
+            newState = { ...state }
+            Reflect.deleteProperty(newState, action.payload.id)
+            return newState
 
         case `${ActionType.LOGOUT}_OK`:
-            return { isFetching: false, list: [] }
+            return { isFetching: false }
 
         default:
             return state

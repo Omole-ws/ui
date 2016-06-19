@@ -16,7 +16,6 @@
   "license": "WTFPL",
   "devDependencies": {
     "autoprefixer": "^6.3.6",
-    "autoprefixer-loader": "^3.2.0",
     "babel-core": "^6.9.1",
     "babel-loader": "^6.2.4",
     "babel-plugin-lodash": "^3.2.0",
@@ -30,7 +29,7 @@
     "jade": "^1.11.0",
     "jade-loader": "^0.8.0",
     "jade-react-loader": "^1.0.2",
-    "node-sass": "^3.7.0",
+    "node-sass": "^3.8.0",
     "postcss-loader": "^0.9.1",
     "promise-loader": "^1.0.0",
     "raw-loader": "^0.5.1",
@@ -44,7 +43,7 @@
   "dependencies": {
     "cytoscape": "^2.7.2",
     "cytoscape-cxtmenu": "^2.7.1",
-    "cytoscape-edgehandles": "^2.4.0",
+    "cytoscape-edgehandles": "^2.4.1",
     "page": "^1.7.1",
     "react": "^15.1.0",
     "react-addons-transition-group": "^15.1.0",

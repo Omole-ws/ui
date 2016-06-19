@@ -1,12 +1,11 @@
 // STATE OBJECT REPRESENTATION
-export const store_EX = {
+export const store_EXPLAIN = {
     router: {
         path: '',
         params: null
     },
     mode: 'list' || 'operate' || 'report' || 'TA' || 'DBA',
     list: {
-        new: false,
         sort: {
             by: 'name',
             asc: true
@@ -23,17 +22,16 @@ export const store_EX = {
     },
     graphs: {
         isFetching: true,
-        list: [
-            {
-                isFetching: false,
-                id: 'str',
-                uid: 'str',
-                label: 'str',
-                comment:'',
-                nodes: [],
-                edges: []
-            }
-        ]
+        ['gid']: {
+            isFetching: false,
+            isSyncing: false,
+            id: 'str',
+            uid: 'str',
+            label: 'str',
+            comment:'',
+            nodes: [],
+            edges: []
+        }
     },
     graphsExtra: {
         visualAttributes: {
@@ -93,6 +91,7 @@ import * as graphsExtraReducers from './reducers/graphs-extra-reducers' // graph
 import * as tapeReducers from './reducers/tape-reducers' // tape
 import * as algosReducers from './reducers/algos-reducers'
 import * as tasksReducers from './reducers/tasks-reducers'
+import * as listComponentReducers from './reducers/list-component-reducers'
 import * as operateComponentReducers from './reducers/operate-component-reducers'
 
 export default {
@@ -104,5 +103,6 @@ export default {
     ...tapeReducers,
     ...algosReducers,
     ...tasksReducers,
+    ...listComponentReducers,
     ...operateComponentReducers
 }

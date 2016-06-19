@@ -9,12 +9,12 @@ import * as tasksActions from './actions/tasks-actions'
 import * as operateComponentActions from './actions/operate-component-actions'
 import * as messageCenterActions from './actions/mcenter-actions'
 
-export const DataURL = '/app/r/graphs'
-export const GvaURL = '/app/r/vizattrs'
+export const DataURL = '/app/d/graphs'
+export const GvaURL = '/app/d/vizattrs'
 export const AlgoURL = '/app/t'
 export const TaskListURL = '/app/t/cctasks'
-export const TRNodeGroupURL = '/app/r/nodegroups'
-export const TRPathsURL = '/app/r/paths'
+export const TRNodeGroupURL = '/app/d/nodegroups'
+export const TRPathsURL = '/app/d/paths'
 
 export const Action = {
     ...routerActions,

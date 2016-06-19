@@ -33,7 +33,6 @@ class EditEdge extends React.Component {
     }
 
     static propTypes = {
-        gid: React.PropTypes.string.isRequired,
         onScreen: React.PropTypes.bool.isRequired,
         edge: React.PropTypes.object,
         edgeDialogClose: React.PropTypes.func.isRequired,
@@ -101,7 +100,6 @@ class EditEdge extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        gid: state.currentGraph,
         onScreen: state.operating.edgeEditor.onScreen,
         edge: state.operating.edgeEditor.edge,
         position: state.operating.edgeEditor.position

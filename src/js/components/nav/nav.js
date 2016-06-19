@@ -23,17 +23,25 @@ class Nav extends React.Component {
         showMessageCenter: React.PropTypes.func.isRequired
     }
 
-    render() {
-        let  leftChildren = null, rightChildren = null
-        if (this.props.children) {
-            leftChildren = this.props.children
-                .filter(e => !e.props.right)
-                .map((e, i) => ({ ...e, key: i }))
-            rightChildren = this.props.children
-                .filter(e => e.props.right)
-                .concat(<NavProfile/>)
-                .map((e, i) => ({ ...e, key: i }))
+    splitChildren(children) {
+        if (!children) {
+            return [ null, null ]
         }
+        if (!Array.isArray(children)) {
+            return children.props.right ? [ null, children ] : [ children, null ]
+        }
+        const left = children
+            .filter(e => !e.props.right)
+            .map((e, i) => ({ ...e, key: i }))
+        const right = children
+            .filter(e => e.props.right)
+            .concat(<NavProfile/>)
+            .map((e, i) => ({ ...e, key: i }))
+        return [ left, right ]
+    }
+
+    render() {
+        let  [ leftChildren, rightChildren ] = this.splitChildren(this.props.children)
         return (
                 <NavTmpl logo={ logo }
                     restrict={ () => this.props.mode === Mode.LOGIN || this.props.mode === Mode.REGISTRATION }

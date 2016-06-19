@@ -28,7 +28,7 @@ export default class Import extends React.Component {
     }
 
     static propTypes ={
-        postNewGraph: React.PropTypes.func.isRequired
+        createGraph: React.PropTypes.func.isRequired
     }
 
     _setRref(ref) {
@@ -73,7 +73,7 @@ export default class Import extends React.Component {
     }
 
     _submit(ev) {
-        this.props.postNewGraph(_.merge(this.state.graph, {
+        this.props.createGraph(_.merge(this.state.graph, {
             label: this.state.title,
             comment: this.state.description
         }))

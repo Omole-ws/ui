@@ -31,7 +31,7 @@ class Desk extends React.Component {
             idx: React.PropTypes.number
         }),
         deskMode: React.PropTypes.string.isRequired,
-        fetchGraph: React.PropTypes.func.isRequired,
+        getGraph: React.PropTypes.func.isRequired,
         fetchGVA: React.PropTypes.func.isRequired
     }
 
@@ -116,7 +116,7 @@ class Desk extends React.Component {
 
     _loadGraphData(graph, visualAttributes) {
         if (!graph || !graph.isFetching) {
-            this.props.fetchGraph(graph ? graph : {id: this.props.gid})
+            this.props.getGraph(graph ? graph : {id: this.props.gid})
         }
         if (!visualAttributes || !visualAttributes.isFetching) {
             this.props.fetchGVA(graph ? graph : {id: this.props.gid})
@@ -126,7 +126,7 @@ class Desk extends React.Component {
 
 function mapStateToProps(state, ownProps) {
     return {
-        graph: state.graphs.list.find(g => g.id === ownProps.gid),
+        graph: state.graphs[ownProps.gid],
         visualAttributes: state.graphsExtra.visualAttributes[ownProps.gid],
         tape: state.tape[ownProps.gid],
         groups: state.operating.groups,
@@ -136,7 +136,7 @@ function mapStateToProps(state, ownProps) {
 }
 
 const mapDispatchToProps = {
-    fetchGraph: Action.fetchGraph,
+    getGraph: Action.getGraph,
     fetchGVA: Action.fetchGVA
 }
 

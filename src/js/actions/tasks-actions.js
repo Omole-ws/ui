@@ -19,7 +19,7 @@ export function createTask({ algo, params }) {
                 const value = encodeURIComponent(params[p])
                 return `${name}=${value}`
             })
-            .concat(`ts=${getState().graphs.list.find(g => g.id === params.gid).tstamp}`)
+            .concat(`ts=${getState().graphs[params.gid].tstamp}`)
             .join('&')
         netAction({
             url: `${AlgoURL}/${algo.url}?${qs}`,

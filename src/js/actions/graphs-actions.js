@@ -8,7 +8,7 @@ export function setCurrentGraph(gid) {
     }
 }
 
-export function fetchGraphsList() {
+export function getGraphList() {
     return function(dispatch) {
         dispatch({type: `${ActionType.GRAPHS_LIST_GET}_PENDING`})
         netAction({
@@ -19,20 +19,20 @@ export function fetchGraphsList() {
     }
 }
 
-export function postNewGraph(graph) {
+export function createGraph(graph) {
     return function(dispatch) {
-        dispatch({type: `${ActionType.GRAPH_POST}_PENDING`, payload: graph})
+        dispatch({type: `${ActionType.GRAPH_CREATE}_PENDING`, payload: graph})
         netAction({
             url: DataURL,
             method: 'post',
             body: graph,
-            onSuccess: info => dispatch({type: `${ActionType.GRAPH_POST}_OK`, payload: { ...graph, ...info }}),
-            onError: error => dispatch({type: `${ActionType.GRAPH_POST}_FAIL`, payload: graph, error})
+            onSuccess: info => dispatch({type: `${ActionType.GRAPH_CREATE}_OK`, payload: { ...graph, ...info }}),
+            onError: error => dispatch({type: `${ActionType.GRAPH_CREATE}_FAIL`, payload: graph, error})
         })
     }
 }
 
-export function fetchGraph(graph) {
+export function getGraph(graph) {
     return function(dispatch) {
         dispatch({type: `${ActionType.GRAPH_GET}_PENDING`, payload: graph})
         netAction({
@@ -43,7 +43,7 @@ export function fetchGraph(graph) {
     }
 }
 
-export function removeGraph(graph) {
+export function deleteGraph(graph) {
     return function(dispatch) {
         dispatch({type: `${ActionType.GRAPH_DELETE}_PENDING`, payload: graph})
         netAction({

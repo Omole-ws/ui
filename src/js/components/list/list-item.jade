@@ -1,7 +1,7 @@
 - var link = "#!/" + graph.id + "/operate"
 - var timeStamp = new Date(Number.parseInt(graph.tstamp)).toString()
 // - var timeStamp = (new Date()).toString()
-.item.blurring.dimmable(ref=setRef, class=graph.isFetching?'dimmed':'')
+.item.blurring.dimmable(ref=setRef, class=(graph.isFetching || graph.isSyncing) ? 'dimmed' : '')
     i.large.clockwise.rotated.orange.fork.icon
     .content
         a.header(href=link)= graph.label
