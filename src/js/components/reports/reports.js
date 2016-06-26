@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Action } from '../../actions'
+import { Action, TaskStatus } from '../../actions'
 import Nav from '../nav/nav'
 
 class Reports extends React.Component {
@@ -14,14 +14,6 @@ class Reports extends React.Component {
     }
 
     render() {
-        const aaa = Reflect.ownKeys(this.props.reports)
-            .map(rid => this.props.reports[rid])
-            .map(report =>
-                <button key={ report.name } onClick={ () => this.props.createTask({ algo: report, params: { gid: this.props.gid }}) }>
-                    {report.name}
-                </button>
-            )
-            console.log(aaa)
         return (
             <div>
                 <Nav>
@@ -29,7 +21,14 @@ class Reports extends React.Component {
                     <a className="item" href={`#!/${this.props.gid}/operate`}> Operate... </a>
                 </Nav>
                 <div>
-                    { aaa
+                    {
+                        Reflect.ownKeys(this.props.reports)
+                        .map(rid => this.props.reports[rid])
+                        .map(report =>
+                            <button key={ report.name } onClick={ () => this.props.createTask({ algo: report, params: { gid: this.props.gid }}) }>
+                                {report.name}
+                            </button>
+                        )
                     }
                 </div>
                 <div>
@@ -39,7 +38,10 @@ class Reports extends React.Component {
                                 <h5>{ task.tid }</h5>
                                 <br/>
                                 <em>{ `${task.status} > compleated: ${task.procent}%` }</em>
-                                <a href={`/app/r/ccgetreport/${task.tid}/${task.result[0]}`} target="_blank">get</a>
+                                {
+                                    task.status === TaskStatus.TS_COMPLETED ?
+                                        <a href={`/app/r/ccgetreport?tid=${task.tid}&repname=${task.result[0]}`} target="_blank">get</a> : ''
+                                }
                             </div>
                         )
                     }

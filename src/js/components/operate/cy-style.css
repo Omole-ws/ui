@@ -196,7 +196,8 @@ edge.path-hl {
 }
 
 .dim {
-  opacity: 0.2;
+  opacity: 0.5;
+  font-style: italic;
 }
 
 .group.dim {

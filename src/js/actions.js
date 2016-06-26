@@ -61,6 +61,7 @@ export const TaskStatus = {
     TS_COMPLETED: 'TCOMPLETE',
     TS_RUNNING: 'TRUN',
     TS_ERROR: 'TERROR',
+    TS_AWAITING: '_AWAITING',
     TS_FETCHING: '_FETCH'
 }
 export const TaskResultsType = {

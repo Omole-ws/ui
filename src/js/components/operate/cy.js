@@ -40,7 +40,9 @@ export default class Cy {
         this.cy.edgehandles({
             ...Cy.edgeHandlesDefaults,
             edgeType: (source, target) => {
-                if (source.edgesTo(target).filterFn(e => e.hasClass(this.menus.type)).length > 0) {
+                if (source.edgesTo(target)
+                    .filterFn(e => e.hasClass(this.menus.type))
+                    .length > 0) {
                     return null
                 }
                 return 'flat'
@@ -259,71 +261,89 @@ export default class Cy {
 
     showGroups(groups) {
         Reflect.ownKeys(groups)
-        .forEach(g => {
-            const id = g.replace(/:/g, '-')
-            this.cy.add({group: 'nodes', data: { id, label: g}, classes: 'group' })
-            this.cy.$(groups[g].map(nid => `#${nid}`).join(',')).move({parent: id})
-        })
+            .forEach(g => {
+                const id = g.replace(/:/g, '-')
+                this.cy.add({ group: 'nodes', data: { id, label: g }, classes: 'group' })
+                this.cy.nodes(groups[g].map(nid => `#${nid}`)
+                        .join(','))
+                    .move({ parent: id })
+            })
     }
 
     hideGroups(groups) {
         const gRepresentation = Reflect.ownKeys(groups)
-        .reduce((acc, g) => {
-            const groupRoot = this.cy.$(`#${g.replace(/:/g, '-')}`)
-            return {
-                parents: acc.parents.add(groupRoot),
-                children: acc.children.add(groupRoot.children())
-            }
-        }, { parents: this.cy.collection(), children: this.cy.collection() })
+            .reduce((acc, g) => {
+                const groupRoot = this.cy.$(`#${g.replace(/:/g, '-')}`)
+                return {
+                    parents: acc.parents.add(groupRoot),
+                    children: acc.children.add(groupRoot.children())
+                }
+            }, { parents: this.cy.collection(), children: this.cy.collection() })
         gRepresentation.children.move({ parent: null })
         this.cy.remove(gRepresentation.parents)
     }
 
+    static buildPathsEdgeSelector(paths) {
+        return Array.from(
+                paths.reduce((acc, path) => {
+                    return path.edges.reduce((accInner, eid) => accInner.add(`#${eid}`), acc)
+                }, new Set())
+            )
+            .join(',')
+
+    }
+
     showPaths(paths) {
-        const selector = [...paths.reduce((acc, path) => {
-            return path.edges.reduce((accInner, edge) => accInner.add(edge), acc)
-        }, new Set())]
-        .map(eid => `#${eid}`).join(',')
+        const selector = Cy.buildPathsEdgeSelector(paths)
         let pathEles = this.cy.$(selector)
         pathEles = pathEles.add(pathEles.connectedNodes())
         this.cy.startBatch()
-        this.cy.elements().addClass('dim')
-        pathEles.addClass('path')
+        this.cy.elements()
+            .addClass('dim')
+        pathEles.removeClass('dim')
+        this.cy.nodes('.group').removeClass('dim')
+        // pathEles.addClass('path')
         this.cy.endBatch()
     }
 
     hidePaths(paths) {
-        const selector = [...paths.reduce((acc, path) => {
-            return path.edges.reduce((accInner, edge) => accInner.add(edge), acc)
-        }, new Set())]
-        .map(eid => `#${eid}`).join(',')
+        const selector = Cy.buildPathsEdgeSelector(paths)
         let pathEles = this.cy.$(selector)
         pathEles = pathEles.add(pathEles.connectedNodes())
         this.cy.startBatch()
-        this.cy.elements().removeClass('dim')
-        pathEles.removeClass('path')
+        this.cy.elements()
+            .removeClass('dim')
+        // pathEles.removeClass('path')
         this.cy.endBatch()
     }
 
     highlightPath(path) {
         this.cy.startBatch()
         path.edges
-        .forEach((eid, i) => {
-            this.cy.$(`#${eid}`).addClass('path-hl').data('plabel', i + 1)
-        })
-        this.cy.$(`#${path.from}`).addClass('path-from')
-        this.cy.$(`#${path.to}`).addClass('path-to')
+            .forEach((eid, i) => {
+                this.cy.$(`#${eid}`)
+                    .addClass('path-hl')
+                    .data('plabel', i + 1)
+            })
+        this.cy.$(`#${path.from}`)
+            .addClass('path-from')
+        this.cy.$(`#${path.to}`)
+            .addClass('path-to')
         this.cy.endBatch()
     }
 
     dimPath(path) {
         this.cy.startBatch()
         path.edges
-        .forEach(eid => {
-            this.cy.$(`#${eid}`).removeClass('path-hl').data('plabel', null)
-        })
-        this.cy.$(`#${path.from}`).removeClass('path-from')
-        this.cy.$(`#${path.to}`).removeClass('path-to')
+            .forEach(eid => {
+                this.cy.$(`#${eid}`)
+                    .removeClass('path-hl')
+                    .data('plabel', null)
+            })
+        this.cy.$(`#${path.from}`)
+            .removeClass('path-from')
+        this.cy.$(`#${path.to}`)
+            .removeClass('path-to')
         this.cy.endBatch()
     }
 

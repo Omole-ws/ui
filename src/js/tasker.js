@@ -5,7 +5,8 @@ export function taskCheck() {
     const tasks = store.getState().tasks
     const activeTIDs = Reflect
         .ownKeys(tasks)
-        .filter(tid => tasks[tid].status === TaskStatus.TS_START || tasks[tid].status === TaskStatus.TS_RUNNING)
+        .filter(tid => tasks[tid].lstatus === TaskStatus.TS_AWAITING)
+        // .filter(tid => tasks[tid].status === TaskStatus.TS_START || tasks[tid].status === TaskStatus.TS_RUNNING)
 
     activeTIDs.forEach(tid => setTimeout(watch, 2000, tid))
 }

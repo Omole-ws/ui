@@ -133,6 +133,13 @@ function groups(state = null, action) {
         case ActionType.SHOW_GROUPS:
             return action.payload
 
+        case ActionType.MODE_SET:
+            if (action.payload !== Mode.OPERATE) {
+                return null
+            } else {
+                return state
+            }
+
         case `${ActionType.LOGOUT}_OK`:
             return null
 
@@ -148,6 +155,13 @@ function paths(state = null, action) {
 
         case ActionType.HIGHLIGHT_PATH:
             return { ...state, idx: action.payload }
+
+        case ActionType.MODE_SET:
+            if (action.payload !== Mode.OPERATE) {
+                return null
+            } else {
+                return state
+            }
 
         case `${ActionType.LOGOUT}_OK`:
             return null
