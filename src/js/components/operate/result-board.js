@@ -120,9 +120,10 @@ function mapStateToProps(state) {
         graph: state.graphs[state.currentGraph],
         algosDef: state.algos.definitions,
         tasks: Reflect.ownKeys(state.tasks)
-            .filter(tid => state.tasks[tid].status === TaskStatus.TS_COMPLETED)
-            .filter(tid => state.tasks[tid].gid === state.currentGraph)
             .map(tid => state.tasks[tid])
+            .filter(task => task.gid === state.currentGraph)
+            .filter(task => Reflect.has(state.algos.definitions, task.name))
+            .filter(task => task.status === TaskStatus.TS_COMPLETED)
     }
 }
 

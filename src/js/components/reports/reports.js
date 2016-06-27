@@ -40,7 +40,7 @@ class Reports extends React.Component {
                                 <em>{ `${task.status} > compleated: ${task.procent}%` }</em>
                                 {
                                     task.status === TaskStatus.TS_COMPLETED ?
-                                        <a href={`/app/r/ccgetreport?tid=${task.tid}&repname=${task.result[0]}`} target="_blank">get</a> : ''
+                                        <a href={`/app/r/ccgetreport?tid=${task.tid}&repname=${task.results[0]}`} target="_blank">get</a> : ''
                                 }
                             </div>
                         )
@@ -71,6 +71,7 @@ function mapStateToProps(state) {
         reports: state.reports.definitions,
         tasks: Reflect.ownKeys(state.tasks)
             .map(tid => state.tasks[tid])
+            .filter(task => task.gid === state.currentGraph)
             .filter(task => Reflect.has(state.reports.definitions, task.name))
     }
 }
