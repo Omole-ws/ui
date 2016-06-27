@@ -13,6 +13,8 @@ import '../../../../semantic/dist/components/transition'
 import React from 'react'
 import _ from 'lodash'
 
+import { DataURL } from '../../actions'
+
 import ListItemTmpl from '!jade-react!./list-item.jade'
 
 export default class ListItem extends React.Component {
@@ -48,6 +50,6 @@ export default class ListItem extends React.Component {
     render() {
         return <ListItemTmpl graph={this.props.graph} setRef={r => this.ref = r}
             edit={this.props.edit} remove={this.props.remove}
-            duplicate={this.props.duplicate} exportGraph={this.exportGraph}/>
+            duplicate={this.props.duplicate} exportGraph={this.exportGraph} DataURL={ DataURL }/>
     }
 }
