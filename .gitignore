@@ -6,5 +6,4 @@ semantic/*
 semantic/src/*
 !semantic/src/theme.config
 !semantic/src/site
-semantic.json
 dist
