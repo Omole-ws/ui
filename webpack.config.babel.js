@@ -13,13 +13,13 @@ const loaders = [
         // loader: 'babel?presets[]=react&presets[]=es2015'
     },
     {
-        test: /\.css$/,
-        loader: 'style!css!postcss'
-    },
-    {
         test: /\.jade$/,
         exclude: 'node_modules',
         loader: 'jade'
+    },
+    {
+        test: /\.css$/,
+        loader: 'style!css!postcss'
     },
     {
         test: /\.(scss|sass)$/,
