@@ -33,7 +33,7 @@ class Operating extends React.Component {
                 <Nav>
                     <a className="item" href="#!/"> List </a>
                     <NavAlgo/>
-                    <a className="item" href={`#!/${this.props.gid}/reports`}>Reports...</a>
+                    <a className="item" href={`#!/${this.props.gid}/reports`}>Reports view...</a>
                     {/*<div className="ui right inverted menu">*/}
                     <div right className="ui link item" onClick={this.props.toggleResultBoard}>
                         <i className="ui icons">

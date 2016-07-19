@@ -1,15 +1,18 @@
 import React from 'react'
+import ReactTransitionGroup from 'react-addons-transition-group'
 import { connect } from 'react-redux'
 
 import { Action, TaskStatus } from '../../actions'
 import Nav from '../nav/nav'
+import NavReports from '../nav/nav-reports'
+import ReporItem from './report-item'
 
 class Reports extends React.Component {
     static propTypes = {
         gid: React.PropTypes.string.isRequired,
         graph: React.PropTypes.object,
         reports: React.PropTypes.object.isRequired,
-        tasks: React.PropTypes.arrayOf(React.PropTypes.object),
+        rtasks: React.PropTypes.arrayOf(React.PropTypes.object),
         createTask: React.PropTypes.func.isRequired
     }
 
@@ -18,34 +21,17 @@ class Reports extends React.Component {
             <div>
                 <Nav>
                     <a className="item" href="#!/"> List </a>
-                    <a className="item" href={`#!/${this.props.gid}/operate`}> Operate... </a>
+                    <NavReports/>
+                    <a className="item" href={`#!/${this.props.gid}/operate`}> Graph view... </a>
                 </Nav>
-                <div>
+                <ReactTransitionGroup component="div"
+                    className={'ui divided items'}>
                     {
-                        Reflect.ownKeys(this.props.reports)
-                        .map(rid => this.props.reports[rid])
-                        .map(report =>
-                            <button key={ report.name } onClick={ () => this.props.createTask({ algo: report, params: { gid: this.props.gid }}) }>
-                                {report.name}
-                            </button>
-                        )
+                        this.props.rtasks.map(task => {
+                            return <ReporItem key={task.tid} task={task}/>
+                        })
                     }
-                </div>
-                <div>
-                    {
-                        this.props.tasks.map(task =>
-                            <div>
-                                <h5>{ task.tid }</h5>
-                                <br/>
-                                <em>{ `${task.status} > compleated: ${task.procent}%` }</em>
-                                {
-                                    task.status === TaskStatus.TS_COMPLETED ?
-                                        <a href={`/app/r/ccgetreport?tid=${task.tid}&repname=${task.results[0]}`} target="_blank">get</a> : ''
-                                }
-                            </div>
-                        )
-                    }
-                </div>
+                </ReactTransitionGroup>
             </div>
         )
     }
@@ -69,7 +55,7 @@ function mapStateToProps(state) {
         gid: state.currentGraph,
         graph: state.graphs[state.currentGraph],
         reports: state.reports.definitions,
-        tasks: Reflect.ownKeys(state.tasks)
+        rtasks: Reflect.ownKeys(state.tasks)
             .map(tid => state.tasks[tid])
             .filter(task => task.gid === state.currentGraph)
             .filter(task => Reflect.has(state.reports.definitions, task.name))

@@ -11,5 +11,3 @@ export function algosFetchDef() {
         })
     }
 }
-
-// export fu
