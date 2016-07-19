@@ -15,8 +15,16 @@ import Desk from './desk'
 class Operating extends React.Component {
     static propTypes = {
         gid:        React.PropTypes.string.isRequired,
+        graph: React.PropTypes.object,
         taskPending: React.PropTypes.bool.isRequired,
+        getGraph: React.PropTypes.func.isRequired,
         toggleResultBoard: React.PropTypes.func.isRequired
+    }
+
+    componentDidMount() {
+        if (!this.props.graph || !this.props.graph.isFetching) {
+            this.props.getGraph(this.props.graph ? this.props.graph : {id: this.props.gid})
+        }
     }
 
     render() {
@@ -40,9 +48,14 @@ class Operating extends React.Component {
                 <EditNode/>
                 <EditEdge/>
                 <PrepareTask/>
-                <ResultBoard>
-                    <Desk gid={this.props.gid}/>
-                </ResultBoard>
+                {
+                    this.props.graph && !this.props.graph.isFetching && this.props.graph.nodes instanceof Array ?
+                        <ResultBoard>
+                            <Desk gid={ this.props.gid } graph={ this.props.graph }/>
+                        </ResultBoard>
+                    :
+                    null
+                }
             </div>
         )
     }
@@ -55,11 +68,13 @@ class Operating extends React.Component {
 function mapStateToProps(state) {
     return {
         gid: state.currentGraph,
+        graph: state.graphs[state.currentGraph],
         taskPending: state.operating.resultBoard.hasNew
     }
 }
 
 const mapDispatchToProps = {
+    getGraph: Action.getGraph,
     toggleResultBoard: Action.toggleResultBoard
 }
 

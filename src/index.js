@@ -18,6 +18,7 @@ import Root from './js/components/root'
 
 import { Action } from './js/actions'
 import { taskCheck } from './js/tasker'
+import { dataSync } from './js/sync'
 
 
 let authorized = undefined
@@ -49,6 +50,7 @@ configureRouter(store)
 
 store.subscribe(init)
 store.subscribe(taskCheck)
+store.subscribe(dataSync)
 
 ReactDOM.render(
     <Provider store={store}>

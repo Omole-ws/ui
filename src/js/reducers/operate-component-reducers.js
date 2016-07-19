@@ -28,7 +28,7 @@ function node(state = null, action) {
             return null
 
         case `${ActionType.LOGOUT}_OK`:
-            return false
+            return null
 
         default:
             return state

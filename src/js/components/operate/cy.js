@@ -1,7 +1,6 @@
 /* global $ */
 
 import loadCytoscape from 'promise?bluebird!cytoscape'
-// import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
 import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
 import loadEdgeHandles from 'promise?bluebird!cytoscape-edgehandles'
 
@@ -33,7 +32,6 @@ export default class Cy {
             container: elem,
             style,
             selectionType: 'additive',
-            // autounselectify: true,
             motionBlur: true
         })
 
@@ -147,21 +145,6 @@ export default class Cy {
                 this.modeHandlers.push(new CySelectFromTo(this.cy))
                 break
         }
-        // if (this.modeHandlers) {
-        //     Reflect
-        //     .ownKeys(this.modeHandlers)
-        //     .forEach(selector => {
-        //         if (this.modeHandlers[selector]) {
-        //             this.modeHandlers[selector].forEach(handler => {
-        //                 if (selector === '') {
-        //                     this.cy.off(handler.events, handler.handler)
-        //                 } else {
-        //                     this.cy.off(handler.events, handler.selector, handler.handler)
-        //                 }
-        //             })
-        //         }
-        //     })
-        // }
     }
 
     populate(graph, visualAttributes, tape) {
@@ -175,22 +158,6 @@ export default class Cy {
             zoom: visualAttributes.zoom,
             pan: visualAttributes.pan
         }
-
-        // const ifPanZoom = tape && tape
-        //     .map(a => a.type)
-        //     .filter(t => t === ActionType.GVA_ZOOM || t === ActionType.GVA_PAN)
-        //     .reduce((acc, val) => ({...acc, [val]: true}), {})
-        //     || {}
-        // if (visualAttributes.zoom) {
-        //     this.cy.zoom(visualAttributes.zoom)
-        // } else if (!ifPanZoom[ActionType.GVA_ZOOM]) {
-        //     this.gvaZoom(this.cy.zoom())
-        // }
-        // if (visualAttributes.pan) {
-        //     this.cy.pan(visualAttributes.pan)
-        // } else if (!ifPanZoom[ActionType.GVA_PAN]) {
-        //     this.gvaPan(this.cy.pan())
-        // }
 
         if (graph && graph.edges) {
             base.edgeCreations = graph.edges.reduce((acc, val) => ({...acc, [val.id]: val }), {})
@@ -215,20 +182,28 @@ export default class Cy {
     applyChanges(tape, base) {
         if (tape || base) {
             const correction = tapeToCorrection({ tape, base })
-            const nodes = Object.values(correction.nodeCreations)
-                .map(node => Cy.nodeConverter(node))
-            const edges = base && Object.values(correction.edgeCreations)
-                .map(edge => Cy.edgeConverter(edge)) || []
+            const nodes = Reflect.ownKeys(correction.nodeCreations)
+                .map(nid => Cy.nodeConverter(correction.nodeCreations[nid]))
+            const edges = base && Reflect.ownKeys(correction.edgeCreations)
+                .map(eid => Cy.edgeConverter(correction.edgeCreations[eid]))
+            // HACK: We need any one node already rendered, look at the end of function
+            const controlNode = this.cy.nodes().slice(0,1)
             this.cy.startBatch()
             this.cy.add({ nodes, edges })
-            Object.values(correction.nodeUpdates)
-                .map(node => [node, Cy.nodeConverter(node), this.cy.$(`#${node.id}`)])
+            Reflect.ownKeys(correction.nodeUpdates)
+                .map(nid => {
+                    const node = correction.nodeUpdates[nid]
+                    return [node, Cy.nodeConverter(node), this.cy.$(`#${node.id}`)]
+                })
                 .forEach(([node, convertedNode, cyNode]) => {
                     cyNode.data(convertedNode.data)
                     node.type && cyNode.classes(convertedNode.classes)
                 })
-            Object.values(correction.edgeUpdates)
-                .map(edge => [Cy.edgeConverter(edge), this.cy.$(`#${edge.id}`)])
+            Reflect.ownKeys(correction.edgeUpdates)
+                .map(eid => {
+                    const edge = correction.edgeUpdates[eid]
+                    return [Cy.edgeConverter(edge), this.cy.$(`#${edge.id}`)]
+                })
                 .forEach(([convertedEdge, cyEdge]) => {
                     cyEdge.data(convertedEdge.data)
                     cyEdge.classes(convertedEdge.classes)
@@ -243,6 +218,10 @@ export default class Cy {
                 correction.pan && this.cy.pan(correction.pan)
             }
             this.cy.endBatch()
+            // HACK: ugly hack, witthout this newly added nodes will disapear on next tap on the viewport
+            // and will appear only after some grafics changed (selection, node move, but not pan/zoom)
+            controlNode.select()
+            controlNode.unselect()
         }
     }
 
@@ -302,18 +281,13 @@ export default class Cy {
             .addClass('dim')
         pathEles.removeClass('dim')
         this.cy.nodes('.group').removeClass('dim')
-        // pathEles.addClass('path')
         this.cy.endBatch()
     }
 
-    hidePaths(paths) {
-        const selector = Cy.buildPathsEdgeSelector(paths)
-        let pathEles = this.cy.$(selector)
-        pathEles = pathEles.add(pathEles.connectedNodes())
+    hidePaths() {
         this.cy.startBatch()
         this.cy.elements()
             .removeClass('dim')
-        // pathEles.removeClass('path')
         this.cy.endBatch()
     }
 

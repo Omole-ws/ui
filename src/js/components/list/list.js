@@ -38,6 +38,7 @@ class ListView extends React.Component {
         patchGraph:        React.PropTypes.func.isRequired,
         deleteGraph:       React.PropTypes.func.isRequired,
         duplicateGraph:    React.PropTypes.func.isRequired,
+        importGraph:    React.PropTypes.func.isRequired,
         getGraph:    React.PropTypes.func.isRequired,
         showMessageCenter: React.PropTypes.func.isRequired
     }
@@ -83,7 +84,7 @@ class ListView extends React.Component {
                 <MessageCenter/>
 
                 <Import ref={r => this.importComponent = r}
-                    createGraph={this.props.createGraph}/>
+                    importGraph={this.props.importGraph}/>
 
                 <EditGraphList ref={r => this.editComponent = r}
                     createGraph={this.props.createGraph} patchGraph={this.props.patchGraph}/>
@@ -140,6 +141,7 @@ const mapDispatchToProps = {
     patchGraph: Action.patchGraph,
     deleteGraph: Action.deleteGraph,
     duplicateGraph: Action.duplicateGraph,
+    importGraph: Action.importGraph,
     getGraph: Action.getGraph,
     showMessageCenter: Action.showMessageCenter
 }

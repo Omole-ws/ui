@@ -41,7 +41,7 @@ export const store_EXPLAIN = {
         }
     },
     currentGraph: 'gid',
-    tape: {
+    tapes: {
         ['gid']: []
     },
     algos: {
@@ -88,7 +88,7 @@ import * as sessionReducers from './reducers/session-reducers'  // session
 import * as graphsReducers from './reducers/graphs-reducers'  // graphs, currentGraph
 import * as messageCenterReducers from './reducers/mcenter-reducers'
 import * as graphsExtraReducers from './reducers/graphs-extra-reducers' // graphsExtra
-import * as tapeReducers from './reducers/tape-reducers' // tape
+import * as tapesReducers from './reducers/tapes-reducers' // tape
 import * as algosReducers from './reducers/algos-reducers'
 import * as reportsReducers from './reducers/reports-reducers'
 import * as tasksReducers from './reducers/tasks-reducers'
@@ -101,7 +101,7 @@ export default {
     ...graphsReducers,
     ...messageCenterReducers,
     ...graphsExtraReducers,
-    ...tapeReducers,
+    ...tapesReducers,
     ...algosReducers,
     ...reportsReducers,
     ...tasksReducers,

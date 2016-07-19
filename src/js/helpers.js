@@ -140,9 +140,9 @@ export function tapeToCorrection({tape, base, patch}) {
 
             case ActionType.NODE_DELETE:
                 if (nodeCreations[nid]) {
-                    Reflect.deleteProperty(nodeCreations[nid])
+                    Reflect.deleteProperty(nodeCreations, nid)
                 } else if (nodeUpdates[nid]) {
-                    Reflect.deleteProperty(nodeUpdates[nid])
+                    Reflect.deleteProperty(nodeUpdates, nid)
                     nodeDeletions[nid] = action.payload.node
                 } else {
                     nodeDeletions[nid] = action.payload.node
@@ -189,9 +189,9 @@ export function tapeToCorrection({tape, base, patch}) {
 
             case ActionType.EDGE_DELETE:
                 if (edgeCreations[eid]) {
-                    Reflect.deleteProperty(edgeCreations[eid])
+                    Reflect.deleteProperty(edgeCreations, eid)
                 } else if (edgeUpdates[eid]) {
-                    Reflect.deleteProperty(edgeUpdates[eid])
+                    Reflect.deleteProperty(edgeUpdates, eid)
                     edgeDeletions[eid] = action.payload.edge
                 } else {
                     edgeDeletions[eid] = action.payload.edge

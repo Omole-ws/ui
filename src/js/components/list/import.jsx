@@ -1,3 +1,5 @@
+/* global $ */
+
 import '../../../../semantic/dist/components/button.css'
 import '../../../../semantic/dist/components/icon.css'
 import '../../../../semantic/dist/components/modal.css'
@@ -28,19 +30,15 @@ export default class Import extends React.Component {
     }
 
     static propTypes ={
-        createGraph: React.PropTypes.func.isRequired
+        importGraph: React.PropTypes.func.isRequired
     }
 
     _setRref(ref) {
         this.ref = ref
     }
 
-    _activate(graph) {
-        if(graph) {
-            this.setState({graph: graph, title: graph.label || '', description: graph.comment || ''}, this.show)
-        } else {
-            this.setState({graph: null, title: '', description: ''}, this.show)
-        }
+    _activate() {
+        this.setState({title: '', description: ''}, this.show)
     }
 
     _show() {
@@ -59,11 +57,11 @@ export default class Import extends React.Component {
                 const fr = new FileReader()
                 const fileName = ev.target.files[0].name
                 fr.onload = e => {
-                    let graph = JSON.parse(e.target.result)
-                    graph = _.merge(graph, {id: null, uid: null, tstamp: null})
-                    const title = this.state.title || graph.label || fileName.replace(/\.(json|JSON)$/, '')
-                    const description = graph.comment || ''
-                    this.setState({graph, title, description, file: fileName})
+                    let _export = JSON.parse(e.target.result)
+                    // _export.graph = _.merge(_export.graph, {id: null, uid: null, tstamp: null})
+                    const title = this.state.title || _export.graph.label || fileName.replace(/\.(json|JSON)$/, '')
+                    const description = _export.graph.comment || ''
+                    this.setState({ _export, title, description, file: fileName })
                 }
                 fr.readAsText(ev.target.files[0])
             }
@@ -73,10 +71,16 @@ export default class Import extends React.Component {
     }
 
     _submit(ev) {
-        this.props.createGraph(_.merge(this.state.graph, {
+        const exp = this.state._export
+        exp.graph = _.merge(exp.graph, {
             label: this.state.title,
             comment: this.state.description
-        }))
+        })
+        this.props.importGraph(exp)
+        // this.props.createGraph(_.merge(this.state.graph, {
+        //     label: this.state.title,
+        //     comment: this.state.description
+        // }))
         ev.preventDefault()
     }
 

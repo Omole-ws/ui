@@ -23,6 +23,7 @@ node {
 
 .subject-or-object {
   background-opacity: 0.3;
+  border-style: dashed;
 }
 
 .user {
@@ -69,6 +70,10 @@ node {
 
 .gate {
   shape: heptagon;
+}
+
+.data-diode {
+  background-opacity: 0.3;
 }
 
 .tmp {

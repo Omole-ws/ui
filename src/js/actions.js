@@ -80,6 +80,7 @@ export const NodeType = {
     CLIENT: 'client',
     FIREWALL: 'firewall',
     GATE: 'gate',
+    DATA_DIODE: 'data-diode',
     OBJECT: 'object',
     SUBJECT: 'subject',
     SUBJECT_OR_OBJECT: 'subject-or-object'
@@ -89,15 +90,16 @@ export const NodeTypeInverted = _.invert(NodeType)
 
 export const NodeRole = {
     [NodeType.USER]: 'SUBJECT',
-    [NodeType.PROGRAMM]: 'SUBJECT_OR_OBJECT',
+    [NodeType.PROGRAMM]: 'SUBJECT',
     [NodeType.STORAGE]: 'OBJECT',
     [NodeType.DATA_OR_FILE]: 'OBJECT',
     [NodeType.BUFFER]: 'OBJECT',
     [NodeType.REMOVABLE_MEDIA]: 'OBJECT',
-    [NodeType.SERVER]: 'OBJECT',
+    [NodeType.SERVER]: 'SUBJECT',
     [NodeType.CLIENT]: 'SUBJECT',
-    [NodeType.FIREWALL]: 'SUBJECT_OR_OBJECT',
-    [NodeType.GATE]: 'OBJECT',
+    [NodeType.FIREWALL]: 'SUBJECT',
+    [NodeType.GATE]: 'SUBJECT',
+    [NodeType.DATA_DIODE]: 'OBJECT',
     [NodeType.OBJECT]: 'OBJECT',
     [NodeType.SUBJECT]: 'SUBJECT',
     [NodeType.SUBJECT_OR_OBJECT]: 'SUBJECT_OR_OBJECT'

@@ -16,7 +16,7 @@
             .ui.compact.small.basic.button(onClick=duplicate(graph))
                 i.copy.icon
                 | Duplicate
-            a.ui.compact.small.basic.button(href=DataURL + '/' + graph.id, download=graph.label + '.json')
+            a.ui.compact.small.basic.button(href=DataURL + '/' + graph.id + '/export', download=graph.label + '.json')
                 i.cloud.download.icon
                 | Export
             .ui.compact.small.basic.button(onClick=remove(graph))

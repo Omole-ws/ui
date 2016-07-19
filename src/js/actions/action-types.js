@@ -19,7 +19,8 @@ const graphsActionType = {
     GRAPH_CREATE:    'GRAPH_CREATE',
     GRAPH_PATCH:       'GRAPH_PATCH',
     GRAPH_DELETE:      'GRAPH_DELETE',
-    GRAPH_DUPLICATE:   'GRAPH_DUPLICATE'
+    GRAPH_DUPLICATE:   'GRAPH_DUPLICATE',
+    GRAPH_IMPORT:   'GRAPH_IMPORT'
 }
 
 const graphsExtraActionType = {

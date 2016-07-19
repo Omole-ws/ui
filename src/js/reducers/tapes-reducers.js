@@ -3,15 +3,29 @@ import _ from 'lodash'
 import { ActionType } from '../actions'
 
 
-function record(state = [], action) {
-    if (action.type === `${ActionType.GRAPH_PATCH}_OK`) {
-        return state.slice(action.payload.length)
-    } else {
-        return [...state, action]
+function tape(state = [], action) {
+    let newState = [...state]
+    switch (action.type) {
+        case `${ActionType.GRAPH_PATCH}_PENDING`:
+            newState.isSyncing = true
+            return newState
+
+        case `${ActionType.GRAPH_PATCH}_OK`:
+            newState = state.slice(action.payload.length)
+            newState.isSyncing = false
+            return newState
+
+        case `${ActionType.GRAPH_PATCH}_FAIL`:
+            newState.isSyncing = false
+            return newState
+
+        default:
+            return [...state, action]
+
     }
 }
 
-export function tape(state = {}, action) {
+export function tapes(state = {}, action) {
     if (action.type === ActionType.NODE_CREATE ||
         action.type === ActionType.NODE_UPDATE ||
         action.type === ActionType.NODE_DELETE ||
@@ -22,10 +36,10 @@ export function tape(state = {}, action) {
         action.type === ActionType.EDGE_DELETE ||
         action.type === ActionType.GVA_ZOOM ||
         action.type === ActionType.GVA_PAN ||
-        action.type === `${ActionType.GRAPH_PATCH}_OK`) {
+        action.type.startsWith(ActionType.GRAPH_PATCH)) {
         // return _.omitBy({...state, [action.payload.gid]: [...state[action.payload.gid], action]}, v => v === null)
         const gid = action.payload.gid || action.payload.id
-        return _.omitBy({...state, [gid]: record(state[gid], action)}, v => v === null)
+        return _.omitBy({...state, [gid]: tape(state[gid], action)}, v => v === null || v.length === 0)
     } else if (action.type === `${ActionType.LOGOUT}_OK`) {
         return {}
     } else {

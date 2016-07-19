@@ -42,6 +42,7 @@ function graph(state, action) {
 
         case `${ActionType.GRAPH_CREATE}_OK`:
         case `${ActionType.GRAPH_DUPLICATE}_OK`:
+        case `${ActionType.GRAPH_IMPORT}_OK`:
         case `${ActionType.GRAPH_GET}_OK`:
             return { ...action.payload, isFetching: false }
 
@@ -75,6 +76,7 @@ export function graphs(state = { isFetching: false }, action) {
 
         case `${ActionType.GRAPH_CREATE}_OK`:
         case `${ActionType.GRAPH_DUPLICATE}_OK`:
+        case `${ActionType.GRAPH_IMPORT}_OK`:
         case `${ActionType.GRAPH_GET}_PENDING`:
         case `${ActionType.GRAPH_GET}_OK`:
         case `${ActionType.GRAPH_GET}_FAIL`:

@@ -115,9 +115,9 @@ class Desk extends React.Component {
     }
 
     _loadGraphData(graph, visualAttributes) {
-        if (!graph || !graph.isFetching) {
-            this.props.getGraph(graph ? graph : {id: this.props.gid})
-        }
+        // if (!graph || !graph.isFetching) {
+        //     this.props.getGraph(graph ? graph : {id: this.props.gid})
+        // }
         if (!visualAttributes || !visualAttributes.isFetching) {
             this.props.fetchGVA(graph ? graph : {id: this.props.gid})
         }
@@ -126,9 +126,9 @@ class Desk extends React.Component {
 
 function mapStateToProps(state, ownProps) {
     return {
-        graph: state.graphs[ownProps.gid],
+        // graph: state.graphs[ownProps.gid],
         visualAttributes: state.graphsExtra.visualAttributes[ownProps.gid],
-        tape: state.tape[ownProps.gid],
+        tape: state.tapes[ownProps.gid],
         groups: state.operating.groups,
         paths: state.operating.paths || {},
         deskMode: state.operating.deskMode

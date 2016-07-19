@@ -1,11 +1,9 @@
-/* global $ */
-
 import '../../../semantic/dist/components/container.css'
 
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { Action, Mode } from '../actions'
+import { Mode } from '../actions'
 
 import loadLoginView from 'promise?bluebird!./lr/login'
 import loadRegistrationView from 'promise?bluebird!./lr/registration'
@@ -13,21 +11,24 @@ import loadListView from 'promise?bluebird!./list/list'
 import loadOperateView from 'promise?bluebird!./operate/operate'
 import loadReportsView from 'promise?bluebird!./reports/reports'
 
-import Sync from '../sync'
+// TODO: remove debug
+import loginView from './lr/login'
+import registrationView from './lr/registration'
+import listView from './list/list'
+import operateView from './operate/operate'
+import reportsView from './reports/reports'
+// TODO: debug end
+
 
 class Root extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {mainView: null}
-        this.sync = new Sync(props.tape, props.patchGraph)
-        this.sync.run()
     }
 
     static propTypes = {
         mode: React.PropTypes.string.isRequired,
-        tape: React.PropTypes.object.isRequired,
-        patchGraph: React.PropTypes.func.isRequired
     }
 
     static modeViewLoaders = {
@@ -37,33 +38,27 @@ class Root extends React.Component {
         [Mode.OPERATE]: loadOperateView,
         [Mode.REPORTS]: loadReportsView
     }
+    // TODO: remove debug
+    static debugModeViews = {
+        [Mode.LOGIN]: loginView,
+        [Mode.REGISTRATION]: registrationView,
+        [Mode.LIST]: listView,
+        [Mode.OPERATE]: operateView,
+        [Mode.REPORTS]: reportsView
+    }
+    // TODO: debug end
 
     componentWillMount() {
-        Root.modeViewLoaders[this.props.mode]().then(view => this.setState({mainView: view.default}))
+        // Root.modeViewLoaders[this.props.mode]().then(view => this.setState({mainView: view.default}))
+        // TODO: remove debug
+        this.setState({mainView: Root.debugModeViews[this.props.mode]})
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.mode !== this.props.mode) {
-            Root.modeViewLoaders[nextProps.mode]().then(view => this.setState({mainView: view.default}))
-        }
-        if (nextProps.tape !== this.props.tape) {
-            this.sync.changeTape(nextProps.tape)
-        }
-    }
-
-    componentDidMount() {
-        if (this.props.mode === Mode.LOGIN || this.props.mode === Mode.REGISTRATION) {
-            $('body').css({'background-color': '#fffaf2'})
-        } else {
-            $('body').css({'background-color': '#fff'})
-        }
-    }
-
-    componentDidUpdate() {
-        if (this.props.mode === Mode.LOGIN || this.props.mode === Mode.REGISTRATION) {
-            $('body').css({'background-color': '#fffaf2'})
-        } else {
-            $('body').css({'background-color': '#fff'})
+            // Root.modeViewLoaders[nextProps.mode]().then(view => this.setState({mainView: view.default}))
+            // TODO: remove debug
+            this.setState({mainView: Root.debugModeViews[nextProps.mode]})
         }
     }
 
@@ -91,13 +86,8 @@ class Root extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        mode: state.mode,
-        tape: state.tape
+        mode: state.mode//,
     }
 }
 
-const mapDispatchToProps = {
-    patchGraph: Action.patchGraph
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Root)
+export default connect(mapStateToProps)(Root)
