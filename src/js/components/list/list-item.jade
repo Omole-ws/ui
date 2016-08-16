@@ -1,0 +1,25 @@
+- var link = "#!/" + graph.id + "/operate"
+- var timeStamp = new Date(Number.parseInt(graph.tstamp)).toString()
+// - var timeStamp = (new Date()).toString()
+.item.blurring.dimmable(ref=setRef, class=(graph.isFetching || graph.isSyncing) ? 'dimmed' : '')
+    i.large.orange.sitemap.icon
+    .content
+        a.header(href=link)= graph.label
+        .meta
+            .ui.small.basic.label= timeStamp
+        .description!= graph.comment ? graph.comment.replace(/\n/g, '<br>') : ''
+        .extra
+            .ui.compact.small.basic.button(onClick=edit(graph))
+                i.edit.icon
+                | Edit
+            .ui.compact.small.basic.button(onClick=duplicate(graph))
+                i.copy.icon
+                | Duplicate
+            a.ui.compact.small.basic.button(href=DataURL + '/' + graph.id + '/export', download=graph.label + '.json')
+                i.cloud.download.icon
+                | Export
+            .ui.compact.small.basic.button(onClick=remove(graph))
+                i.recycle.icon
+                | Remove
+    .ui.simple.inverted.dimmer
+        .ui.loader

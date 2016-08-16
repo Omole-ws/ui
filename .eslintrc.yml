@@ -1,0 +1,38 @@
+root: true
+env:
+  browser: false
+  node: true
+  commonjs: false
+  es6: true
+extends:
+  - eslint:recommended
+parserOptions:
+  ecmaFeatures:
+    experimentalObjectRestSpread: false
+    jsx: false
+  sourceType: module
+rules:
+  indent:
+    - error
+    - 4
+    - SwitchCase: 1
+  linebreak-style:
+    - error
+    - unix
+  quotes:
+    - warn
+    - single
+    - avoid-escape
+  semi:
+    - error
+    - never
+  no-extra-parens:
+    - warn
+    - all
+  no-useless-constructor:
+    - warn
+  no-var:
+    - warn
+  no-fallthrough:
+    - error
+    - commentPattern: "break[\\s\\w]*omitted"
