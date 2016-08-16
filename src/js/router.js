@@ -33,6 +33,7 @@ export default function configureRouter(store) {
         modeSetter(Mode.LOGIN)(ctx, next)
     })
     page('/registration', modeSetter(Mode.REGISTRATION, false))
+    page('/tm', modeSetter(Mode.TASKMAN))
     page('/', modeSetter(Mode.LIST))
     page('/:gid/operate', (ctx, next) => {
         store.dispatch(Action.setCurrentGraph(ctx.params.gid))

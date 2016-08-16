@@ -80,7 +80,8 @@ export const store_EXPLAIN = {
     mcenter: {
         onScreen: false,
         messages: []
-    }
+    },
+    genError: {}
 }
 
 import * as routerReducers from './reducers/router-reducers'  // router, mode
@@ -94,6 +95,7 @@ import * as reportsReducers from './reducers/reports-reducers'
 import * as tasksReducers from './reducers/tasks-reducers'
 import * as listComponentReducers from './reducers/list-component-reducers'
 import * as operateComponentReducers from './reducers/operate-component-reducers'
+import * as genErrorReducers from './reducers/generic-error-reducers'
 
 export default {
     ...routerReducers,
@@ -106,5 +108,6 @@ export default {
     ...reportsReducers,
     ...tasksReducers,
     ...listComponentReducers,
-    ...operateComponentReducers
+    ...operateComponentReducers,
+    ...genErrorReducers
 }

@@ -11,18 +11,13 @@ import '../../../../semantic/dist/components/grid.css'
 import '../../../../semantic/dist/components/rail.css'
 
 import React from 'react'
+import ReactTransitionGroup from 'react-addons-transition-group'
 import { connect } from 'react-redux'
 
 import { Action, AlgoInputType, TaskStatus } from '../../actions'
-import ResultTmpl from '!jade-react!./result.jade'
+import TaskItem from '../taskmanager/task-item'
 
 class ResultBoard extends React.Component {
-
-    // constructor(props) {
-        // super(props)
-        // this.activate = () => this._activate()
-        // props.setRef(this)
-    // }
 
     static propTypes = {
         children: React.PropTypes.object,
@@ -32,6 +27,7 @@ class ResultBoard extends React.Component {
         tasks: React.PropTypes.arrayOf(React.PropTypes.object),
         getTaskResults: React.PropTypes.func.isRequired,
         showResults: React.PropTypes.func.isRequired,
+        hideResults: React.PropTypes.func.isRequired,
         highlightPath: React.PropTypes.func.isRequired
     }
 
@@ -63,18 +59,20 @@ class ResultBoard extends React.Component {
         }
     }
 
-    _getTaskRepresentation(task) {
+    _nodeNames(task) {
         const algo = this.props.algosDef[task.name]
         const repr = { name: task.name }
         if (algo.inputParam === AlgoInputType.GL || algo.inputParam === AlgoInputType.GLFT) {
             repr.label = task.secureLabel.toLowerCase()
         }
         if (algo.inputParam === AlgoInputType.GLFT) {
-            repr.from = this.props.graph.nodes.find(n => n.id === task.fromId).label
-            repr.to = this.props.graph.nodes.find(n => n.id === task.toId).label
+            return [
+                this.props.graph.nodes.find(n => n.id === task.fromId).label,
+                this.props.graph.nodes.find(n => n.id === task.toId).label
+            ]
+        } else {
+            return undefined
         }
-
-        return repr
     }
 
     render() {
@@ -82,16 +80,20 @@ class ResultBoard extends React.Component {
             <div ref={r => this.context = r} className="pushable mcenter">
                 <div ref={r => this.ref = r} className="ui right sidebar black segment">
                     <small>
-                        {
-                            this.props.tasks.map(task =>
-                                <ResultTmpl key={ task.tid }
-                                    task={ task }
-                                    tRepr={ this._getTaskRepresentation(task) }
-                                    getTaskResults={ this.props.getTaskResults }
-                                    showResults={ this.props.showResults}
-                                    highlightPath={ this.props.highlightPath }/>
-                            )
-                        }
+                        <ReactTransitionGroup component="div" className="ui divided items">
+                            {
+                                this.props.tasks.map(task =>
+                                    <TaskItem key={ task.tid }
+                                        algosDef={ this.props.algosDef }
+                                        task={ task }
+                                        getTaskResults={ this.props.getTaskResults }
+                                        showResults={ this.props.showResults }
+                                        hideResults={ this.props.hideResults }
+                                        highlightPath={ this.props.highlightPath }
+                                        nodesNames={ this._nodeNames(task) }/>
+                                )
+                            }
+                        </ReactTransitionGroup>
                     </small>
                 </div>
                 <div className="ui pusher">
@@ -123,13 +125,14 @@ function mapStateToProps(state) {
             .map(tid => state.tasks[tid])
             .filter(task => task.gid === state.currentGraph)
             .filter(task => Reflect.has(state.algos.definitions, task.name))
-            .filter(task => task.status === TaskStatus.TS_COMPLETED)
+            .filter(task => task.status === TaskStatus.TS_COMPLETED || task.status === TaskStatus.TS_LOADED || task.status === TaskStatus.TS_NOSOLUTION)
     }
 }
 
 const mapDispatchToProps = {
     getTaskResults: Action.getTaskResults,
     showResults: Action.showResults,
+    hideResults: Action.hideResults,
     highlightPath: Action.highlightPath
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ResultBoard)

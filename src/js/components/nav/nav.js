@@ -35,7 +35,10 @@ class Nav extends React.Component {
             .map((e, i) => ({ ...e, key: i }))
         const right = children
             .filter(e => e.props.right)
-            .concat(<NavProfile/>)
+            .concat(
+                <a className="item" href="#!/tm"> Task Manager </a>,
+                <NavProfile/>
+            )
             .map((e, i) => ({ ...e, key: i }))
         return [ left, right ]
     }

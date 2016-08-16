@@ -57,6 +57,9 @@ const tasksActionType = {
     TASK_RESULTS_GET: 'TASK_RESULTS_GET',
     SHOW_GROUPS: 'SHOW_GROUPS',
     SHOW_PATHS: 'SHOW_PATHS',
+    HIDE_GROUPS: 'HIDE_GROUPS',
+    HIDE_PATHS: 'HIDE_PATHS',
+    HIDE_RESULTS: 'HIDE_RESULTS',
     HIGHLIGHT_PATH: 'HIGHLIGHT_PATH'
 }
 
@@ -76,6 +79,10 @@ const messageCenterActionType = {
     MSG_CENTER_HIDE: 'MSG_CENTER_HIDE'
 }
 
+const errorActionType = {
+    DROP_GENERROR: 'DROP_GENERROR'
+}
+
 
 export default {
     ...routerActionType,
@@ -87,5 +94,6 @@ export default {
     ...reportsActionType,
     ...tasksActionType,
     ...operateComponentActionType,
-    ...messageCenterActionType
+    ...messageCenterActionType,
+    ...errorActionType
 }

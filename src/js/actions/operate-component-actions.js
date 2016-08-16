@@ -38,11 +38,32 @@ export function showResults(tid) {
         const algo = getState().algos.definitions[task.name]
         switch (algo.outputParam) {
             case TaskResultsType.TR_NODE_GROUP:
-                dispatch({ type: ActionType.SHOW_GROUPS, payload: task.results })
+                dispatch({ type: ActionType.HIDE_GROUPS })
+                dispatch({ type: ActionType.SHOW_GROUPS, payload: task })
                 break
 
             case TaskResultsType.TR_PATHS:
-                dispatch({ type: ActionType.SHOW_PATHS, payload: task.results })
+                dispatch({ type: ActionType.HIDE_PATHS })
+                dispatch({ type: ActionType.SHOW_PATHS, payload: task })
+                break
+        }
+    }
+}
+
+export function hideResults(tid) {
+    if (!tid) {
+        return { type: ActionType.HIDE_RESULTS }
+    }
+    return function (dispatch, getState) {
+        const task = getState().tasks[tid]
+        const algo = getState().algos.definitions[task.name]
+        switch (algo.outputParam) {
+            case TaskResultsType.TR_NODE_GROUP:
+                dispatch({ type: ActionType.HIDE_GROUPS, payload: task.tid })
+                break
+
+            case TaskResultsType.TR_PATHS:
+                dispatch({ type: ActionType.HIDE_PATHS, payload: task.tid })
                 break
         }
     }

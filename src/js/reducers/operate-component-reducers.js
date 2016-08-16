@@ -131,7 +131,7 @@ const resultBoard = combineReducers({onScreen: rbOnScreen, hasNew, groupByType, 
 function groups(state = null, action) {
     switch (action.type) {
         case ActionType.SHOW_GROUPS:
-            return action.payload
+            return action.payload.results
 
         case ActionType.MODE_SET:
             if (action.payload !== Mode.OPERATE) {
@@ -140,6 +140,8 @@ function groups(state = null, action) {
                 return state
             }
 
+        case ActionType.HIDE_GROUPS:
+        case ActionType.HIDE_RESULTS:
         case `${ActionType.LOGOUT}_OK`:
             return null
 
@@ -151,7 +153,7 @@ function groups(state = null, action) {
 function paths(state = null, action) {
     switch (action.type) {
         case ActionType.SHOW_PATHS:
-            return { list: action.payload, idx: 0 }
+            return { list: action.payload.results, idx: 0 }
 
         case ActionType.HIGHLIGHT_PATH:
             return { ...state, idx: action.payload }
@@ -163,6 +165,8 @@ function paths(state = null, action) {
                 return state
             }
 
+        case ActionType.HIDE_PATHS:
+        case ActionType.HIDE_RESULTS:
         case `${ActionType.LOGOUT}_OK`:
             return null
 

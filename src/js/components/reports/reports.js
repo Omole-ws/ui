@@ -2,15 +2,17 @@ import React from 'react'
 import ReactTransitionGroup from 'react-addons-transition-group'
 import { connect } from 'react-redux'
 
-import { Action, TaskStatus } from '../../actions'
+import { Action } from '../../actions'
 import Nav from '../nav/nav'
 import NavReports from '../nav/nav-reports'
-import ReporItem from './report-item'
+// import ReporItem from './report-item'
+import TaskItem from '../taskmanager/task-item'
 
 class Reports extends React.Component {
     static propTypes = {
         gid: React.PropTypes.string.isRequired,
         graph: React.PropTypes.object,
+        tape: React.PropTypes.array,
         reports: React.PropTypes.object.isRequired,
         rtasks: React.PropTypes.arrayOf(React.PropTypes.object),
         createTask: React.PropTypes.func.isRequired
@@ -24,11 +26,14 @@ class Reports extends React.Component {
                     <NavReports/>
                     <a className="item" href={`#!/${this.props.gid}/operate`}> Graph view... </a>
                 </Nav>
+                <h1 className={`ui disabled center alligned ${this.props.tape && this.props.tape.length > 0 ? 'red' : 'green'} header`}>
+                    { this.props.graph && this.props.graph.label }
+                </h1>
                 <ReactTransitionGroup component="div"
                     className={'ui divided items'}>
                     {
                         this.props.rtasks.map(task => {
-                            return <ReporItem key={task.tid} task={task}/>
+                            return <TaskItem key={ task.tid } task={ task }/>
                         })
                     }
                 </ReactTransitionGroup>
@@ -54,6 +59,7 @@ function mapStateToProps(state) {
     return {
         gid: state.currentGraph,
         graph: state.graphs[state.currentGraph],
+        tape: state.tapes[state.currentGraph],
         reports: state.reports.definitions,
         rtasks: Reflect.ownKeys(state.tasks)
             .map(tid => state.tasks[tid])
@@ -67,4 +73,3 @@ const mapDispatchToProps = {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Reports)
-// export default connect(mapStateToProps, mapDispatchToProps)(Reports)

@@ -29,6 +29,7 @@ function init() {
     }
     authorized = newAuthorized
     if (authorized) {
+        store.dispatch(Action.getGraphList())
         store.dispatch(Action.getTaskList())
         store.dispatch(Action.algosFetchDef())
         store.dispatch(Action.reportsFetchDef())

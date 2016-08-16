@@ -68,26 +68,27 @@ export function tasks(state = {}, action) {
         case `${ActionType.TASK_LIST_GET}_OK`:
             return action.payload
                 .reduce((newState, task) => {
-                    Reflect.defineProperty(newState, task.tid, {
-                        configurable: true,
-                        enumerable: true,
-                        writable: true,
-                        value: {
-                            ...task,
-                            lstatus: task.status === TaskStatus.TS_COMPLETED ? TaskStatus.TS_COMPLETED : TaskStatus.TS_AWAITING
-                        }
-                    })
+                    if (task.status === TaskStatus.TS_START) {
+                        task.status = TaskStatus.TS_RUNNING
+                    }
+                    if (task.status === TaskStatus.TS_COMPLETED && (!task.results || task.results.length === 0) ) {
+                        task.status = TaskStatus.TS_NOSOLUTION
+                    }
+                    newState[task.tid] = task
                     return newState
                 }, {...state })
 
         case `${ActionType.TASK_CREATE}_OK`:
         case `${ActionType.TASK_GET}_OK`:
+            if (action.payload.status === TaskStatus.TS_START) {
+                action.payload.status = TaskStatus.TS_RUNNING
+            }
+            if (action.payload.status === TaskStatus.TS_COMPLETED && (!action.payload.results || action.payload.results.length === 0) ) {
+                action.payload.status = TaskStatus.TS_NOSOLUTION
+            }
             return {
                 ...state,
-                [action.payload.tid]: {
-                    ...action.payload,
-                    lstatus: action.payload.status === TaskStatus.TS_COMPLETED ? TaskStatus.TS_COMPLETED : TaskStatus.TS_AWAITING
-                }
+                [action.payload.tid]: action.payload
             }
 
         case `${ActionType.TASK_RESULTS_GET}_OK`:
@@ -96,18 +97,60 @@ export function tasks(state = {}, action) {
                 [action.payload.tid]: {
                     ...state[action.payload.tid],
                     results: action.payload.results,
-                    loaded: true
+                    status: TaskStatus.TS_LOADED
                 }
             }
 
         case `${ActionType.TASK_GET}_PENDING`:
-            return {...state, [action.payload]: {...state[action.payload], lstatus: TaskStatus.TS_FETCHING } }
+            return {...state, [action.payload]: {...state[action.payload], status: TaskStatus.TS_FETCHING } }
 
         case `${ActionType.TASK_GET}_FAIL`:
-            return {...state, [action.payload]: {...state[action.payload], lstatus: TaskStatus.TS_AWAITING } }
+            return {...state, [action.payload]: {...state[action.payload], status: TaskStatus.TS_RUNNING } }
 
         case `${ActionType.LOGOUT}_OK`:
             return {}
+
+        case ActionType.SHOW_GROUPS:
+            return { ...state, [action.payload.tid]: { ...state[action.payload.tid], onScreen: 'g' } }
+
+        case ActionType.SHOW_PATHS:
+            return { ...state, [action.payload.tid]: { ...state[action.payload.tid], onScreen: 'p' } }
+
+        case ActionType.HIDE_GROUPS:
+        case ActionType.HIDE_PATHS:
+            if (action.payload) {
+                return { ...state, [action.payload]: { ...state[action.payload], onScreen: false } }
+            } else if (action.type === ActionType.HIDE_PATHS) {
+                return Reflect.ownKeys(state).reduce((newState, tid) => {
+                    if (state[tid].onScreen === 'p') {
+                        newState[tid] = { ...state[tid], onScreen: false }
+                    } else {
+                        newState[tid] = state[tid]
+                    }
+                    return newState
+                }, {})
+            } else {
+                return Reflect.ownKeys(state).reduce((newState, tid) => {
+                    if (state[tid].onScreen === 'g') {
+                        newState[tid] = { ...state[tid], onScreen: false }
+                    } else {
+                        newState[tid] = state[tid]
+                    }
+                    return newState
+                }, {})
+            }
+
+        case ActionType.HIDE_RESULTS:
+            return Reflect.ownKeys(state).reduce((newState, tid) => {
+                if (state[tid].onScreen) {
+                    newState[tid] = { ...state[tid], onScreen: false }
+                } else {
+                    newState[tid] = state[tid]
+                }
+                return newState
+            }, {})
+
+
 
         default:
             return state

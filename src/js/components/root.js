@@ -5,6 +5,9 @@ import { connect } from 'react-redux'
 
 import { Mode } from '../actions'
 
+import GenError from './errors/gen-error'
+
+import loadTaskmanView from 'promise?bluebird!./taskmanager/taskmanager'
 import loadLoginView from 'promise?bluebird!./lr/login'
 import loadRegistrationView from 'promise?bluebird!./lr/registration'
 import loadListView from 'promise?bluebird!./list/list'
@@ -12,6 +15,7 @@ import loadOperateView from 'promise?bluebird!./operate/operate'
 import loadReportsView from 'promise?bluebird!./reports/reports'
 
 // TODO: remove debug
+import taskmanView from './taskmanager/taskmanager'
 import loginView from './lr/login'
 import registrationView from './lr/registration'
 import listView from './list/list'
@@ -32,6 +36,7 @@ class Root extends React.Component {
     }
 
     static modeViewLoaders = {
+        [Mode.TASKMAN]: loadTaskmanView,
         [Mode.LOGIN]: loadLoginView,
         [Mode.REGISTRATION]: loadRegistrationView,
         [Mode.LIST]: loadListView,
@@ -40,6 +45,7 @@ class Root extends React.Component {
     }
     // TODO: remove debug
     static debugModeViews = {
+        [Mode.TASKMAN]: taskmanView,
         [Mode.LOGIN]: loginView,
         [Mode.REGISTRATION]: registrationView,
         [Mode.LIST]: listView,
@@ -74,6 +80,7 @@ class Root extends React.Component {
         return (
             <div className="ui main text container">
                 { MainView ? <MainView/> : null }
+                <GenError/>
             </div>
         )
     }

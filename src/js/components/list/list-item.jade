@@ -2,12 +2,11 @@
 - var timeStamp = new Date(Number.parseInt(graph.tstamp)).toString()
 // - var timeStamp = (new Date()).toString()
 .item.blurring.dimmable(ref=setRef, class=(graph.isFetching || graph.isSyncing) ? 'dimmed' : '')
-    i.large.clockwise.rotated.orange.fork.icon
+    i.large.orange.sitemap.icon
     .content
         a.header(href=link)= graph.label
         .meta
-            .ui.small.basic.label Last modified
-                .detail= timeStamp
+            .ui.small.basic.label= timeStamp
         .description!= graph.comment ? graph.comment.replace(/\n/g, '<br>') : ''
         .extra
             .ui.compact.small.basic.button(onClick=edit(graph))

@@ -9,6 +9,7 @@ import * as reportsActions from './actions/reports-actions'
 import * as tasksActions from './actions/tasks-actions'
 import * as operateComponentActions from './actions/operate-component-actions'
 import * as messageCenterActions from './actions/mcenter-actions'
+import * as errorActions from './actions/error-actions'
 
 export const DataURL = '/app/d/graphs'
 export const GvaURL = '/app/d/vizattrs'
@@ -29,7 +30,8 @@ export const Action = {
     ...reportsActions,
     ...tasksActions,
     ...operateComponentActions,
-    ...messageCenterActions
+    ...messageCenterActions,
+    ...errorActions
 }
 
 import ActionTypeI from './actions/action-types'
@@ -38,6 +40,7 @@ export const ActionType = ActionTypeI
 export const Mode = {
     LOGIN: 'LOGIN',
     REGISTRATION: 'REGISTRATION',
+    TASKMAN: 'TASKMAN',
     LIST: 'LIST',
     OPERATE: 'OPERATE',
     REPORTS: 'REPORTS'
@@ -61,8 +64,9 @@ export const TaskStatus = {
     TS_COMPLETED: 'TCOMPLETE',
     TS_RUNNING: 'TRUN',
     TS_ERROR: 'TERROR',
-    TS_AWAITING: '_AWAITING',
-    TS_FETCHING: '_FETCH'
+    TS_FETCHING: '_FETCH',
+    TS_NOSOLUTION: '_NOSOLUTION',
+    TS_LOADED: '_LOADED'
 }
 export const TaskResultsType = {
     TR_NODE_GROUP: 'OUTPUT_VERTEXMAP',
