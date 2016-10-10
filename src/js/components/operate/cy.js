@@ -26,6 +26,10 @@ const cytoscape = Promise.all([loadCytoscape(), loadCxtMenu(), loadEdgeHandles()
         console.error(err)
     })
 
+const winMenuPatchHndl = function (e) {
+    e.preventDefault()
+}
+
 export default class Cy {
     constructor(elem, c) {
         this.cy = c({
@@ -57,6 +61,7 @@ export default class Cy {
         })
         this.menus = new CyMenus(this)
         this.modeHandlers = []
+        window.addEventListener('contextmenu', winMenuPatchHndl)
     }
 
     setDeskMode(...args) {
@@ -129,6 +134,7 @@ export default class Cy {
         }
         this.modeHandlers.forEach(handler => handler.destroy())
         this.modeHandlers = []
+        window.removeEventListener('contextmenu', winMenuPatchHndl)
     }
 
     setMode(mode, oldMode) {
@@ -328,7 +334,7 @@ export default class Cy {
 
     static edgeHandlesDefaults = {
         preview: true, // whether to show added edges preview before releasing selection
-        stackOrder: 4, // Controls stack order of edgehandles canvas element by setting it's z-index
+        stackOrder: 10, // Controls stack order of edgehandles canvas element by setting it's z-index
         handleSize: 10, // the size of the edge handle put on nodes
         handleColor: '#f00', // the colour of the handle and the line drawn from it
         handleLineType: 'ghost', // can be 'ghost' for real edge, 'straight' for a straight line, or 'draw' for a draw-as-you-go line
