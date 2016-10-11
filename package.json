@@ -43,7 +43,8 @@
   "dependencies": {
     "cytoscape": "^2.7.10",
     "cytoscape-cxtmenu": "^2.8.0",
-    "cytoscape-edgehandles": "^2.6.0",
+    "cytoscape-edgehandles": "^2.5.0",
+    "jquery": "^2.2.4",
     "page": "^1.7.1",
     "react": "^15.3.2",
     "react-addons-transition-group": "^15.3.2",
