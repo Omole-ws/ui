@@ -45,7 +45,8 @@ class EditEdge extends React.Component {
             this.setState({
                 label: nextProps.edge.data('label'),
                 note: nextProps.edge.data('note'),
-                type
+                type,
+                weight: nextProps.edge.data('weight')
             })
             $(this.ref).find('.ui.dropdown').dropdown('set selected', type)
         }
@@ -75,6 +76,7 @@ class EditEdge extends React.Component {
     render() {
         return <EditEdgeTmpl setRef={r => this.ref = r}
             label={this.state.label} note={this.state.note} type={this.state.type} Types={Object.keys(EdgeTypeInverted)}
+            weight={this.state.weight}
             handleFieldChange={this.handleFieldChange} submit={this.submit}/>
     }
 
@@ -86,12 +88,14 @@ class EditEdge extends React.Component {
         const id = this.props.edge.id()
         if (this.state.label !== this.props.edge.data('label') ||
             this.state.note !== this.props.edge.data('note') ||
-            !this.props.edge.hasClass(this.state.type)) {
+            !this.props.edge.hasClass(this.state.type) ||
+            this.state.weight !== this.props.edge.data('weight')) {
             this.props.edgeUpdate(id, {
                 id,
                 cclabel: EdgeTypeInverted[this.state.type],
                 label: this.state.label,
-                comment: this.state.note
+                comment: this.state.note,
+                weight: +this.state.weight
             })
         }
         ev.preventDefault()

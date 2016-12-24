@@ -1,5 +1,12 @@
 // STATE OBJECT REPRESENTATION
 export const store_EXPLAIN = {
+    global: {
+        lang: 'en',
+        disclaimer: {
+            value: 'html',
+            ts: 'date_string'
+        }
+    },
     router: {
         path: '',
         params: null
@@ -84,6 +91,7 @@ export const store_EXPLAIN = {
     genError: {}
 }
 
+import * as globalReducers from './reducers/global-reducers'  // global
 import * as routerReducers from './reducers/router-reducers'  // router, mode
 import * as sessionReducers from './reducers/session-reducers'  // session
 import * as graphsReducers from './reducers/graphs-reducers'  // graphs, currentGraph
@@ -98,6 +106,7 @@ import * as operateComponentReducers from './reducers/operate-component-reducers
 import * as genErrorReducers from './reducers/generic-error-reducers'
 
 export default {
+    ...globalReducers,
     ...routerReducers,
     ...sessionReducers,
     ...graphsReducers,

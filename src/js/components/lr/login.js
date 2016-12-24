@@ -36,8 +36,11 @@ class Login extends React.Component {
 
     static propTypes = {
         error:      React.PropTypes.string,
+        lang:      React.PropTypes.string,
+        disclaimer:      React.PropTypes.object,
         login:      React.PropTypes.func.isRequired,
-        clearError: React.PropTypes.func.isRequired
+        clearError: React.PropTypes.func.isRequired,
+        getDiaclaimer: React.PropTypes.func.isRequired
     }
 
     /**
@@ -70,11 +73,18 @@ class Login extends React.Component {
         ev.preventDefault()
     }
 
+    componentWillMount() {
+        if (!this.props.disclaimer.isFetching) {
+            this.props.getDiaclaimer(this.props.lang)
+        }
+    }
+
     render() {
         return (
             <div>
                 <Nav mode={Mode.LOGIN}/>
-                <LoginTmpl logo={logo} handleFieldChange={this.handleFieldChange} loginTo={this.loginTo}
+                <LoginTmpl logo={logo} disclaimer={this.props.disclaimer.value}
+                    handleFieldChange={this.handleFieldChange} loginTo={this.loginTo}
                     error={this.props.error} clearError={this.props.clearError}/>
             </div>
         )
@@ -94,12 +104,17 @@ class Login extends React.Component {
 //
 
 function mapStateToProps(state) {
-    return { error: state.session.loginError }
+    return {
+        error: state.session.loginError,
+        lang: state.globall.lang,
+        disclaimer: state.globall.disclaimer
+    }
 }
 
 const mapDispatchToProps = {
     login: Action.login,
-    clearError: Action.clearLoginError
+    clearError: Action.clearLoginError,
+    getDiaclaimer: Action.getDiaclaimer
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

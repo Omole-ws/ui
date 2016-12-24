@@ -1,4 +1,4 @@
-FROM stim/nginx:latest
+FROM stim/nginx:3.0
 
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 COPY nginx/conf.d /etc/nginx/conf.d
