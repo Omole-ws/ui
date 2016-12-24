@@ -213,6 +213,14 @@ edge.path-hl {
   opacity: 1;
 }
 
+.edgehandles-source {
+    overlay-color: #00c;
+    overlay-opacity: .5;
+}
+.edgehandles-target {
+    overlay-color: #00c;
+    overlay-opacity: .5;
+}
 /*
 :selected {
   border-width: 5px;

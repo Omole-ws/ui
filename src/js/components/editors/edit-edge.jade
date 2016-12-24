@@ -17,6 +17,9 @@
                     .menu
                         each val, index in Types
                             .item(key=index, data-value=val)= val.charAt(0).toUpperCase() + val.slice(1)
+            .required.inline.field
+                label Weight
+                input(type="text", name="weight", onChange=handleFieldChange, value=weight)
 
             .ui.right.aligned.grid
                 .row

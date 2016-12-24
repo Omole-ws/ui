@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import * as globalActions from './actions/global-actions'
 import * as routerActions from './actions/router-actions'
 import * as sessionActions from './actions/session-actions'
 import * as graphsActions from './actions/graphs-actions'
@@ -19,8 +20,13 @@ export const TaskListURL = '/app/t/cctasks'
 export const ReportTaskListURL = '/app/r/cctasks'
 export const TRNodeGroupURL = '/app/d/nodegroups'
 export const TRPathsURL = '/app/d/paths'
+export const DisclaimerURL = {
+    ru: '/doc/main_ru/ccmsg.shtml',
+    en: '/doc/main_en/ccmsg.shtml'
+}
 
 export const Action = {
+    ...globalActions,
     ...routerActions,
     ...sessionActions,
     ...graphsActions,

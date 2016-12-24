@@ -4,6 +4,8 @@ import loadCytoscape from 'promise?bluebird!cytoscape'
 import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
 import loadEdgeHandles from 'promise?bluebird!cytoscape-edgehandles'
 
+import _ from 'lodash/fp'
+
 import { store } from '../../../index'
 import { Action, DeskMode } from '../../actions'
 
@@ -45,13 +47,21 @@ export default class Cy {
                 }
                 return 'flat'
             },
-            edgeParams: () => ({ data: { id: uuid() }, classes: this.menus.type }),
+            edgeParams: (srcNode, tgtNode) => ({
+                data: {
+                    id: uuid(),
+                    source: srcNode.id(),
+                    target: tgtNode.id()
+                },
+                classes: this.menus.type
+            }),
             complete: (sourceNode, targetNodes, addedEntities) => {
                 this.edgeCreate({
                     id: addedEntities.id(),
                     source: sourceNode.id(),
                     target: targetNodes.id(),
-                    cclabel: EdgeTypeInverted[this.menus.type]
+                    cclabel: EdgeTypeInverted[this.menus.type],
+                    weight: 1.0
                 })
             }
         })
@@ -184,10 +194,10 @@ export default class Cy {
             const correction = tapeToCorrection({ tape, base })
             const nodes = Reflect.ownKeys(correction.nodeCreations)
                 .map(nid => Cy.nodeConverter(correction.nodeCreations[nid]))
-            const edges = base && Reflect.ownKeys(correction.edgeCreations)
+            const edges = Reflect.ownKeys(correction.edgeCreations)
                 .map(eid => Cy.edgeConverter(correction.edgeCreations[eid]))
             // HACK: We need any one node already rendered, look at the end of function
-            const controlNode = this.cy.nodes().slice(0,1)
+            // const controlNode = this.cy.nodes().slice(0,1)
             this.cy.startBatch()
             this.cy.add({ nodes, edges })
             Reflect.ownKeys(correction.nodeUpdates)
@@ -220,8 +230,8 @@ export default class Cy {
             this.cy.endBatch()
             // HACK: ugly hack, witthout this newly added nodes will disapear on next tap on the viewport
             // and will appear only after some grafics changed (selection, node move, but not pan/zoom)
-            controlNode.select()
-            controlNode.unselect()
+            // controlNode.select()
+            // controlNode.unselect()
         }
     }
 
@@ -416,6 +426,7 @@ export default class Cy {
                 cclabel: edge.cclabel
             }
         }
+        converted.data.weight = _.isNumber(edge.weight) && edge.weight >= 0 && edge.weight <= 1 ? edge.weight : 1.0
         converted.classes = EdgeType[edge.cclabel]
         return converted
     }

@@ -1,3 +1,8 @@
+const globalActionType = {
+    LANG_SET:      'LANG_SET',
+    DISCLAIMER_GET: 'DISCLAIMER_GET'
+}
+
 const routerActionType = {
     ROUTE_CHANGED: 'ROUTE_CHANGED',
     MODE_SET:      'MODE_SET'
@@ -85,6 +90,7 @@ const errorActionType = {
 
 
 export default {
+    ...globalActionType,
     ...routerActionType,
     ...sessionActionType,
     ...graphsActionType,

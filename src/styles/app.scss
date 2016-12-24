@@ -69,3 +69,81 @@
     }
   }
 }
+
+
+/*
+// dumb CSS version
+#app {
+    height: 100%;
+}
+
+.container.main {
+    padding-top: 3em;
+}
+
+.message pre {
+  font-size: 0.9rem;
+}
+
+.menu .logo {
+  width: 15px;
+  height: 25px;
+}
+
+.cytoscape {
+  position: fixed !important;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.cytoscape > h1 {
+    position: absolute;
+    z-index: 0;
+    top: 3rem;
+    right: 0;
+    left: 0;
+
+    text-align: center;
+}
+
+
+.cy-widget {
+  position: fixed !important;
+  z-index: 101;
+}
+.cy-widget.tl {
+    top: 2.5rem;
+    left: 0.5rem;
+}
+.cy-widget.tr {
+    top: 2.5rem;
+    right: 0.5rem;
+}
+.cy-widget.bl {
+    bottom: -0.5rem;
+    left: 0.5rem;
+}
+.cy-widget.br {
+    bottom: -0.5rem;
+    right: 0.5rem;
+}
+
+
+.mcenter {
+  position: fixed;
+  top: 3em;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  height: auto !important;
+}
+.mcenter .segment {
+    padding: 5px 0 15px;
+}
+.mcenter .segment .message {
+    margin: 5px 0;
+}
+*/

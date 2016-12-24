@@ -47,7 +47,17 @@ const loaders = [
 
 let plugins = [
     new HtmlWebpackPlugin({
-        // title: 'OmoleWS',
+        title: 'OmoleWS',
+        lang: 'en',
+        filename: 'index_en.html',
+        favicon: './img/logo.png',
+        template: './index.jade',
+        inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+        title: 'OmoleWS',
+        lang: 'ru',
+        filename: 'index_ru.html',
         favicon: './img/logo.png',
         template: './index.jade',
         inject: 'body'
