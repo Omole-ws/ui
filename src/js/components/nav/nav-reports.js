@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { Action, AlgoInputType } from '../../actions'
-import NavReportsTmpl from '!jade-react!./nav-reports.jade'
+import NavReportsTmpl from './nav-reports.jade'
 
 class NavReports extends React.Component {
     constructor(props) {

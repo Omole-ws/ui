@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { Action, AlgoInputType } from '../../actions'
-import PrepareTaskTmpl from '!jade-react!./prepare-task.jade'
+import PrepareTaskTmpl from '!pug-loader!./prepare-task.jade'
 
 class PrepareTask extends React.Component {
     constructor(props) {

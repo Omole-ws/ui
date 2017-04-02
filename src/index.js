@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom'
 
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
-import loggerMiddleware from 'redux-logger'
+import { createLogger as loggerMiddleware } from 'redux-logger'
 import { Provider } from 'react-redux'
 
 
@@ -20,6 +20,14 @@ import { Action } from './js/actions'
 import { taskCheck } from './js/tasker'
 import { dataSync } from './js/sync'
 
+
+// const createStoreWithMiddleware = applyMiddleware(
+//     loggerMiddleware(),
+//     thunkMiddleware
+// )(createStore)
+// const store = createStoreWithMiddleware(combineReducers(reducers))
+export const store = createStore(combineReducers(reducers), applyMiddleware(loggerMiddleware(), thunkMiddleware))
+// const store = applyMiddleware(loggerMiddleware(), thunkMiddleware)(createStore)(combineReducers(reducers))
 
 let authorized = undefined
 function init() {
@@ -37,14 +45,6 @@ function init() {
 }
 
 
-
-// const createStoreWithMiddleware = applyMiddleware(
-//     loggerMiddleware(),
-//     thunkMiddleware
-// )(createStore)
-// const store = createStoreWithMiddleware(combineReducers(reducers))
-export const store = createStore(combineReducers(reducers), applyMiddleware(loggerMiddleware(), thunkMiddleware))
-// const store = applyMiddleware(loggerMiddleware(), thunkMiddleware)(createStore)(combineReducers(reducers))
 
 
 configureRouter(store)

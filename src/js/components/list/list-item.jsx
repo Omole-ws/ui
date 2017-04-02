@@ -11,11 +11,12 @@ import '../../../../semantic/dist/components/transition.css'
 import '../../../../semantic/dist/components/transition'
 
 import React from 'react'
+import cs from 'classnames'
 import _ from 'lodash'
 
 import { DataURL } from '../../actions'
 
-import ListItemTmpl from '!jade-react!./list-item.jade'
+// import ListItemTmpl from './list-item.jade'
 
 export default class ListItem extends React.Component {
 
@@ -48,8 +49,43 @@ export default class ListItem extends React.Component {
         this.props.getGraph(graph)
     }
     render() {
-        return <ListItemTmpl graph={this.props.graph} setRef={r => this.ref = r}
-            edit={this.props.edit} remove={this.props.remove}
-            duplicate={this.props.duplicate} exportGraph={this.exportGraph} DataURL={ DataURL }/>
+        const g = this.props.graph
+        const operateURL = `#!/${g.id}/operate`
+        const exportURL = `${DataURL}/${g.id}/export`
+        const timeStamp = new Date(Number.parseInt(g.tstamp)).toString()
+        return (
+            // <ListItemTmpl graph={this.props.graph} setRef={r => this.ref = r}
+            // edit={this.props.edit} remove={this.props.remove}
+            // duplicate={this.props.duplicate} exportGraph={this.exportGraph} DataURL={ DataURL }/>
+            // - var operateURL = "#!/" + graph.id + "/operate"
+            // - var timeStamp = new Date(Number.parseInt(graph.tstamp)).toString()
+            // - var timeStamp = (new Date()).toString()
+            <div className={cs({item: true, bluring: true, dimmable: true, dimmed: g.isFetching || g.isSyncing})} ref={r => this.ref = r}>
+                <i className="ui large orange sitemap icon"/>
+                <div className="content">
+                    <a className="header" href={operateURL}> {g.label} </a>
+                    <div className="meta"><div className="ui small basic label"> {timeStamp} </div></div>
+                    {
+                        g.comment &&
+                        <div className="description" dangerouslySetInnerHTML={{ __html: g.comment.replace(/\n/g, '<br>') }}/>
+                    }
+                    <div className="extra">
+                        <div className="ui compact small basic button" onClick={this.props.edit}>
+                            <i className="edit icon"/> Edit
+                        </div>
+                        <div className="ui compact small basic button" onClick={this.props.duplicate}>
+                            <i className="copy icon"/> Duplicate
+                        </div>
+                        <a className="ui compact small basic button" onClick={this.props.edit} href={exportURL} download={`${g.label}.json`}>
+                            <i className="cloud download icon"/> Export
+                        </a>
+                        <div className="ui compact small basic button" onClick={this.props.remove}>
+                            <i className="recycle icon"/> Remove
+                        </div>
+                    </div>
+                </div>
+                <div className="ui simple inverted dimmer"><div className="ui loader"></div></div>
+            </div>
+        )
     }
 }

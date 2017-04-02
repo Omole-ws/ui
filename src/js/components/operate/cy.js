@@ -1,15 +1,15 @@
 /* global $ */
 
-import loadCytoscape from 'promise?bluebird!cytoscape'
-import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
-import loadEdgeHandles from 'promise?bluebird!cytoscape-edgehandles'
+// import loadCytoscape from 'promise?bluebird!cytoscape'
+// import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
+// import loadEdgeHandles from 'promise?bluebird!cytoscape-edgehandles'
 
 import _ from 'lodash/fp'
 
 import { store } from '../../../index'
 import { Action, DeskMode } from '../../actions'
 
-import style from '!raw!./cy-style.css'
+import style from '!raw-loader!./cy-style.css'
 
 import { NodeType, EdgeType, EdgeTypeInverted } from '../../actions'
 import { uuid, tapeToCorrection } from '../../helpers'
@@ -17,16 +17,19 @@ import { uuid, tapeToCorrection } from '../../helpers'
 import CyMenus from './cy-menus.js'
 import CySelectFromTo from './cy-select-from-to'
 
-const cytoscape = Promise.all([loadCytoscape(), loadCxtMenu(), loadEdgeHandles()])
-    .then(([cytoscape, cxtmenu, edgehandles]) => {
-        cxtmenu(cytoscape, $)
-        edgehandles(cytoscape, $)
-        return cytoscape
-    })
-    .catch(err => {
-        // TODO: error handling
-        console.error(err)
-    })
+// const cytoscape = Promise.all([loadCytoscape(), loadCxtMenu(), loadEdgeHandles()])
+const cytoscape = Promise.all(
+    ['cytoscape', 'cytoscape-cxtmenu', 'cytoscape-edgehandles']
+    .map(moduleName => System.import(moduleName))
+).then(([cytoscape, cxtmenu, edgehandles]) => {
+    cxtmenu(cytoscape, $)
+    edgehandles(cytoscape, $)
+    return cytoscape
+})
+.catch(err => {
+    // TODO: error handling
+    console.error(err)
+})
 
 const winMenuPatchHndl = function (e) {
     e.preventDefault()

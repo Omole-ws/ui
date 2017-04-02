@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { Action, AlgoInputType } from '../../actions'
-import NavAlgoTmpl from '!jade-react!./nav-algo.jade'
+import NavAlgoTmpl from './nav-algo.jade'
 
 class NavAlgo extends React.Component {
     constructor(props) {

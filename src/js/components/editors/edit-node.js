@@ -20,7 +20,7 @@ import { connect } from 'react-redux'
 import { Action, NodeType, NodeTypeInverted, NodeRole } from '../../actions'
 import { uuid } from '../../helpers'
 
-import EditNodeTmpl from '!jade-react!./edit-node.jade'
+import EditNodeTmpl from './edit-node.jade'
 
 class EditNode extends React.Component {
 

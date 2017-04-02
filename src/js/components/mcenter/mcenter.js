@@ -14,7 +14,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { Action } from '../../actions'
-import MessageTmpl from '!jade-react!./message.jade'
+import MessageTmpl from './message.jade'
 
 class MessageCenter extends React.Component {
 

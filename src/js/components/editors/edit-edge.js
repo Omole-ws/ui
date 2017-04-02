@@ -19,7 +19,7 @@ import { connect } from 'react-redux'
 
 import { Action, EdgeType, EdgeTypeInverted } from '../../actions'
 
-import EditEdgeTmpl from '!jade-react!./edit-edge.jade'
+import EditEdgeTmpl from './edit-edge.jade'
 
 class EditEdge extends React.Component {
 

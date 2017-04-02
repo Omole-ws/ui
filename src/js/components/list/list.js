@@ -81,8 +81,7 @@ class ListView extends React.Component {
                     </div>]}
                 </Nav>
 
-                <MessageCenter/>
-
+                {/* TODO: <MessageCenter/> */}
                 <Import ref={r => this.importComponent = r}
                     importGraph={this.props.importGraph}/>
 
@@ -90,7 +89,7 @@ class ListView extends React.Component {
                     createGraph={this.props.createGraph} patchGraph={this.props.patchGraph}/>
 
                 <ReactTransitionGroup component="div"
-                    className={`ui divided items blurring dimmable${this.props.isFetching ? ' dimmed' : ''}`}>
+                    className={`ui divided items blurring dimmable ${this.props.isFetching ? 'dimmed' : ''}`}>
                     {
                         this.props.list.map(g => {
                             return <ListItem key={g.id} graph={g}

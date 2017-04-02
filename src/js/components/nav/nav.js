@@ -7,7 +7,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { Action, Mode } from '../../actions'
-import NavTmpl from '!jade-react!./nav.jade'
 import logo from '../../../img/logo.png'
 import NavProfile from './nav-profile'
 
@@ -23,37 +22,49 @@ class Nav extends React.Component {
         showMessageCenter: React.PropTypes.func.isRequired
     }
 
-    splitChildren(children) {
-        if (!children) {
-            return [ null, null ]
+    static splitChildren(children) {
+        let left = [], right = []
+        if (children) {
+            if (!Array.isArray(children)) {
+                if (children.props.right) {
+                    right = [children]
+                } else {
+                    left = [children]
+                }
+            } else {
+                left = children
+                    .filter(e => !e.props.right)
+                    .map((e, i) => ({ ...e, key: i }))
+                right = children
+                    .filter(e => e.props.right)
+                    .concat(
+                        <a className="item" href="#!/tm">Task Manager</a>,
+                        <NavProfile/>
+                    )
+                    .map((e, i) => ({ ...e, key: i }))
+            }
         }
-        if (!Array.isArray(children)) {
-            return children.props.right ? [ null, children ] : [ children, null ]
-        }
-        const left = children
-            .filter(e => !e.props.right)
-            .map((e, i) => ({ ...e, key: i }))
-        const right = children
-            .filter(e => e.props.right)
-            .concat(
-                <a className="item" href="#!/tm"> Task Manager </a>,
-                <NavProfile/>
-            )
-            .map((e, i) => ({ ...e, key: i }))
         return [ left, right ]
     }
 
     render() {
-        let  [ leftChildren, rightChildren ] = this.splitChildren(this.props.children)
+        const  [ leftChildren, rightChildren ] = Nav.splitChildren(this.props.children)
         return (
-                <NavTmpl logo={ logo }
-                    restrict={ () => this.props.mode === Mode.LOGIN || this.props.mode === Mode.REGISTRATION }
-                    rightChildren={ rightChildren }
-                    profile={<NavProfile/>}>
-                    { leftChildren }
-                </NavTmpl>
+            <div className="ui menu top fixed inverted">
+                <a className="item header" href="/">
+                    <img className="logo" src={logo}/>&nbsp;&nbsp;OMOLE
+                </a>
+                {leftChildren}
+                {
+                    this.props.mode !== Mode.LOGIN && this.props.mode !== Mode.REGISTRATION &&
+                        <div className="ui right inverted menu">
+                            {rightChildren}
+                        </div>
+                }
+            </div>
         )
     }
+
 }
 
 //                                                      888
