@@ -16,8 +16,6 @@ import _ from 'lodash'
 
 import { DataURL } from '../../actions'
 
-// import ListItemTmpl from './list-item.jade'
-
 export default class ListItem extends React.Component {
 
     constructor(props) {
@@ -54,12 +52,6 @@ export default class ListItem extends React.Component {
         const exportURL = `${DataURL}/${g.id}/export`
         const timeStamp = new Date(Number.parseInt(g.tstamp)).toString()
         return (
-            // <ListItemTmpl graph={this.props.graph} setRef={r => this.ref = r}
-            // edit={this.props.edit} remove={this.props.remove}
-            // duplicate={this.props.duplicate} exportGraph={this.exportGraph} DataURL={ DataURL }/>
-            // - var operateURL = "#!/" + graph.id + "/operate"
-            // - var timeStamp = new Date(Number.parseInt(graph.tstamp)).toString()
-            // - var timeStamp = (new Date()).toString()
             <div className={cs({item: true, bluring: true, dimmable: true, dimmed: g.isFetching || g.isSyncing})} ref={r => this.ref = r}>
                 <i className="ui large orange sitemap icon"/>
                 <div className="content">
@@ -70,16 +62,16 @@ export default class ListItem extends React.Component {
                         <div className="description" dangerouslySetInnerHTML={{ __html: g.comment.replace(/\n/g, '<br>') }}/>
                     }
                     <div className="extra">
-                        <div className="ui compact small basic button" onClick={this.props.edit}>
+                        <div className="ui compact small basic button" onClick={() => this.props.edit(g)}>
                             <i className="edit icon"/> Edit
                         </div>
-                        <div className="ui compact small basic button" onClick={this.props.duplicate}>
+                        <div className="ui compact small basic button" onClick={() => this.props.duplicate(g)}>
                             <i className="copy icon"/> Duplicate
                         </div>
-                        <a className="ui compact small basic button" onClick={this.props.edit} href={exportURL} download={`${g.label}.json`}>
+                        <a className="ui compact small basic button" href={exportURL} download={`${g.label}.json`}>
                             <i className="cloud download icon"/> Export
                         </a>
-                        <div className="ui compact small basic button" onClick={this.props.remove}>
+                        <div className="ui compact small basic button" onClick={() => this.props.remove(g)}>
                             <i className="recycle icon"/> Remove
                         </div>
                     </div>
