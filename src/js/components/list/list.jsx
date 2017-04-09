@@ -9,6 +9,7 @@ import '../../../../semantic/dist/components/dropdown'
 
 
 import React from 'react'
+import cs from 'classnames'
 import ReactTransitionGroup from 'react-addons-transition-group'
 import { connect } from 'react-redux'
 
@@ -89,7 +90,7 @@ class ListView extends React.Component {
                     createGraph={this.props.createGraph} patchGraph={this.props.patchGraph}/>
 
                 <ReactTransitionGroup component="div"
-                    className={`ui divided items blurring dimmable ${this.props.isFetching ? 'dimmed' : ''}`}>
+                    className={cs('ui divided items blurring dimmable', {dimmed: this.props.isFetching})}>
                     {
                         this.props.list.map(g => {
                             return <ListItem key={g.id} graph={g}

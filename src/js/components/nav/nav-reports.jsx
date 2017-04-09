@@ -2,13 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { Action, AlgoInputType } from '../../actions'
-import NavReportsTmpl from './nav-reports.jade'
 
 class NavReports extends React.Component {
-    constructor(props) {
-        super(props)
-        this.reportPrepare = rName => this._reportPrepare(rName)
-    }
 
     static propTypes = {
         gid: React.PropTypes.string.isRequired,
@@ -18,14 +13,28 @@ class NavReports extends React.Component {
     }
 
     render() {
-        return <NavReportsTmpl
-            isFetching={this.props.isFetching}
-            rNames={this.props.isFetching ? [] : Reflect.ownKeys(this.props.reportsDef)}
-            isShort={rn => this.props.reportsDef[rn].inputParam === AlgoInputType.G}
-            reportPrepare={this.reportPrepare}/>
+        return (
+            <div className="ui simple dropdown item">
+                Reports <i className="dropdown icon"/>
+                {
+                    !this.props.isFetching &&
+                        <div className="vertical menu">
+                            {
+                                Reflect.ownKeys(this.props.reportsDef).map(rep =>
+                                    <div key={rep} className="item" onClick={() => this.reportPrepare(rep)}>
+                                        { `${rep}${this.props.reportsDef[rep].inputParam === AlgoInputType.G ? '' : '...'}` }
+                                    </div>
+                                )
+                            }
+                        </div>
+                        ||
+                        <div className="ui active dimmer"><div className="ui small loader"></div></div>
+                }
+            </div>
+        )
     }
 
-    _reportPrepare(reportName) {
+    reportPrepare(reportName) {
         const report = this.props.reportsDef[reportName]
         if (report.inputParam === 'INPUT_GID') {
             this.props.createTask({algo: report, params: {gid: this.props.gid}})

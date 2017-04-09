@@ -18,47 +18,53 @@ class Nav extends React.Component {
             React.PropTypes.node,
             React.PropTypes.arrayOf(React.PropTypes.node)
         ]),
+        toRight: React.PropTypes.oneOfType([
+            React.PropTypes.node,
+            React.PropTypes.arrayOf(React.PropTypes.node)
+        ]),
         mode: React.PropTypes.string.isRequired,
         showMessageCenter: React.PropTypes.func.isRequired
     }
 
-    static splitChildren(children) {
-        let left = [], right = []
-        if (children) {
-            if (!Array.isArray(children)) {
-                if (children.props.right) {
-                    right = [children]
-                } else {
-                    left = [children]
-                }
-            } else {
-                left = children
-                    .filter(e => !e.props.right)
-                    .map((e, i) => ({ ...e, key: i }))
-                right = children
-                    .filter(e => e.props.right)
-                    .concat(
-                        <a className="item" href="#!/tm">Task Manager</a>,
-                        <NavProfile/>
-                    )
-                    .map((e, i) => ({ ...e, key: i }))
-            }
-        }
-        return [ left, right ]
-    }
+    // static splitChildren(children) {
+    //     let left = [], right = []
+    //     if (children) {
+    //         if (!Array.isArray(children)) {
+    //             if (children.props.right) {
+    //                 right = [children]
+    //             } else {
+    //                 left = [children]
+    //             }
+    //         } else {
+    //             left = children
+    //                 .filter(e => !e.props.right)
+    //                 .map((e, i) => ({ ...e, key: i }))
+    //             right = children
+    //                 .filter(e => e.props.right)
+    //                 .concat(
+    //                     <a className="item" href="#!/tm">Task Manager</a>,
+    //                     <NavProfile/>
+    //                 )
+    //                 .map((e, i) => ({ ...e, key: i }))
+    //         }
+    //     }
+    //     return [ left, right ]
+    // }
 
     render() {
-        const  [ leftChildren, rightChildren ] = Nav.splitChildren(this.props.children)
+        // const  [ leftChildren, rightChildren ] = Nav.splitChildren(this.props.children)
         return (
             <div className="ui menu top fixed inverted">
                 <a className="item header" href="/">
                     <img className="logo" src={logo}/>&nbsp;&nbsp;OMOLE
                 </a>
-                {leftChildren}
+                { this.props.children }
                 {
                     this.props.mode !== Mode.LOGIN && this.props.mode !== Mode.REGISTRATION &&
                         <div className="ui right inverted menu">
-                            {rightChildren}
+                            { this.props.toRight }
+                            <a className="item" href="#!/tm">Task Manager</a>
+                            <NavProfile/>
                         </div>
                 }
             </div>

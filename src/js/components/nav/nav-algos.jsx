@@ -2,36 +2,41 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { Action, AlgoInputType } from '../../actions'
-import NavAlgoTmpl from './nav-algo.jade'
+// import NavAlgoTmpl from './nav-algo.jade'
 
 class NavAlgo extends React.Component {
-    constructor(props) {
-        super(props)
-        this.taskPrepare = aName => this._taskPrepare(aName)
-    }
 
     static propTypes = {
         gid: React.PropTypes.string.isRequired,
         algosDef: React.PropTypes.object,
         isFetching: React.PropTypes.bool.isRequired,
-        // algosFetchDef: React.PropTypes.func.isRequired,
         taskPrepare: React.PropTypes.func.isRequired,
         createTask: React.PropTypes.func.isRequired
     }
 
-    // componentWillMount() {
-    //     this.props.algosFetchDef()
-    // }
-
     render() {
-        return <NavAlgoTmpl
-            isFetching={this.props.isFetching}
-            aNames={this.props.isFetching ? [] : Reflect.ownKeys(this.props.algosDef)}
-            isShort={an => this.props.algosDef[an].inputParam === AlgoInputType.G}
-            taskPrepare={this.taskPrepare}/>
+        return (
+            <div className="ui simple dropdown item">
+                Algorythms <i className="dropdown icon"/>
+                {
+                    !this.props.isFetching &&
+                        <div className="vertical menu">
+                            {
+                                Reflect.ownKeys(this.props.algosDef).map(alg =>
+                                    <div key={alg} className="item" onClick={() => this.taskPrepare(alg)}>
+                                        { `${alg}${this.props.algosDef[alg].inputParam === AlgoInputType.G ? '' : '...'}` }
+                                    </div>
+                                )
+                            }
+                        </div>
+                        ||
+                        <div className="ui active dimmer"><div className="ui small loader"></div></div>
+                }
+            </div>
+        )
     }
 
-    _taskPrepare(algoName) {
+    taskPrepare(algoName) {
         const algo = this.props.algosDef[algoName]
         if (algo.inputParam === 'INPUT_GID') {
             this.props.createTask({algo, params: {gid: this.props.gid}})
@@ -51,7 +56,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    // algosFetchDef: Action.algosFetchDef,
     taskPrepare: Action.taskPrepare,
     createTask: Action.createTask
 }

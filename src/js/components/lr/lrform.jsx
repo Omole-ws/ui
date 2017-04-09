@@ -11,7 +11,7 @@ const LRForm = props => {
             </div>
         </div>
     const submitProps = {
-        className: props.registration ? 'ui fluid large orange submit button' : '',
+        className: props.registration ? 'fluid large orange submit button' : '',
         type: 'submit',
         value: 'Register',
         hidden: !props.registration
@@ -20,24 +20,24 @@ const LRForm = props => {
 
     return (
         <form className="ui large form" onSubmit={props.onSubmit}>
-            <div className="ui field">
+            <div className="field">
                 <div className={`ui left icon input ${props.error ? 'error' : ''}`}>
-                    <i className="ui user icon"/>
+                    <i className="user icon"/>
                     <input type="text" name="login" placeholder="Login" onChange={props.onFieldChange}/>
                 </div>
             </div>
             { props.registration && MailField }
-            <div className="ui field">
+            <div className="field">
                 <div className={`ui left icon input ${props.error ? 'error' : ''}`}>
-                    <i className="ui lock icon"/>
+                    <i className="lock icon"/>
                     <input type="password" name="password" placeholder="Password" onChange={props.onFieldChange}/>
                 </div>
             </div>
             <input {...submitProps}/>
             { props.error &&
                 <div className="ui small negative message">
-                    <i className="ui close icon" onClick={props.clearError}/>
-                    <div className="header">Failed</div>
+                    <i className="close icon" onClick={props.clearError}/>
+                    <div className="ui header">Failed</div>
                     <pre className="ui left aligned container">{props.error}</pre>
                 </div>
             }

@@ -91,14 +91,14 @@ class Login extends React.Component {
                 <Nav mode={Mode.LOGIN}/>
                 <div className="ui middle aligned center aligned grid">
                     <div className="row"><div className="column">
-                        <h2 className=" ui orange image header">
-                            <img className="ui image" src={logo}></img>
-                            <div className="ui content">Log-in to your account</div>
+                        <h2 className="ui orange image header">
+                            <img className="image" src={logo}></img>
+                            <div className="content">Log-in to your account</div>
                         </h2>
                         <LRForm {...formProps}/>
                     </div></div>
                     <div className="ui horizontal divider">NEW TO US?</div>
-                    <div className="two column very relaxed row">
+                    <div className="ui two column very relaxed row">
                         <div className="column">
                             <button className="ui blue fluid massive button" onClick={(...args) => this.loginTo('demo', 'demo', ...args)}>
                                 Try DEMO
@@ -113,7 +113,7 @@ class Login extends React.Component {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="segment" dangerouslySetInnerHTML={ {__html: this.props.disclaimer.value} } />
+                        <div className="ui segment" dangerouslySetInnerHTML={ {__html: this.props.disclaimer.value} } />
                     </div>
                 </div>
             </div>
