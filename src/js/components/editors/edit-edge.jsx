@@ -19,7 +19,6 @@ import { connect } from 'react-redux'
 
 import { Action, EdgeType, EdgeTypeInverted } from '../../actions'
 
-import EditEdgeTmpl from '!jade-react!./edit-edge.jade'
 
 class EditEdge extends React.Component {
 
@@ -28,8 +27,6 @@ class EditEdge extends React.Component {
         this.state = {
             type: EdgeType.READ
         }
-        this.handleFieldChange = ev => this._handleFieldChange(ev)
-        this.submit = ev => this._submit(ev)
     }
 
     static propTypes = {
@@ -74,17 +71,64 @@ class EditEdge extends React.Component {
     }
 
     render() {
-        return <EditEdgeTmpl setRef={r => this.ref = r}
-            label={this.state.label} note={this.state.note} type={this.state.type} Types={Object.keys(EdgeTypeInverted)}
-            weight={this.state.weight}
-            handleFieldChange={this.handleFieldChange} submit={this.submit}/>
+        return (
+            <div className="ui small modal" ref={r => this.ref = r}>
+                <div className="ui header"> Edit relation </div>
+                <form className="ui content form" onSubmit={ev => this.submit(ev)}>
+                    <div className="field required">
+                        <label> Label </label>
+                        <input type="text" name="label" onChange={ev => this.handleFieldChange(ev)} value={this.state.label}/>
+                    </div>
+                    <div className="field">
+                        <label> Note </label>
+                        <textarea rows="2" name="note" onChange={ev => this.handleFieldChange(ev)} value={this.state.note}/>
+                    </div>
+                    <div className="field inline required">
+                        <label> Type </label>
+                        <select className="ui dropdown">
+                            {
+                                Reflect.ownKeys(EdgeTypeInverted).map((t,i) =>
+                                    <option key={i} value={t}>
+                                        { `${t.charAt(0).toUpperCase()}${t.slice(1)}` }
+                                    </option>
+                                )
+                            }
+                        </select>
+                        {/*<div className="floating labeled selection dropdown">*/}
+                            {/*<input type="hidden" name="type" defaultValue={this.state.type}/>*/}
+                            {/*<i className="ui dropdown icon"/>*/}
+                            {/*<div className="default text"> Select relation type </div>*/}
+                            {/*<menu>*/}
+                                {/*{*/}
+                                    {/*Reflect.ownKeys(EdgeTypeInverted).map((t,i) =>*/}
+                                        {/*<div className="item" key={i} data-value={t}>*/}
+                                            {/*{ `${t.charAt(0).toUpperCase()}${t.slice(1)}` }*/}
+                                        {/*</div>*/}
+                                    {/*)*/}
+                                {/*}*/}
+                            {/*</menu>*/}
+                        {/*</div>*/}
+                    </div>
+                    <div className="field inline required">
+                        <label> Weight </label>
+                        <input type="text" name="weight" onChange={ev => this.handleFieldChange(ev)} value={this.state.weight}/>
+                    </div>
+                    <div className="ui right aligned grid"><div className="row"><div className="column"><div className="actions">
+                        <div className="ui black cancel button"> Cancel </div>
+                        <button className="ui green ok right labeled icon button" type="submit">
+                            Save <i className="save icon"/>
+                        </button>
+                    </div></div></div></div>
+                </form>
+            </div>
+        )
     }
 
-    _handleFieldChange(ev) {
+    handleFieldChange(ev) {
         this.setState({[ev.target.name]: ev.target.value})
     }
 
-    _submit(ev) {
+    submit(ev) {
         const id = this.props.edge.id()
         if (this.state.label !== this.props.edge.data('label') ||
             this.state.note !== this.props.edge.data('note') ||

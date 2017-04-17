@@ -5,6 +5,7 @@ import '../../../../semantic/dist/components/header.css'
 import '../../../../semantic/dist/components/divider.css'
 import '../../../../semantic/dist/components/segment.css'
 import '../../../../semantic/dist/components/form.css'
+// import '../../../../semantic/dist/components/form'
 import '../../../../semantic/dist/components/input.css'
 import '../../../../semantic/dist/components/button.css'
 // import '../../../../semantic/dist/components/list.css'
@@ -15,8 +16,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import  { Action, Mode } from '../../actions'
+import LRForm from './lrform'
 import Nav from '../nav/nav'
-import LoginTmpl from '!jade-react!./login.jade'
 import logo from '../../../img/logo.png'
 
 import _ from 'lodash'
@@ -30,8 +31,6 @@ class Login extends React.Component {
             login: '',
             password: ''
         }
-        this.handleFieldChange = (...args) => this._handleFieldChange(...args)
-        this.loginTo = (...args) => this._loginTo(...args)
     }
 
     static propTypes = {
@@ -48,7 +47,7 @@ class Login extends React.Component {
      * @arg {object} ev event triggered
      * @return {void}
      */
-    _handleFieldChange(ev) {
+    handleFieldChange(ev) {
         this.setState({[ev.target.name]: ev.target.value})
     }
 
@@ -59,8 +58,9 @@ class Login extends React.Component {
      * @arg {Object} ev submit event that have triggered login action
      * @return {void}
      */
-    _loginTo(login, password, ev) {
+    loginTo(login, password, ev) {
         // let ev = args[0]
+        console.warn('KKKKKK')
         if (_.isObject(login)) {
             ev = login
             if (ev.type !== 'submit') {
@@ -80,12 +80,42 @@ class Login extends React.Component {
     }
 
     render() {
+        const formProps = {
+            onSubmit: (...args) => this.loginTo(...args),
+            onFieldChange: (...args) => this.handleFieldChange(...args),
+            error: this.props.error,
+            clearError: this.props.clearError
+        }
         return (
             <div>
                 <Nav mode={Mode.LOGIN}/>
-                <LoginTmpl logo={logo} disclaimer={this.props.disclaimer.value}
-                    handleFieldChange={this.handleFieldChange} loginTo={this.loginTo}
-                    error={this.props.error} clearError={this.props.clearError}/>
+                <div className="ui middle aligned center aligned grid">
+                    <div className="row"><div className="column">
+                        <h2 className="ui orange image header">
+                            <img className="image" src={logo}></img>
+                            <div className="content">Log-in to your account</div>
+                        </h2>
+                        <LRForm {...formProps}/>
+                    </div></div>
+                    <div className="ui horizontal divider">NEW TO US?</div>
+                    <div className="ui two column very relaxed row">
+                        <div className="column">
+                            <button className="ui blue fluid massive button" onClick={(...args) => this.loginTo('demo', 'demo', ...args)}>
+                                Try DEMO
+                            </button>
+                        </div>
+                        <div className="ui vertical divider">OR</div>
+                        <div className="column">
+                            <div className="ui olive message">
+                                If You need data persistance <br/>
+                                <a href="#!/registration">Sign Up</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="ui segment" dangerouslySetInnerHTML={ {__html: this.props.disclaimer.value} } />
+                    </div>
+                </div>
             </div>
         )
     }

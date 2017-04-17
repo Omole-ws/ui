@@ -16,7 +16,7 @@ import { connect } from 'react-redux'
 
 import  { Action, Mode } from '../../actions'
 import Nav from '../nav/nav'
-import RegisterTmpl from '!jade-react!./registration.jade'
+import LRForm from './lrform'
 import logo from '../../../img/logo.png'
 
 // import _ from 'lodash'
@@ -61,11 +61,26 @@ class Register extends React.Component {
     }
 
     render() {
+        const formProps = {
+            registration: true,
+            onSubmit: (...args) => this.loginTo(...args),
+            onFieldChange: (...args) => this.handleFieldChange(...args),
+            error: this.props.error,
+            clearError: this.props.clearError
+        }
         return (
             <div>
                 <Nav mode={Mode.LOGIN}/>
-                <RegisterTmpl logo={logo} handleFieldChange={this.handleFieldChange} register={this.register}
-                    error={this.props.error} clearError={this.props.clearError}/>
+                <div className="ui middle aligned center aligned grid">
+                    <div className="row"><div className="column">
+                        <h2 className="ui orange image header">
+                            <img className="image" src={logo}/>
+                            <div className="content"> Register a new account </div>
+                        </h2>
+                        <LRForm {...formProps}/>
+                        <a href="#!/login"> Back to login page </a>
+                    </div></div>
+                </div>
             </div>
         )
     }

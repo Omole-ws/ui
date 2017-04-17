@@ -15,27 +15,20 @@ import '../../../../semantic/dist/components/grid.css'
 
 import React from 'react'
 
-import EditGraphListTmpl from '!jade-react!./edit-graph-list.jade'
+// import EditGraphListTmpl from './edit-graph-list.jade'
 
 export default class EditGraphList extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {graph: null, title: '', description: ''}
-        this.setRref = r => this._setRref(r)
         this.activate = toEdit => this._activate(toEdit)
         this.show = () => this._show()
-        this.handleFieldChange = ev => this._handleFieldChange(ev)
-        this.submit = ev => this._submit(ev)
     }
 
     static propTypes ={
         createGraph: React.PropTypes.func.isRequired,
         patchGraph: React.PropTypes.func.isRequired
-    }
-
-    _setRref(ref) {
-        this.ref = ref
     }
 
     _activate(graph) {
@@ -55,11 +48,11 @@ export default class EditGraphList extends React.Component {
             .modal('show')
     }
 
-    _handleFieldChange(ev) {
+    handleFieldChange(ev) {
         this.setState({[ev.target.name]: ev.target.value})
     }
 
-    _submit(ev) {
+    submit(ev) {
         if (this.state.graph) {
             this.props.patchGraph({
                 id: this.state.graph.id,
@@ -79,9 +72,41 @@ export default class EditGraphList extends React.Component {
     }
 
     render() {
-        return <EditGraphListTmpl setRef={this.setRref} ifNew={this.state.graph === null}
-            title={this.state.title} description={this.state.description}
-            timeStamp={this.state.graph ? new Date(Number.parseInt(this.state.graph.tstamp)).toString() : null}
-            handleFieldChange={this.handleFieldChange} submit={this.submit}/>
+        const timeStamp = this.state.graph ? new Date(Number.parseInt(this.state.graph.tstamp)).toString() : null
+
+        return (
+            <dev className="ui small modal" ref={r => this.ref = r}>
+                <dev className="ui header"> {this.state.graph === null ? 'Create new graph' : 'Edit graph'} </dev>
+                <dev className="ui content">
+                    <form className="ui form" onSubmit={ev => this.submit(ev)}>
+                        {
+                            timeStamp &&
+                                <div className="ui right aligned grid">
+                                    <div className="row"> <div className="column"> <div className="ui pointing below small basic label">
+                                                Last modified:
+                                                <div className="detail"> {timeStamp} </div>
+                                    </div> </div> </div>
+                                </div>
+                        }
+                        <div className="required field">
+                            <label> Title </label>
+                            <input type="text" name="title" required onChange={ev => this.handleFieldChange(ev)} value={this.state.title}/>
+                        </div>
+                        <div className="field">
+                            <label> Description </label>
+                            <textarea rows="2" name="description" onChange={ev => this.handleFieldChange(ev)} value={this.state.description}/>
+                        </div>
+                        <div className="ui right aligned grid">
+                            <div className="row"><div className="column"><div className="actions">
+                                <div className="ui cancel black button"> Cancel </div>
+                                <button className="ui ok green right labeled icon button" type="submit">
+                                    Save <i className="ui save icon"/>
+                                </button>
+                            </div></div></div>
+                        </div>
+                    </form>
+                </dev>
+            </dev>
+        )
     }
 }

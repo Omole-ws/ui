@@ -20,7 +20,6 @@ import { connect } from 'react-redux'
 import { Action, NodeType, NodeTypeInverted, NodeRole } from '../../actions'
 import { uuid } from '../../helpers'
 
-import EditNodeTmpl from '!jade-react!./edit-node.jade'
 
 class EditNode extends React.Component {
 
@@ -29,8 +28,6 @@ class EditNode extends React.Component {
         this.state = {
             type: NodeType.SUBJECT
         }
-        this.handleFieldChange = ev => this._handleFieldChange(ev)
-        this.submit = ev => this._submit(ev)
     }
 
     static propTypes = {
@@ -46,8 +43,6 @@ class EditNode extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.node !== this.props.node && nextProps.node) {
-            // let type = Object.keys(NodeTypeInverted).filter(cl => nextProps.node.hasClass(cl))
-            // type = type[0]
             const type = nextProps.node.data('type')
             this.setState({
                 label: nextProps.node.data('label'),
@@ -87,16 +82,60 @@ class EditNode extends React.Component {
     }
 
     render() {
-        return <EditNodeTmpl setRef={r => this.ref = r} ifNew={!this.props.node}
-            label={this.state.label} note={this.state.note} type={this.state.type} Types={Object.keys(NodeTypeInverted)}
-            handleFieldChange={this.handleFieldChange} submit={this.submit}/>
+        return (
+            <div className="ui small modal" ref={r => this.ref = r}>
+                <div className="ui header">{ this.props.node ? 'Edit' : 'Create new' + ' asset' }</div>
+                <form className="ui content form" onSubmit={ev => this.submit(ev)}>
+                    <div className="field required">
+                        <label> Label </label>
+                        <input type="text" name="label" onChange={ev => this.handleFieldChange(ev)} value={this.state.label}/>
+                    </div>
+                    <div className="field">
+                        <label> Note </label>
+                        <textarea rows="2" name="note" onChange={ev => this.handleFieldChange(ev)} value={this.state.note}/>
+                    </div>
+                    <div className="field inline required">
+                        <label> Type </label>
+                        <select className="ui dropdown">
+                            {
+                                Reflect.ownKeys(NodeTypeInverted).map((t,i) =>
+                                    <option key={i} value={t}>
+                                        { `${t.charAt(0).toUpperCase()}${t.slice(1)}` }
+                                    </option>
+                                )
+                            }
+                        </select>
+                        {/*<div className="floating labeled selection dropdown">
+                            <input type="hidden" name="type" defaultValue={this.state.type}/>
+                            <i className="ui dropdown icon"/>
+                            <div className="default text"> Select asset type </div>
+                            <menu>
+                                {
+                                    Reflect.ownKeys(NodeTypeInverted).map((t,i) =>
+                                        <div className="item" key={i} data-value={t}>
+                                            { `${t.charAt(0).toUpperCase()}${t.slice(1)}` }
+                                        </div>
+                                    )
+                                }
+                            </menu>
+                        </div>*/}
+                    </div>
+                    <div className="ui right aligned grid"><div className="row"><div className="column"><div className="actions">
+                        <div className="ui black cancel button"> Cancel </div>
+                        <button className="ui green ok right labeled icon button" type="submit">
+                            Save <i className="save icon"/>
+                        </button>
+                    </div></div></div></div>
+                </form>
+            </div>
+        )
     }
 
-    _handleFieldChange(ev) {
+    handleFieldChange(ev) {
         this.setState({[ev.target.name]: ev.target.value})
     }
 
-    _submit(ev) {
+    submit(ev) {
         if (this.props.node) {
             const id = this.props.node.id()
             if (this.state.label !== this.props.node.data('label') ||
