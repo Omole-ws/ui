@@ -9,7 +9,7 @@ import * as algosActions from './actions/algos-actions'
 import * as reportsActions from './actions/reports-actions'
 import * as tasksActions from './actions/tasks-actions'
 import * as operateComponentActions from './actions/operate-component-actions'
-import * as messageCenterActions from './actions/mcenter-actions'
+// import * as messageCenterActions from './actions/mcenter-actions'
 import * as errorActions from './actions/error-actions'
 
 export const DataURL = '/app/d/graphs'
@@ -36,7 +36,7 @@ export const Action = {
     ...reportsActions,
     ...tasksActions,
     ...operateComponentActions,
-    ...messageCenterActions,
+    // ...messageCenterActions,
     ...errorActions
 }
 

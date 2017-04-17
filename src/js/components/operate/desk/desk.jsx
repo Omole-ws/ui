@@ -1,12 +1,12 @@
-import '../../../../semantic/dist/components/header.css'
-import '../../../../semantic/dist/components/dimmer.css'
-import '../../../../semantic/dist/components/loader.css'
+import '../../../../../semantic/dist/components/header.css'
+import '../../../../../semantic/dist/components/dimmer.css'
+import '../../../../../semantic/dist/components/loader.css'
 
 import React from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash/fp'
 
-import { Action, DeskMode } from '../../actions'
+import { Action, DeskMode } from '../../../actions'
 import Cy from './cy'
 
 class Desk extends React.Component {

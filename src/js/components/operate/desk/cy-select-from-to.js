@@ -1,5 +1,5 @@
-import { store } from '../../../index'
-import { Action, DeskMode } from '../../actions'
+import { store } from '../../../../index'
+import { Action, DeskMode } from '../../../actions'
 
 export default class CySelectFromTo {
     constructor(cy) {

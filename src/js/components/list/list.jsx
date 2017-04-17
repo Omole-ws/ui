@@ -15,7 +15,7 @@ import { connect } from 'react-redux'
 
 import { Action } from '../../actions'
 import Nav from '../nav/nav'
-import MessageCenter from '../mcenter/mcenter'
+// import MessageCenter from '../mcenter/mcenter'
 import ListItem from './list-item'
 import EditGraphList from './edit-graph-list'
 import Import from './import'
@@ -118,7 +118,7 @@ function sortByAgeR(a, b) {
 }
 
 function mapStateToProps(state) {
-    let comparator = () => 0
+    let comparator
     switch (state.list.sort.by) {
         case 'age':
             comparator = sortByAge.bind(undefined, state.list.sort.asc ? 1 : -1)

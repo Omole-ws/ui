@@ -6,30 +6,27 @@
 
 import _ from 'lodash/fp'
 
-import { store } from '../../../index'
-import { Action, DeskMode } from '../../actions'
+import { store } from '../../../../index'
+import { Action, DeskMode, NodeType, EdgeType, EdgeTypeInverted } from '../../../actions'
+
+import { uuid, tapeToCorrection } from '../../../helpers'
 
 import style from '!raw-loader!./cy-style.css'
-
-import { NodeType, EdgeType, EdgeTypeInverted } from '../../actions'
-import { uuid, tapeToCorrection } from '../../helpers'
 
 import CyMenus from './cy-menus.js'
 import CySelectFromTo from './cy-select-from-to'
 
-// const cytoscape = Promise.all([loadCytoscape(), loadCxtMenu(), loadEdgeHandles()])
-const cytoscape = Promise.all(
-    ['cytoscape', 'cytoscape-cxtmenu', 'cytoscape-edgehandles']
-    .map(moduleName => System.import(moduleName))
-).then(([cytoscape, cxtmenu, edgehandles]) => {
-    cxtmenu(cytoscape, $)
-    edgehandles(cytoscape, $)
-    return cytoscape
-})
-.catch(err => {
-    // TODO: error handling
-    console.error(err)
-})
+const cytoscape = import('./cytoscape-bundled')
+    .then(module => {
+        module.cxtmenu(module.cytoscape, $)
+        module.edgehandles(module.cytoscape, $)
+        return module.cytoscape
+    })
+    .catch(err => {
+        // TODO: error handling
+        console.info('Error on cytoscape loading')
+        console.error(err)
+    })
 
 const winMenuPatchHndl = function (e) {
     e.preventDefault()

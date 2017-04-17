@@ -85,20 +85,29 @@ class EditEdge extends React.Component {
                     </div>
                     <div className="field inline required">
                         <label> Type </label>
-                        <div className="floating labeled selection dropdown">
-                            <input type="hidden" name="type" defaultValue={this.state.type}/>
-                            <i className="ui dropdown icon"/>
-                            <div className="default text"> Select relation type </div>
-                            <menu>
-                                {
-                                    Reflect.ownKeys(EdgeTypeInverted).map((t,i) =>
-                                        <div className="item" key={i} data-value={t}>
-                                            { `${t.charAt(0).toUpperCase()}${t.slice(1)}` }
-                                        </div>
-                                    )
-                                }
-                            </menu>
-                        </div>
+                        <select className="ui dropdown">
+                            {
+                                Reflect.ownKeys(EdgeTypeInverted).map((t,i) =>
+                                    <option key={i} value={t}>
+                                        { `${t.charAt(0).toUpperCase()}${t.slice(1)}` }
+                                    </option>
+                                )
+                            }
+                        </select>
+                        {/*<div className="floating labeled selection dropdown">*/}
+                            {/*<input type="hidden" name="type" defaultValue={this.state.type}/>*/}
+                            {/*<i className="ui dropdown icon"/>*/}
+                            {/*<div className="default text"> Select relation type </div>*/}
+                            {/*<menu>*/}
+                                {/*{*/}
+                                    {/*Reflect.ownKeys(EdgeTypeInverted).map((t,i) =>*/}
+                                        {/*<div className="item" key={i} data-value={t}>*/}
+                                            {/*{ `${t.charAt(0).toUpperCase()}${t.slice(1)}` }*/}
+                                        {/*</div>*/}
+                                    {/*)*/}
+                                {/*}*/}
+                            {/*</menu>*/}
+                        {/*</div>*/}
                     </div>
                     <div className="field inline required">
                         <label> Weight </label>

@@ -30,10 +30,10 @@ const rules = [
         test: /\.jsx?$/,
         include: __dirname + '/src',
         use: [ 'babel-loader' ]
-    }, {
-        test: /\.(pug|jade)$/,
-        include: __dirname + '/src',
-        use: [ 'pug-loader' ]
+    // }, {
+    //     test: /\.(pug|jade)$/,
+    //     include: __dirname + '/src',
+    //     use: [ 'pug-loader' ]
     }, {
         test: /\.css$/,
         use: extractCss()
@@ -62,7 +62,7 @@ let plugins = [
         lang: 'en',
         filename: 'index_en.html',
         favicon: './img/logo.png',
-        template: './index.jade',
+        template: './index.ejs',
         inject: 'body'
     }),
     new HtmlWebpackPlugin({
@@ -70,7 +70,7 @@ let plugins = [
         lang: 'ru',
         filename: 'index_ru.html',
         favicon: './img/logo.png',
-        template: './index.jade',
+        template: './index.ejs',
         inject: 'body'
     }),
     new Webpack.ProvidePlugin({

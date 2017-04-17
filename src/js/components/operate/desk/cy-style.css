@@ -142,7 +142,9 @@ node.path-to {
 
 edge {
   width: 1px;
+  /*curve-style: bezier;*/
   curve-style: bezier;
+  /*curve-style: segments;*/
   target-arrow-shape: triangle;
   target-arrow-fill: hollow;
 }

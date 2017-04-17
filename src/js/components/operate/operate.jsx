@@ -9,7 +9,9 @@ import EditNode from '../editors/edit-node'
 import EditEdge from '../editors/edit-edge'
 import PrepareTask from './prepare-task/prepare-task'
 
-// import Desk from './desk'
+import Desk from './desk/desk'
+
+import ct from 'cytoscape'
 
 class Operating extends React.Component {
     static propTypes = {
@@ -27,18 +29,18 @@ class Operating extends React.Component {
     }
 
     render() {
-        const ResultBoard = <div className="ui link item" onClick={this.props.toggleResultBoard}>
+        const ResultBoardBT = <div className="ui link item" onClick={this.props.toggleResultBoard}>
             <i className="ui icons">
-                <i className="ui calculator icon"></i>
+                <i className="ui calculator icon"/>
                 {
-                    this.props.taskPending ? <i className="ui blue corner circle icon"></i> : null
+                    this.props.taskPending ? <i className="ui blue corner circle icon"/> : null
                 }
             </i>
         </div>
 
         return (
             <div>
-                <Nav toRight={ResultBoard}>
+                <Nav toRight={ResultBoardBT}>
                     <a className="item" href="#!/"> List </a>
                     <NavAlgo/>
                     <a className="item" href={`#!/${this.props.gid}/reports`}>Reports view...</a>
@@ -47,12 +49,10 @@ class Operating extends React.Component {
                 <EditEdge/>
                 <PrepareTask/>
                 {
-                    // this.props.graph && !this.props.graph.isFetching && this.props.graph.nodes instanceof Array ?
-                    //     <ResultBoard>
-                    //         <Desk gid={ this.props.gid } graph={ this.props.graph }/>
-                    //     </ResultBoard>
-                    // :
-                    // null
+                    (this.props.graph && !this.props.graph.isFetching && this.props.graph.nodes instanceof Array) &&
+                        <ResultBoard>
+                            <Desk gid={ this.props.gid } graph={ this.props.graph }/>
+                        </ResultBoard>
                 }
             </div>
         )

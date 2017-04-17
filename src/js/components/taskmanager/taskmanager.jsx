@@ -32,7 +32,7 @@ class TaskManager extends React.Component {
 
     renderGroup(group) {
         return (
-            <div>
+            <div key={ group.name }>
                 <div className="active title">
                     <div className="ui large orange header">
                         <i className="dropdown icon"></i>

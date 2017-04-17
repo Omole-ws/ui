@@ -89,7 +89,7 @@ class PrepareTask extends React.Component {
                                 <div className="inline field">
                                     <label> From </label>
                                     <div className="ui transparent input">
-                                        <input type="text" readOnly value={this.propd.from.name}/>
+                                        <input type="text" readOnly value={this.props.from.name}/>
                                     </div>
                                 </div>
                         }
@@ -98,7 +98,7 @@ class PrepareTask extends React.Component {
                                 <div className="inline field">
                                     <label> To </label>
                                     <div className="ui transparent input">
-                                        <input type="text" readOnly value={this.propd.to.name}/>
+                                        <input type="text" readOnly value={this.props.to.name}/>
                                     </div>
                                 </div>
                         }
@@ -108,7 +108,7 @@ class PrepareTask extends React.Component {
                     <i className={cs('large left floated square icon', {disabled: q4, orange: !q4})} onClick={() => this.snapTo(4)}/>
                     <i className={cs('large right floated square icon', {disabled: q3, orange: !q3})} onClick={() => this.snapTo(3)}/>
                     <div className="center aligned">
-                        <div className={cs('ui green compact basic button', {disabled: this.state.label && (this.props.algo.inputParam === AlgoInputType.GLFT || this.props.from.name && this.props.to.name)})} onClick={() => this.launch()}>
+                        <div className={cs('ui green compact basic button', {disabled: !this.state.label || (this.props.algo.inputParam === AlgoInputType.GLFT && (!this.props.from.name || !this.props.to.name))})} onClick={() => this.launch()}>
                             Launch
                         </div>
                         <div className="ui red compact basic button" onClick={this.props.cancel}> Cancel </div>

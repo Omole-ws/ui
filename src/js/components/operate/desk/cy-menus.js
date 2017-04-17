@@ -1,4 +1,4 @@
-import { DeskMode } from '../../actions'
+import { DeskMode } from '../../../actions'
 
 
 export default class CyMenus {
