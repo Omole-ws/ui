@@ -1,47 +1,58 @@
-// 'use strict';
-import webpack from 'webpack'
+import Webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
-import autoprefixer from 'autoprefixer'
+import Autoprefixer from 'autoprefixer'
+import ExtractTextPlugin from 'extract-text-webpack-plugin'
 
 const production = process.env.NODE_ENV == 'production'
 
-const loaders = [
+const extractCss = (...loaders) => ExtractTextPlugin.extract({
+    fallback: 'style-loader',
+    use: [
+        {
+            loader: 'css-loader',
+            options: {
+                minimize: production,
+                importLoaders: 1 + loaders.length
+            }
+        },
+        {
+            loader: 'postcss-loader',
+            options: {
+                plugins: () => [ Autoprefixer({ browsers: [ 'last 3 version', 'ie >= 10' ] }) ]
+            }
+        },
+        ...loaders
+    ]
+})
+
+const rules = [
     {
         test: /\.jsx?$/,
-        exclude: 'node_modules',
-        loader: 'babel'
-        // loader: 'babel?presets[]=react&presets[]=es2015'
-    },
-    {
-        test: /\.jade$/,
-        exclude: 'node_modules',
-        loader: 'jade'
-    },
-    {
+        include: __dirname + '/src',
+        use: [ 'babel-loader' ]
+    // }, {
+    //     test: /\.(pug|jade)$/,
+    //     include: __dirname + '/src',
+    //     use: [ 'pug-loader' ]
+    }, {
         test: /\.css$/,
-        loader: 'style!css!postcss'
-    },
-    {
+        use: extractCss()
+    }, {
         test: /\.(scss|sass)$/,
-        exclude: 'node_modules',
-        loader: 'style!css!postcss!sass'
-    },
-    {
+        include: [ __dirname + '/src', __dirname + '/semantic' ],
+        use: extractCss('sass-loader')
+    }, {
         test: /\.less$/,
-        exclude: 'node_modules',
-        loader: 'style!css!postcss!less'
-    },
-    {
-        test: /\.(png|jpg)$/,
-        loader: 'url?limit=25000'
-    },
-    {
-        test: /\.svg$/,
-        loader: 'file'
-    },
-    {
-        test: /\.(woff2?|eot|ttf)$/,
-        loader: 'url?limit=100000'
+        include: [ __dirname + '/src', __dirname + '/semantic' ],
+        use: extractCss('less-loader')
+    }, {
+        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+        use: [
+            {
+                loader: 'url-loader',
+                options: { limit: 10000 }
+            }
+        ]
     }
 ]
 
@@ -51,7 +62,7 @@ let plugins = [
         lang: 'en',
         filename: 'index_en.html',
         favicon: './img/logo.png',
-        template: './index.jade',
+        template: './index.ejs',
         inject: 'body'
     }),
     new HtmlWebpackPlugin({
@@ -59,15 +70,21 @@ let plugins = [
         lang: 'ru',
         filename: 'index_ru.html',
         favicon: './img/logo.png',
-        template: './index.jade',
+        template: './index.ejs',
         inject: 'body'
     }),
-    new webpack.ProvidePlugin({
+    new Webpack.ProvidePlugin({
         $: 'jquery',
         jQuery: 'jquery'
     }),
-    new webpack.optimize.CommonsChunkPlugin({
+    new ExtractTextPlugin({
+        filename: '[name].[contenthash].css',
+        disable: false,
+        allChunks: true
+    }),
+    new Webpack.optimize.CommonsChunkPlugin({
         // name:      'main', // Move dependencies to our main file
+        // name: 'vendor',
         async: true, // Enable asynchronous chunks loading
         children:  true, // Look for common dependencies in all children,
         minChunks: 2 // How many times a dependency must come up before being extracted
@@ -76,7 +93,7 @@ let plugins = [
 
 if (!production) {
     plugins = plugins.concat([
-        new webpack.DefinePlugin({
+        new Webpack.DefinePlugin({
             'process.env':   {
                 BABEL_ENV: JSON.stringify(process.env.NODE_ENV),
                 NODE_ENV: JSON.stringify(process.env.NODE_ENV)
@@ -84,8 +101,9 @@ if (!production) {
             production: JSON.stringify(production)
         }),
 
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.SourceMapDevToolPlugin()
+        new Webpack.HotModuleReplacementPlugin(),
+        new Webpack.SourceMapDevToolPlugin(),
+        new Webpack.LoaderOptionsPlugin({ debug: true })
     ])
 } else {
     plugins = plugins.concat([
@@ -93,7 +111,7 @@ if (!production) {
         // This plugins defines various variables that we can set to false
         // in production to avoid code related to them from being compiled
         // in our final bundle
-        new webpack.DefinePlugin({
+        new Webpack.DefinePlugin({
             __SERVER__:      !production,
             __DEVELOPMENT__: !production,
             __DEVTOOLS__:    !production,
@@ -104,33 +122,29 @@ if (!production) {
             production: JSON.stringify(production)
         }),
 
-        // This plugin looks for similar chunks and files
-        // and merges them for better caching by the user
-        new webpack.optimize.DedupePlugin(),
-
-        // This plugins optimizes chunks and modules by
-        // how much they are used in your app
-        new webpack.optimize.OccurenceOrderPlugin(),
-
         // This plugin prevents Webpack from creating chunks
         // that would be too small to be worth loading separately
-        new webpack.optimize.MinChunkSizePlugin({
+        new Webpack.optimize.MinChunkSizePlugin({
             minChunkSize: 51200 // =50kb
         }),
 
         // This plugin minifies all the Javascript code of the final bundle
-        new webpack.optimize.UglifyJsPlugin({
+        new Webpack.optimize.UglifyJsPlugin({
             mangle:   true,
-            compress: {
-                warnings: false // Suppress uglification warnings
-            }
+            sourceMap: false,
+            comments: false,
+            compress: { warnings: true }
+        }),
+
+        new Webpack.LoaderOptionsPlugin({
+            minimize: true
         })
     ])
 }
 
 const config = {
     context: __dirname + '/src',
-    entry: ['babel-polyfill', './'],
+    entry: [ 'babel-polyfill', './' ],
     output: {
         path:          __dirname + '/dist',
         filename:      production ? '[name]-[hash].js' : 'bundle.js',
@@ -138,20 +152,20 @@ const config = {
         // , publicPath: 'http://localhost:3000/'
     },
     module: {
-        loaders
+        rules
     },
-    postcss: function () {
-        // "autoprefixer?browsers=last 2 version"
-        return [autoprefixer]
-    },
+    // postcss: function () {
+    //     // "autoprefixer?browsers=last 2 version"
+    //     return [autoprefixer]
+    // },
     plugins,
-    resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx']
+    resolve: { extensions: [ '.webpack-loader.js', '.web-loader.js', '.loader.js', '.js', '.jsx' ] },
+    // resolve: {
+        // extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx']
     //     alias: {
     //         jQuery: 'jquery/src/jquery'
     //     }
-    },
-    debug: !production,
+    // },
     devtool: production ? false : 'cheap-module-eval-source-map'
 }
 

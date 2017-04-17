@@ -5,7 +5,6 @@ import '../../../../semantic/dist/components/icon.css'
 
 import React from 'react'
 
-import NavProfileTmpl from '!jade-react!./nav-profile.jade'
 
 class NavProfile extends React.Component {
 
@@ -30,7 +29,23 @@ class NavProfile extends React.Component {
 
     render() {
         return(
-            <NavProfileTmpl username={this.props.name} isFetching={this.props.isFetching} logout={this.props.logout}/>
+            <div className="ui simple dropdown item">
+                <i className="ui orange user icon"/>
+                { this.props.name }
+                <i className="dropdown icon"/>
+                {
+                    this.props.isFetching &&
+                        <div className="ui active dimmer">
+                            <div className="ui small loader"/>
+                        </div>
+                }
+                <div className={`ui vertical menu ${this.props.isFetching ? 'disabled' : ''}`} >
+                    <div className="ui link item" onClick={this.props.logout}>
+                        <i className="ui sign out icon"/> Logout
+                    </div>
+                </div>
+            </div>
+
         )
     }
 }

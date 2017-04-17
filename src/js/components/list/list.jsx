@@ -9,12 +9,13 @@ import '../../../../semantic/dist/components/dropdown'
 
 
 import React from 'react'
+import cs from 'classnames'
 import ReactTransitionGroup from 'react-addons-transition-group'
 import { connect } from 'react-redux'
 
 import { Action } from '../../actions'
 import Nav from '../nav/nav'
-import MessageCenter from '../mcenter/mcenter'
+// import MessageCenter from '../mcenter/mcenter'
 import ListItem from './list-item'
 import EditGraphList from './edit-graph-list'
 import Import from './import'
@@ -81,8 +82,7 @@ class ListView extends React.Component {
                     </div>]}
                 </Nav>
 
-                <MessageCenter/>
-
+                {/* TODO: <MessageCenter/> */}
                 <Import ref={r => this.importComponent = r}
                     importGraph={this.props.importGraph}/>
 
@@ -90,7 +90,7 @@ class ListView extends React.Component {
                     createGraph={this.props.createGraph} patchGraph={this.props.patchGraph}/>
 
                 <ReactTransitionGroup component="div"
-                    className={`ui divided items blurring dimmable${this.props.isFetching ? ' dimmed' : ''}`}>
+                    className={cs('ui divided items blurring dimmable', {dimmed: this.props.isFetching})}>
                     {
                         this.props.list.map(g => {
                             return <ListItem key={g.id} graph={g}
@@ -118,7 +118,7 @@ function sortByAgeR(a, b) {
 }
 
 function mapStateToProps(state) {
-    let comparator = () => 0
+    let comparator
     switch (state.list.sort.by) {
         case 'age':
             comparator = sortByAge.bind(undefined, state.list.sort.asc ? 1 : -1)

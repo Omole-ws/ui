@@ -1,30 +1,30 @@
 /* global $ */
 
-import loadCytoscape from 'promise?bluebird!cytoscape'
-import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
-import loadEdgeHandles from 'promise?bluebird!cytoscape-edgehandles'
+// import loadCytoscape from 'promise?bluebird!cytoscape'
+// import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
+// import loadEdgeHandles from 'promise?bluebird!cytoscape-edgehandles'
 
 import _ from 'lodash/fp'
 
-import { store } from '../../../index'
-import { Action, DeskMode } from '../../actions'
+import { store } from '../../../../index'
+import { Action, DeskMode, NodeType, EdgeType, EdgeTypeInverted } from '../../../actions'
 
-import style from '!raw!./cy-style.css'
+import { uuid, tapeToCorrection } from '../../../helpers'
 
-import { NodeType, EdgeType, EdgeTypeInverted } from '../../actions'
-import { uuid, tapeToCorrection } from '../../helpers'
+import style from '!raw-loader!./cy-style.css'
 
 import CyMenus from './cy-menus.js'
 import CySelectFromTo from './cy-select-from-to'
 
-const cytoscape = Promise.all([loadCytoscape(), loadCxtMenu(), loadEdgeHandles()])
-    .then(([cytoscape, cxtmenu, edgehandles]) => {
-        cxtmenu(cytoscape, $)
-        edgehandles(cytoscape, $)
-        return cytoscape
+const cytoscape = import('./cytoscape-bundled')
+    .then(module => {
+        module.cxtmenu(module.cytoscape, $)
+        module.edgehandles(module.cytoscape, $)
+        return module.cytoscape
     })
     .catch(err => {
         // TODO: error handling
+        console.info('Error on cytoscape loading')
         console.error(err)
     })
 
