@@ -15,6 +15,7 @@ import '../../../../semantic/dist/components/transition'
 import '../../../../semantic/dist/components/transition.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Action, NodeType, NodeTypeInverted, NodeRole } from '../../actions'
@@ -31,14 +32,14 @@ class EditNode extends React.Component {
     }
 
     static propTypes = {
-        onScreen: React.PropTypes.bool.isRequired,
-        node: React.PropTypes.object,
-        position: React.PropTypes.object,
-        nodeDialogClose: React.PropTypes.func.isRequired,
-        nodeCreate: React.PropTypes.func.isRequired,
-        nodeUpdate: React.PropTypes.func.isRequired,
-        nodePositionChange: React.PropTypes.func.isRequired,
-        nodeTypeChange: React.PropTypes.func.isRequired
+        onScreen: PropTypes.bool.isRequired,
+        node: PropTypes.object,
+        position: PropTypes.object,
+        nodeDialogClose: PropTypes.func.isRequired,
+        nodeCreate: PropTypes.func.isRequired,
+        nodeUpdate: PropTypes.func.isRequired,
+        nodePositionChange: PropTypes.func.isRequired,
+        nodeTypeChange: PropTypes.func.isRequired
     }
 
     componentWillReceiveProps(nextProps) {

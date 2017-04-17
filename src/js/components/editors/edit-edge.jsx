@@ -15,6 +15,7 @@ import '../../../../semantic/dist/components/transition'
 import '../../../../semantic/dist/components/transition.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Action, EdgeType, EdgeTypeInverted } from '../../actions'
@@ -30,10 +31,10 @@ class EditEdge extends React.Component {
     }
 
     static propTypes = {
-        onScreen: React.PropTypes.bool.isRequired,
-        edge: React.PropTypes.object,
-        edgeDialogClose: React.PropTypes.func.isRequired,
-        edgeUpdate: React.PropTypes.func.isRequired
+        onScreen: PropTypes.bool.isRequired,
+        edge: PropTypes.object,
+        edgeDialogClose: PropTypes.func.isRequired,
+        edgeUpdate: PropTypes.func.isRequired
     }
 
     componentWillReceiveProps(nextProps) {

@@ -4,9 +4,10 @@ import '../../../../semantic/dist/components/dropdown.css'
 import '../../../../semantic/dist/components/image.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { Action, Mode } from '../../actions'
+import { Mode } from '../../actions'
 import logo from '../../../img/logo.png'
 import NavProfile from './nav-profile'
 
@@ -14,16 +15,15 @@ import NavProfile from './nav-profile'
 class Nav extends React.Component {
 
     static propTypes = {
-        children: React.PropTypes.oneOfType([
-            React.PropTypes.node,
-            React.PropTypes.arrayOf(React.PropTypes.node)
+        children: PropTypes.oneOfType([
+            PropTypes.node,
+            PropTypes.arrayOf(PropTypes.node)
         ]),
-        toRight: React.PropTypes.oneOfType([
-            React.PropTypes.node,
-            React.PropTypes.arrayOf(React.PropTypes.node)
+        toRight: PropTypes.oneOfType([
+            PropTypes.node,
+            PropTypes.arrayOf(PropTypes.node)
         ]),
-        mode: React.PropTypes.string.isRequired,
-        showMessageCenter: React.PropTypes.func.isRequired
+        mode: PropTypes.string.isRequired
     }
 
     // static splitChildren(children) {
@@ -89,8 +89,4 @@ function mapStateToProps(state) {
     return { mode: state.mode }
 }
 
-const mapDispatchToProps = {
-    showMessageCenter: Action.showMessageCenter
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Nav)
+export default connect(mapStateToProps)(Nav)

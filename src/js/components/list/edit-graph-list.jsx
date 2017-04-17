@@ -14,6 +14,7 @@ import '../../../../semantic/dist/components/input.css'
 import '../../../../semantic/dist/components/grid.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 
 // import EditGraphListTmpl from './edit-graph-list.jade'
 
@@ -27,8 +28,8 @@ export default class EditGraphList extends React.Component {
     }
 
     static propTypes ={
-        createGraph: React.PropTypes.func.isRequired,
-        patchGraph: React.PropTypes.func.isRequired
+        createGraph: PropTypes.func.isRequired,
+        patchGraph: PropTypes.func.isRequired
     }
 
     _activate(graph) {

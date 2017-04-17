@@ -12,6 +12,7 @@ import '../../../../semantic/dist/components/form.css'
 import '../../../../semantic/dist/components/input.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import _ from 'lodash'
 
 
@@ -26,7 +27,7 @@ export default class Import extends React.Component {
     }
 
     static propTypes ={
-        importGraph: React.PropTypes.func.isRequired
+        importGraph: PropTypes.func.isRequired
     }
 
     _activate() {

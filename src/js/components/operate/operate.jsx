@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Action } from '../../actions'
@@ -15,11 +16,11 @@ import ct from 'cytoscape'
 
 class Operating extends React.Component {
     static propTypes = {
-        gid:        React.PropTypes.string.isRequired,
-        graph: React.PropTypes.object,
-        taskPending: React.PropTypes.bool.isRequired,
-        getGraph: React.PropTypes.func.isRequired,
-        toggleResultBoard: React.PropTypes.func.isRequired
+        gid:        PropTypes.string.isRequired,
+        graph: PropTypes.object,
+        taskPending: PropTypes.bool.isRequired,
+        getGraph: PropTypes.func.isRequired,
+        toggleResultBoard: PropTypes.func.isRequired
     }
 
     componentDidMount() {

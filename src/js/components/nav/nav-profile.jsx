@@ -4,15 +4,16 @@ import '../../../../semantic/dist/components/loader.css'
 import '../../../../semantic/dist/components/icon.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 
 
 class NavProfile extends React.Component {
 
     static propTypes = {
-        name:                React.PropTypes.string,
-        isFetching:          React.PropTypes.bool,
-        logout:              React.PropTypes.func.isRequired,
-        fetchSessionDetails: React.PropTypes.func.isRequired
+        name:                PropTypes.string,
+        isFetching:          PropTypes.bool,
+        logout:              PropTypes.func.isRequired,
+        fetchSessionDetails: PropTypes.func.isRequired
     }
 
     componentWillMount() {

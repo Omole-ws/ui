@@ -11,6 +11,7 @@ import '../../../../semantic/dist/components/transition.css'
 import '../../../../semantic/dist/components/transition'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import cs from 'classnames'
 import _ from 'lodash'
 
@@ -20,8 +21,6 @@ export default class ListItem extends React.Component {
 
     constructor(props) {
         super(props)
-
-        this.exportGraph = (g, e) => this._exportGraph(g, e)
     }
     componentWillEnter(fin) {
         $(this.ref).transition('fly right in', fin)
@@ -32,20 +31,16 @@ export default class ListItem extends React.Component {
     }
 
     static propTypes = {
-        graph: React.PropTypes.object.isRequired,
-        edit: React.PropTypes.func.isRequired,
-        remove: React.PropTypes.func.isRequired,
-        duplicate: React.PropTypes.func.isRequired,
-        getGraph: React.PropTypes.func.isRequired
+        graph: PropTypes.object.isRequired,
+        edit: PropTypes.func.isRequired,
+        remove: PropTypes.func.isRequired,
+        duplicate: PropTypes.func.isRequired
     }
 
     shouldComponentUpdate(nextProps) {
         return !_.isEqual(nextProps.graph, this.props.graph)
     }
 
-    _exportGraph(graph) {
-        this.props.getGraph(graph)
-    }
     render() {
         const g = this.props.graph
         const operateURL = `#!/${g.id}/operate`

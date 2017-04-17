@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Action, AlgoInputType } from '../../actions'
@@ -7,11 +8,11 @@ import { Action, AlgoInputType } from '../../actions'
 class NavAlgo extends React.Component {
 
     static propTypes = {
-        gid: React.PropTypes.string.isRequired,
-        algosDef: React.PropTypes.object,
-        isFetching: React.PropTypes.bool.isRequired,
-        taskPrepare: React.PropTypes.func.isRequired,
-        createTask: React.PropTypes.func.isRequired
+        gid: PropTypes.string.isRequired,
+        algosDef: PropTypes.object,
+        isFetching: PropTypes.bool.isRequired,
+        taskPrepare: PropTypes.func.isRequired,
+        createTask: PropTypes.func.isRequired
     }
 
     render() {

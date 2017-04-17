@@ -3,6 +3,7 @@ import '../../../../../semantic/dist/components/dimmer.css'
 import '../../../../../semantic/dist/components/loader.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import _ from 'lodash/fp'
 
@@ -21,18 +22,18 @@ class Desk extends React.Component {
     }
 
     static propTypes = {
-        gid: React.PropTypes.string.isRequired,
-        graph: React.PropTypes.object,
-        visualAttributes: React.PropTypes.object,
-        tape: React.PropTypes.array,
-        groups: React.PropTypes.object,
-        paths: React.PropTypes.shape({
-            list: React.PropTypes.arrayOf(React.PropTypes.object),
-            idx: React.PropTypes.number
+        gid: PropTypes.string.isRequired,
+        graph: PropTypes.object,
+        visualAttributes: PropTypes.object,
+        tape: PropTypes.array,
+        groups: PropTypes.object,
+        paths: PropTypes.shape({
+            list: PropTypes.arrayOf(PropTypes.object),
+            idx: PropTypes.number
         }),
-        deskMode: React.PropTypes.string.isRequired,
-        getGraph: React.PropTypes.func.isRequired,
-        fetchGVA: React.PropTypes.func.isRequired
+        deskMode: PropTypes.string.isRequired,
+        getGraph: PropTypes.func.isRequired,
+        fetchGVA: PropTypes.func.isRequired
     }
 
     componentWillReceiveProps(nextProps) {

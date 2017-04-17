@@ -4,6 +4,7 @@ import '../../../../../semantic/dist/components/checkbox.css'
 import '../../../../../semantic/dist/components/checkbox.js'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import cs from 'classnames'
 import { connect } from 'react-redux'
 
@@ -18,25 +19,25 @@ class PrepareTask extends React.Component {
         }
     }
     static propTypes = {
-        onScreen: React.PropTypes.bool.isRequired,
-        algo: React.PropTypes.shape({
-            name: React.PropTypes.string,
-            url: React.PropTypes.string,
-            help: React.PropTypes.string,
-            inputParam: React.PropTypes.string,
-            outputParam: React.PropTypes.string
+        onScreen: PropTypes.bool.isRequired,
+        algo: PropTypes.shape({
+            name: PropTypes.string,
+            url: PropTypes.string,
+            help: PropTypes.string,
+            inputParam: PropTypes.string,
+            outputParam: PropTypes.string
         }).isRequired,
-        gid: React.PropTypes.string.isRequired,
-        from: React.PropTypes.shape({
-            id: React.PropTypes.string,
-            name: React.PropTypes.string
+        gid: PropTypes.string.isRequired,
+        from: PropTypes.shape({
+            id: PropTypes.string,
+            name: PropTypes.string
         }),
-        to: React.PropTypes.shape({
-            id: React.PropTypes.string,
-            name: React.PropTypes.string
+        to: PropTypes.shape({
+            id: PropTypes.string,
+            name: PropTypes.string
         }),
-        createTask: React.PropTypes.func.isRequired,
-        cancel: React.PropTypes.func.isRequired
+        createTask: PropTypes.func.isRequired,
+        cancel: PropTypes.func.isRequired
     }
 
     componentDidMount() {

@@ -1,18 +1,13 @@
 import '../../../../semantic/dist/components/grid.css'
 import '../../../../semantic/dist/components/header.css'
-// import '../../../../semantic/dist/components/image.css'
-// import '../../../../semantic/dist/components/menu.css'
+import '../../../../semantic/dist/components/image.css'
 import '../../../../semantic/dist/components/divider.css'
 import '../../../../semantic/dist/components/segment.css'
-import '../../../../semantic/dist/components/form.css'
-// import '../../../../semantic/dist/components/form'
-import '../../../../semantic/dist/components/input.css'
 import '../../../../semantic/dist/components/button.css'
-// import '../../../../semantic/dist/components/list.css'
 import '../../../../semantic/dist/components/message.css'
-import '../../../../semantic/dist/components/icon.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import  { Action, Mode } from '../../actions'
@@ -34,12 +29,12 @@ class Login extends React.Component {
     }
 
     static propTypes = {
-        error:      React.PropTypes.string,
-        lang:      React.PropTypes.string,
-        disclaimer:      React.PropTypes.object,
-        login:      React.PropTypes.func.isRequired,
-        clearError: React.PropTypes.func.isRequired,
-        getDiaclaimer: React.PropTypes.func.isRequired
+        error:      PropTypes.string,
+        lang:      PropTypes.string,
+        disclaimer:      PropTypes.object,
+        login:      PropTypes.func.isRequired,
+        clearError: PropTypes.func.isRequired,
+        getDiaclaimer: PropTypes.func.isRequired
     }
 
     /**

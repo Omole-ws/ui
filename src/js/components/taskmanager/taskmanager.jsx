@@ -4,6 +4,7 @@ import '../../../../semantic/dist/components/accordion.css'
 import '../../../../semantic/dist/components/accordion'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import ReactTransitionGroup from 'react-addons-transition-group'
 import { connect } from 'react-redux'
 
@@ -15,11 +16,11 @@ import TaskItem from './task-item'
 class TaskManager extends React.Component {
 
     static propTypes = {
-        algosDef: React.PropTypes.object.isRequired,
-        reportsDef: React.PropTypes.object.isRequired,
-        graphs: React.PropTypes.object.isRequired,
-        tasks: React.PropTypes.object.isRequired,
-        getTaskResults: React.PropTypes.func.isRequired
+        algosDef: PropTypes.object.isRequired,
+        reportsDef: PropTypes.object.isRequired,
+        graphs: PropTypes.object.isRequired,
+        tasks: PropTypes.object.isRequired,
+        getTaskResults: PropTypes.func.isRequired
     }
 
     componentDidMount() {

@@ -9,6 +9,7 @@ import '../../../../semantic/dist/components/dropdown'
 
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import cs from 'classnames'
 import ReactTransitionGroup from 'react-addons-transition-group'
 import { connect } from 'react-redux'
@@ -31,17 +32,17 @@ class ListView extends React.Component {
 
 
     static propTypes = {
-        list:              React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-        isFetching:        React.PropTypes.bool.isRequired,
-        changeCSRF:        React.PropTypes.func.isRequired,
-        getGraphList:    React.PropTypes.func.isRequired,
-        createGraph:      React.PropTypes.func.isRequired,
-        patchGraph:        React.PropTypes.func.isRequired,
-        deleteGraph:       React.PropTypes.func.isRequired,
-        duplicateGraph:    React.PropTypes.func.isRequired,
-        importGraph:    React.PropTypes.func.isRequired,
-        getGraph:    React.PropTypes.func.isRequired,
-        showMessageCenter: React.PropTypes.func.isRequired
+        list:              PropTypes.arrayOf(PropTypes.object).isRequired,
+        isFetching:        PropTypes.bool.isRequired,
+        changeCSRF:        PropTypes.func.isRequired,
+        getGraphList:    PropTypes.func.isRequired,
+        createGraph:      PropTypes.func.isRequired,
+        patchGraph:        PropTypes.func.isRequired,
+        deleteGraph:       PropTypes.func.isRequired,
+        duplicateGraph:    PropTypes.func.isRequired,
+        importGraph:    PropTypes.func.isRequired,
+        getGraph:    PropTypes.func.isRequired,
+        showMessageCenter: PropTypes.func.isRequired
     }
 
     componentWillMount() {
@@ -142,8 +143,8 @@ const mapDispatchToProps = {
     deleteGraph: Action.deleteGraph,
     duplicateGraph: Action.duplicateGraph,
     importGraph: Action.importGraph,
-    getGraph: Action.getGraph,
-    showMessageCenter: Action.showMessageCenter
+    getGraph: Action.getGraph
+    // showMessageCenter: Action.showMessageCenter
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListView)

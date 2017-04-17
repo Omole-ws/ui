@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Action, AlgoInputType } from '../../actions'
@@ -6,10 +7,10 @@ import { Action, AlgoInputType } from '../../actions'
 class NavReports extends React.Component {
 
     static propTypes = {
-        gid: React.PropTypes.string.isRequired,
-        reportsDef: React.PropTypes.object,
-        isFetching: React.PropTypes.bool.isRequired,
-        createTask: React.PropTypes.func.isRequired
+        gid: PropTypes.string.isRequired,
+        reportsDef: PropTypes.object,
+        isFetching: PropTypes.bool.isRequired,
+        createTask: PropTypes.func.isRequired
     }
 
     render() {

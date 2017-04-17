@@ -11,6 +11,7 @@ import '../../../../semantic/dist/components/grid.css'
 import '../../../../semantic/dist/components/rail.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import ReactTransitionGroup from 'react-addons-transition-group'
 import { connect } from 'react-redux'
 
@@ -20,15 +21,15 @@ import TaskItem from '../taskmanager/task-item'
 class ResultBoard extends React.Component {
 
     static propTypes = {
-        children: React.PropTypes.object,
-        onScreen: React.PropTypes.bool.isRequired,
-        graph: React.PropTypes.object,
-        algosDef: React.PropTypes.object.isRequired,
-        tasks: React.PropTypes.arrayOf(React.PropTypes.object),
-        getTaskResults: React.PropTypes.func.isRequired,
-        showResults: React.PropTypes.func.isRequired,
-        hideResults: React.PropTypes.func.isRequired,
-        highlightPath: React.PropTypes.func.isRequired
+        children: PropTypes.object,
+        onScreen: PropTypes.bool.isRequired,
+        graph: PropTypes.object,
+        algosDef: PropTypes.object.isRequired,
+        tasks: PropTypes.arrayOf(PropTypes.object),
+        getTaskResults: PropTypes.func.isRequired,
+        showResults: PropTypes.func.isRequired,
+        hideResults: PropTypes.func.isRequired,
+        highlightPath: PropTypes.func.isRequired
     }
 
     static icon = {

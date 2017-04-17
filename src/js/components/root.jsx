@@ -1,6 +1,7 @@
 import '../../../semantic/dist/components/container.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Mode } from '../actions'
@@ -38,7 +39,7 @@ class Root extends React.Component {
     }
 
     static propTypes = {
-        mode: React.PropTypes.string.isRequired,
+        mode: PropTypes.string.isRequired,
     }
 
     static modeViewLoaders = {

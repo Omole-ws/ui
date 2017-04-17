@@ -12,6 +12,7 @@ import '../../../../semantic/dist/components/message.css'
 import '../../../../semantic/dist/components/icon.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import  { Action, Mode } from '../../actions'
@@ -36,9 +37,9 @@ class Register extends React.Component {
     }
 
     static propTypes = {
-        error:      React.PropTypes.string,
-        register:      React.PropTypes.func.isRequired,
-        clearError: React.PropTypes.func.isRequired
+        error:      PropTypes.string,
+        register:      PropTypes.func.isRequired,
+        clearError: PropTypes.func.isRequired
     }
 
     /**

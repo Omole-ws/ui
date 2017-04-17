@@ -1,15 +1,16 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import { TaskStatus } from '../../actions'
 
 export default class Result extends React.Component {
 
     static propTypes = {
-        task: React.PropTypes.object.isRequired,
-        taskRepr: React.PropTypes.object.isRequired,
-        getTaskResults: React.PropTypes.func.isRequired,
-        showResults: React.PropTypes.func.isRequired,
-        highlightPath: React.PropTypes.func.isRequired
+        task: PropTypes.object.isRequired,
+        taskRepr: PropTypes.object.isRequired,
+        getTaskResults: PropTypes.func.isRequired,
+        showResults: PropTypes.func.isRequired,
+        highlightPath: PropTypes.func.isRequired
     }
 
     render() {
