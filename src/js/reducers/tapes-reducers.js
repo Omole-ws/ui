@@ -37,7 +37,6 @@ export function tapes(state = {}, action) {
         action.type === ActionType.GVA_ZOOM ||
         action.type === ActionType.GVA_PAN ||
         action.type.startsWith(ActionType.GRAPH_PATCH)) {
-        // return _.omitBy({...state, [action.payload.gid]: [...state[action.payload.gid], action]}, v => v === null)
         const gid = action.payload.gid || action.payload.id
         return _.omitBy({...state, [gid]: tape(state[gid], action)}, v => v === null || v.length === 0)
     } else if (action.type === `${ActionType.LOGOUT}_OK`) {
@@ -46,5 +45,3 @@ export function tapes(state = {}, action) {
         return state
     }
 }
-
-// export const local = combineReducers({nodes})

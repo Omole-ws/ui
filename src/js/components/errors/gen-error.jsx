@@ -16,14 +16,6 @@ class GenError extends React.Component {
         dismiss: PropTypes.func.isRequired
     }
 
-    // componentDidMount() {
-    //     $(this.accordion).accordion()
-    // }
-    //
-    // componentDidUpdate() {
-    //     $(this.accordion).accordion()
-    // }
-
     render() {
         return (
             <div className={ `ui ${this.props.error ? 'active' : '' } modal` }>

@@ -95,20 +95,6 @@ class EditEdge extends React.Component {
                                 )
                             }
                         </select>
-                        {/*<div className="floating labeled selection dropdown">*/}
-                            {/*<input type="hidden" name="type" defaultValue={this.state.type}/>*/}
-                            {/*<i className="ui dropdown icon"/>*/}
-                            {/*<div className="default text"> Select relation type </div>*/}
-                            {/*<menu>*/}
-                                {/*{*/}
-                                    {/*Reflect.ownKeys(EdgeTypeInverted).map((t,i) =>*/}
-                                        {/*<div className="item" key={i} data-value={t}>*/}
-                                            {/*{ `${t.charAt(0).toUpperCase()}${t.slice(1)}` }*/}
-                                        {/*</div>*/}
-                                    {/*)*/}
-                                {/*}*/}
-                            {/*</menu>*/}
-                        {/*</div>*/}
                     </div>
                     <div className="field inline required">
                         <label> Weight </label>

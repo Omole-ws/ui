@@ -22,19 +22,15 @@ export default class Import extends React.Component {
         super(props)
 
         this.state = {title: '', description: '', file: ''}
-        this.activate = () => this._show()
-        this.show = () => this._show()
+        // this.activate = () => this._show()
+        // this.show = () => this._show()
     }
 
     static propTypes ={
         importGraph: PropTypes.func.isRequired
     }
 
-    _activate() {
-        this.setState({title: '', description: ''}, this.show)
-    }
-
-    _show() {
+    activate() {
         $(this.ref)
             .modal({
                 blurring: true,

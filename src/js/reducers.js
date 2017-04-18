@@ -84,12 +84,6 @@ export const store_EXPLAIN = {
         paths: null,
         deskMode: 'NODE_CREATE' || 'CONNECT' || 'BASIC' || 'SELECT_FROM_TO'
     },
-/*
-    mcenter: {
-        onScreen: false,
-        messages: []
-    },
-*/
     genError: {}
 }
 
@@ -97,7 +91,6 @@ import * as globalReducers from './reducers/global-reducers'  // global
 import * as routerReducers from './reducers/router-reducers'  // router, mode
 import * as sessionReducers from './reducers/session-reducers'  // session
 import * as graphsReducers from './reducers/graphs-reducers'  // graphs, currentGraph
-// import * as messageCenterReducers from './reducers/mcenter-reducers'
 import * as graphsExtraReducers from './reducers/graphs-extra-reducers' // graphsExtra
 import * as tapesReducers from './reducers/tapes-reducers' // tape
 import * as algosReducers from './reducers/algos-reducers'
@@ -112,7 +105,6 @@ export default {
     ...routerReducers,
     ...sessionReducers,
     ...graphsReducers,
-    // ...messageCenterReducers,
     ...graphsExtraReducers,
     ...tapesReducers,
     ...algosReducers,

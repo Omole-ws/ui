@@ -26,33 +26,7 @@ class Nav extends React.Component {
         mode: PropTypes.string.isRequired
     }
 
-    // static splitChildren(children) {
-    //     let left = [], right = []
-    //     if (children) {
-    //         if (!Array.isArray(children)) {
-    //             if (children.props.right) {
-    //                 right = [children]
-    //             } else {
-    //                 left = [children]
-    //             }
-    //         } else {
-    //             left = children
-    //                 .filter(e => !e.props.right)
-    //                 .map((e, i) => ({ ...e, key: i }))
-    //             right = children
-    //                 .filter(e => e.props.right)
-    //                 .concat(
-    //                     <a className="item" href="#!/tm">Task Manager</a>,
-    //                     <NavProfile/>
-    //                 )
-    //                 .map((e, i) => ({ ...e, key: i }))
-    //         }
-    //     }
-    //     return [ left, right ]
-    // }
-
     render() {
-        // const  [ leftChildren, rightChildren ] = Nav.splitChildren(this.props.children)
         return (
             <div className="ui menu top fixed inverted">
                 <a className="item header" href="/">

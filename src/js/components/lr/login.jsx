@@ -16,7 +16,6 @@ import Nav from '../nav/nav'
 import logo from '../../../img/logo.png'
 
 import _ from 'lodash'
-// import cloneDeep from 'lodash-es/cloneDeep'
 
 class Login extends React.Component {
 
@@ -54,8 +53,6 @@ class Login extends React.Component {
      * @return {void}
      */
     loginTo(login, password, ev) {
-        // let ev = args[0]
-        console.warn('KKKKKK')
         if (_.isObject(login)) {
             ev = login
             if (ev.type !== 'submit') {
@@ -87,7 +84,7 @@ class Login extends React.Component {
                 <div className="ui middle aligned center aligned grid">
                     <div className="row"><div className="column">
                         <h2 className="ui orange image header">
-                            <img className="image" src={logo}></img>
+                            <img className="image" src={logo}/>
                             <div className="content">Log-in to your account</div>
                         </h2>
                         <LRForm {...formProps}/>

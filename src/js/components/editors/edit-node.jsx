@@ -106,20 +106,6 @@ class EditNode extends React.Component {
                                 )
                             }
                         </select>
-                        {/*<div className="floating labeled selection dropdown">
-                            <input type="hidden" name="type" defaultValue={this.state.type}/>
-                            <i className="ui dropdown icon"/>
-                            <div className="default text"> Select asset type </div>
-                            <menu>
-                                {
-                                    Reflect.ownKeys(NodeTypeInverted).map((t,i) =>
-                                        <div className="item" key={i} data-value={t}>
-                                            { `${t.charAt(0).toUpperCase()}${t.slice(1)}` }
-                                        </div>
-                                    )
-                                }
-                            </menu>
-                        </div>*/}
                     </div>
                     <div className="ui right aligned grid"><div className="row"><div className="column"><div className="actions">
                         <div className="ui black cancel button"> Cancel </div>
@@ -150,9 +136,6 @@ class EditNode extends React.Component {
                     comment: this.state.note
                 })
             }
-            // if (this.state.type !== this.props.node.data('type')) {
-            //     this.props.nodeTypeChange(id, this.state.type)
-            // }
         } else {
             const id = uuid()
             this.props.nodeCreate({
@@ -163,8 +146,6 @@ class EditNode extends React.Component {
                 comment: this.state.note,
                 position: this.state.position
             })
-            // this.props.nodePositionChange(id, this.state.position)
-            // this.props.nodeTypeChange(id, this.state.type)
         }
         ev.preventDefault()
     }

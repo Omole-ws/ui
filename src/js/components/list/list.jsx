@@ -16,7 +16,6 @@ import { connect } from 'react-redux'
 
 import { Action } from '../../actions'
 import Nav from '../nav/nav'
-// import MessageCenter from '../mcenter/mcenter'
 import ListItem from './list-item'
 import EditGraphList from './edit-graph-list'
 import Import from './import'
@@ -41,8 +40,7 @@ class ListView extends React.Component {
         deleteGraph:       PropTypes.func.isRequired,
         duplicateGraph:    PropTypes.func.isRequired,
         importGraph:    PropTypes.func.isRequired,
-        getGraph:    PropTypes.func.isRequired,
-        showMessageCenter: PropTypes.func.isRequired
+        getGraph:    PropTypes.func.isRequired
     }
 
     componentWillMount() {
@@ -71,7 +69,7 @@ class ListView extends React.Component {
                         Graph
                         <i className="ui dropdown icon"></i>
                         <div className="ui menu">
-                            <div className="ui link item" onClick={() => this.editComponent.activate()}>
+                            <div className="ui link item" onClick={(...a) => this.editComponent.activate(...a)}>
                                 <i className="ui circle add icon"></i>
                                 New
                             </div>
@@ -83,7 +81,6 @@ class ListView extends React.Component {
                     </div>]}
                 </Nav>
 
-                {/* TODO: <MessageCenter/> */}
                 <Import ref={r => this.importComponent = r}
                     importGraph={this.props.importGraph}/>
 
@@ -95,7 +92,7 @@ class ListView extends React.Component {
                     {
                         this.props.list.map(g => {
                             return <ListItem key={g.id} graph={g}
-                                edit={this.editComponent.activate}
+                                edit={(...a) => this.editComponent.activate(...a)}
                                 remove={this.props.deleteGraph}
                                 duplicate={this.props.duplicateGraph}
                                 getGraph={this.props.getGraph}/>
@@ -144,7 +141,6 @@ const mapDispatchToProps = {
     duplicateGraph: Action.duplicateGraph,
     importGraph: Action.importGraph,
     getGraph: Action.getGraph
-    // showMessageCenter: Action.showMessageCenter
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListView)

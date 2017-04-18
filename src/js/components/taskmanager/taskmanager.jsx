@@ -6,9 +6,6 @@ import '../../../../semantic/dist/components/accordion'
 import React from 'react'
 import PropTypes from 'prop-types'
 import ReactTransitionGroup from 'react-addons-transition-group'
-import { connect } from 'react-redux'
-
-import { Action } from '../../actions'
 
 import Nav from '../nav/nav'
 import TaskItem from './task-item'
@@ -36,7 +33,7 @@ class TaskManager extends React.Component {
             <div key={ group.name }>
                 <div className="active title">
                     <div className="ui large orange header">
-                        <i className="dropdown icon"></i>
+                        <i className="dropdown icon"/>
                         { group.name }
                     </div>
                 </div>
@@ -96,6 +93,9 @@ class TaskManager extends React.Component {
 //
 //
 //
+
+import { connect } from 'react-redux'
+import { Action } from '../../actions'
 
 function mapStateToProps(state) {
     return {

@@ -16,15 +16,11 @@ import '../../../../semantic/dist/components/grid.css'
 import React from 'react'
 import PropTypes from 'prop-types'
 
-// import EditGraphListTmpl from './edit-graph-list.jade'
-
 export default class EditGraphList extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {graph: null, title: '', description: ''}
-        this.activate = toEdit => this._activate(toEdit)
-        this.show = () => this._show()
     }
 
     static propTypes ={
@@ -32,15 +28,15 @@ export default class EditGraphList extends React.Component {
         patchGraph: PropTypes.func.isRequired
     }
 
-    _activate(graph) {
+    activate(graph) {
         if(graph) {
-            this.setState({graph: graph, title: graph.label || '', description: graph.comment || ''}, this.show)
+            this.setState({graph: graph, title: graph.label || '', description: graph.comment || ''}, () => this.show())
         } else {
-            this.setState({graph: null, title: '', description: ''}, this.show)
+            this.setState({graph: null, title: '', description: ''}, () => this.show())
         }
     }
 
-    _show() {
+    show() {
         $(this.ref)
             .modal({
                 blurring: true,
