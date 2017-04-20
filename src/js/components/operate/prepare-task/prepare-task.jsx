@@ -18,6 +18,7 @@ class PrepareTask extends React.Component {
             quater: 1
         }
     }
+
     static propTypes = {
         onScreen: PropTypes.bool.isRequired,
         algo: PropTypes.shape({
@@ -40,6 +41,30 @@ class PrepareTask extends React.Component {
         cancel: PropTypes.func.isRequired
     }
 
+    snapTo(quater) {
+        this.setState({ quater })
+    }
+
+    handleFieldChange = ev => {
+        this.setState({
+            label: ev.target.value
+        })
+    }
+    fh = ev => { this.ll = ev.target }
+
+    launch = () => {
+        let params = { gid: this.props.gid, cclabel: this.state.label }
+        if (this.props.algo.inputParam === AlgoInputType.GLFT) {
+            params = { ...params, from: this.props.from.id, to: this.props.to.id }
+        }
+        this.props.createTask({ algo: this.props.algo, params })
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.props.from.name !== nextProps.from.name && this.setState({from: nextProps.from.name})
+        this.props.to.name !== nextProps.to.name && this.setState({to: nextProps.to.name})
+    }
+
     componentDidMount() {
         $(this.ref)
             .find('.ui.radio.checkbox')
@@ -51,10 +76,10 @@ class PrepareTask extends React.Component {
             return null
         }
         const q = this.state.quater
-        const q1 = this.state.quater === 1
-        const q2 = this.state.quater === 2
-        const q3 = this.state.quater === 3
-        const q4 = this.state.quater === 4
+        const q1 = q === 1
+        const q2 = q === 2
+        const q3 = q === 3
+        const q4 = q === 4
 
 
         return (
@@ -69,16 +94,16 @@ class PrepareTask extends React.Component {
                         <div className="inline field">
                             <label> Algorythm </label>
                             <div className="ui transparent input">
-                                <input type="text" readOnly value={this.props.algo.name}/>
+                                <input type="text" readOnly value={this.props.algo.name} onChange={this.fh}/>
                             </div>
                         </div>
                         <div className="grouped fields">
                             <label htmlFor="label"> Select LABEL </label>
                             {
-                                ['READ', 'WRITE', 'TAKE', 'GRANT'].map((v,i) =>
-                                    <div className="field" key={i}>
+                                ['READ', 'WRITE', 'TAKE', 'GRANT'].map(v =>
+                                    <div className="field" key={v}>
                                         <div className="ui radio checkbox">
-                                            <input type="radio" name="label" checked={v === this.state.label} value={v} onChange={e => this.handleFieldChange(e)}/>
+                                            <input type="radio" name="label" checked={v === this.state.label} value={v} onChange={this.handleFieldChange}/>
                                             <label>{ v }</label>
                                         </div>
                                     </div>
@@ -90,7 +115,7 @@ class PrepareTask extends React.Component {
                                 <div className="inline field">
                                     <label> From </label>
                                     <div className="ui transparent input">
-                                        <input type="text" readOnly value={this.props.from.name}/>
+                                        <input type="text" value={this.state.from} onChange={this.fh}/>
                                     </div>
                                 </div>
                         }
@@ -99,7 +124,7 @@ class PrepareTask extends React.Component {
                                 <div className="inline field">
                                     <label> To </label>
                                     <div className="ui transparent input">
-                                        <input type="text" readOnly value={this.props.to.name}/>
+                                        <input type="text" value={this.state.to} onChange={this.fh}/>
                                     </div>
                                 </div>
                         }
@@ -109,7 +134,8 @@ class PrepareTask extends React.Component {
                     <i className={cs('large left floated square icon', {disabled: q4, orange: !q4})} onClick={() => this.snapTo(4)}/>
                     <i className={cs('large right floated square icon', {disabled: q3, orange: !q3})} onClick={() => this.snapTo(3)}/>
                     <div className="center aligned">
-                        <div className={cs('ui green compact basic button', {disabled: !this.state.label || (this.props.algo.inputParam === AlgoInputType.GLFT && (!this.props.from.name || !this.props.to.name))})} onClick={() => this.launch()}>
+                        <div className={cs('ui green compact basic button', {disabled: !this.state.label || (this.props.algo.inputParam === AlgoInputType.GLFT && (!this.props.from.name || !this.props.to.name))})}
+                             onClick={this.launch}>
                             Launch
                         </div>
                         <div className="ui red compact basic button" onClick={this.props.cancel}> Cancel </div>
@@ -118,29 +144,19 @@ class PrepareTask extends React.Component {
             </div>
         )
     }
-
-    snapTo(quater) {
-        this.setState({ quater })
-    }
-
-    handleFieldChange(ev) {
-        this.setState({
-            [ev.target.name]: ev.target.value
-        })
-    }
-
-    launch() {
-        let params = { gid: this.props.gid, cclabel: this.state.label }
-        if (this.props.algo.inputParam === AlgoInputType.GLFT) {
-            params = { ...params, from: this.props.from.id, to: this.props.to.id }
-        }
-        this.props.createTask({ algo: this.props.algo, params })
-    }
 }
 
-//  +-+-+-+-+-+-+-+
-//  |c|o|n|n|e|c|t|
-//  +-+-+-+-+-+-+-+
+//                                                      888
+//                                                      888
+//                                                      888
+//  .d8888b .d88b.  88888b.  88888b.   .d88b.   .d8888b 888888
+// d88P"   d88""88b 888 "88b 888 "88b d8P  Y8b d88P"    888
+// 888     888  888 888  888 888  888 88888888 888      888
+// Y88b.   Y88..88P 888  888 888  888 Y8b.     Y88b.    Y88b.
+//  "Y8888P "Y88P"  888  888 888  888  "Y8888   "Y8888P  "Y888
+//
+//
+//
 
 function mapStateToProps(state) {
     return {

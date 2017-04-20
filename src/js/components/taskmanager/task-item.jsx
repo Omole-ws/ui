@@ -147,7 +147,7 @@ export default class TaskItem extends React.Component {
                         {
                             task.status === TaskStatus.TS_LOADED && task.onScreen === 'p' ?
                             task.results.map((v,i) =>
-                                <div className="ui small black compact basic button"
+                                <div key={i} className="ui small black compact basic button"
                                     onClick={ () => this.props.highlightPath(i) }>
                                     { i }
                                 </div>

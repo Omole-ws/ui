@@ -15,9 +15,8 @@ const LRForm = props => {
             </div>
         </div>
     const submitProps = {
-        className: props.registration ? 'fluid large orange submit button' : '',
+        className: props.registration ? 'ui fluid large orange submit button' : '',
         type: 'submit',
-        value: 'Register',
         hidden: !props.registration
     }
 
@@ -37,7 +36,7 @@ const LRForm = props => {
                     <input type="password" name="password" placeholder="Password" onChange={props.onFieldChange}/>
                 </div>
             </div>
-            <input {...submitProps}/>
+            <button {...submitProps}>Register</button>
             { props.error &&
                 <div className="ui small negative message">
                     <i className="close icon" onClick={props.clearError}/>

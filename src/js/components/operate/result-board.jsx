@@ -18,7 +18,7 @@ import { connect } from 'react-redux'
 import { Action, AlgoInputType, TaskStatus } from '../../actions'
 import TaskItem from '../taskmanager/task-item'
 
-class ResultBoard extends React.Component {
+class  ResultBoard extends React.Component {
 
     static propTypes = {
         children: PropTypes.object,
@@ -60,7 +60,7 @@ class ResultBoard extends React.Component {
         }
     }
 
-    _nodeNames(task) {
+    nodeNames(task) {
         const algo = this.props.algosDef[task.name]
         const repr = { name: task.name }
         if (algo.inputParam === AlgoInputType.GL || algo.inputParam === AlgoInputType.GLFT) {
@@ -91,7 +91,7 @@ class ResultBoard extends React.Component {
                                         showResults={ this.props.showResults }
                                         hideResults={ this.props.hideResults }
                                         highlightPath={ this.props.highlightPath }
-                                        nodesNames={ this._nodeNames(task) }/>
+                                        nodesNames={ this.nodeNames(task) }/>
                                 )
                             }
                         </ReactTransitionGroup>

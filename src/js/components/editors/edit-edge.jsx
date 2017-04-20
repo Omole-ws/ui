@@ -26,7 +26,10 @@ class EditEdge extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            type: EdgeType.READ
+            label: '',
+            note: '',
+            type: EdgeType.READ,
+            weight: 1.0
         }
     }
 
@@ -35,6 +38,27 @@ class EditEdge extends React.Component {
         edge: PropTypes.object,
         edgeDialogClose: PropTypes.func.isRequired,
         edgeUpdate: PropTypes.func.isRequired
+    }
+
+    handleFieldChange = ev => {
+        this.setState({[ev.target.name]: ev.target.value})
+    }
+
+    submit = ev => {
+        const id = this.props.edge.id()
+        if (this.state.label !== this.props.edge.data('label') ||
+            this.state.note !== this.props.edge.data('note') ||
+            !this.props.edge.hasClass(this.state.type) ||
+            this.state.weight !== this.props.edge.data('weight')) {
+            this.props.edgeUpdate(id, {
+                id,
+                cclabel: EdgeTypeInverted[this.state.type],
+                label: this.state.label,
+                comment: this.state.note,
+                weight: +this.state.weight
+            })
+        }
+        ev.preventDefault()
     }
 
     componentWillReceiveProps(nextProps) {
@@ -75,21 +99,21 @@ class EditEdge extends React.Component {
         return (
             <div className="ui small modal" ref={r => this.ref = r}>
                 <div className="ui header"> Edit relation </div>
-                <form className="ui content form" onSubmit={ev => this.submit(ev)}>
+                <form className="ui content form" onSubmit={this.submit}>
                     <div className="field required">
                         <label> Label </label>
-                        <input type="text" name="label" onChange={ev => this.handleFieldChange(ev)} value={this.state.label}/>
+                        <input type="text" name="label" onChange={this.handleFieldChange} value={this.state.label}/>
                     </div>
                     <div className="field">
                         <label> Note </label>
-                        <textarea rows="2" name="note" onChange={ev => this.handleFieldChange(ev)} value={this.state.note}/>
+                        <textarea rows="2" name="note" onChange={this.handleFieldChange} value={this.state.note}/>
                     </div>
                     <div className="field inline required">
                         <label> Type </label>
-                        <select className="ui dropdown">
+                        <select className="ui dropdown" name="type" onChange={this.handleFieldChange} value={this.state.type}>
                             {
-                                Reflect.ownKeys(EdgeTypeInverted).map((t,i) =>
-                                    <option key={i} value={t}>
+                                Reflect.ownKeys(EdgeTypeInverted).map(t =>
+                                    <option key={t} value={t}>
                                         { `${t.charAt(0).toUpperCase()}${t.slice(1)}` }
                                     </option>
                                 )
@@ -98,7 +122,7 @@ class EditEdge extends React.Component {
                     </div>
                     <div className="field inline required">
                         <label> Weight </label>
-                        <input type="text" name="weight" onChange={ev => this.handleFieldChange(ev)} value={this.state.weight}/>
+                        <input type="text" name="weight" onChange={this.handleFieldChange} value={this.state.weight}/>
                     </div>
                     <div className="ui right aligned grid"><div className="row"><div className="column"><div className="actions">
                         <div className="ui black cancel button"> Cancel </div>
@@ -109,27 +133,6 @@ class EditEdge extends React.Component {
                 </form>
             </div>
         )
-    }
-
-    handleFieldChange(ev) {
-        this.setState({[ev.target.name]: ev.target.value})
-    }
-
-    submit(ev) {
-        const id = this.props.edge.id()
-        if (this.state.label !== this.props.edge.data('label') ||
-            this.state.note !== this.props.edge.data('note') ||
-            !this.props.edge.hasClass(this.state.type) ||
-            this.state.weight !== this.props.edge.data('weight')) {
-            this.props.edgeUpdate(id, {
-                id,
-                cclabel: EdgeTypeInverted[this.state.type],
-                label: this.state.label,
-                comment: this.state.note,
-                weight: +this.state.weight
-            })
-        }
-        ev.preventDefault()
     }
 }
 

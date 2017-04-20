@@ -28,7 +28,7 @@ export default class EditGraphList extends React.Component {
         patchGraph: PropTypes.func.isRequired
     }
 
-    activate(graph) {
+    activate = graph => {
         if(graph) {
             this.setState({graph: graph, title: graph.label || '', description: graph.comment || ''}, () => this.show())
         } else {
@@ -36,7 +36,7 @@ export default class EditGraphList extends React.Component {
         }
     }
 
-    show() {
+    show = () => {
         $(this.ref)
             .modal({
                 blurring: true,
@@ -45,11 +45,11 @@ export default class EditGraphList extends React.Component {
             .modal('show')
     }
 
-    handleFieldChange(ev) {
+    handleFieldChange = ev => {
         this.setState({[ev.target.name]: ev.target.value})
     }
 
-    submit(ev) {
+    submit = ev => {
         if (this.state.graph) {
             this.props.patchGraph({
                 id: this.state.graph.id,
@@ -75,7 +75,7 @@ export default class EditGraphList extends React.Component {
             <dev className="ui small modal" ref={r => this.ref = r}>
                 <dev className="ui header"> {this.state.graph === null ? 'Create new graph' : 'Edit graph'} </dev>
                 <dev className="ui content">
-                    <form className="ui form" onSubmit={ev => this.submit(ev)}>
+                    <form className="ui form" onSubmit={this.submit}>
                         {
                             timeStamp &&
                                 <div className="ui right aligned grid">
@@ -87,11 +87,11 @@ export default class EditGraphList extends React.Component {
                         }
                         <div className="required field">
                             <label> Title </label>
-                            <input type="text" name="title" required onChange={ev => this.handleFieldChange(ev)} value={this.state.title}/>
+                            <input type="text" name="title" required onChange={this.handleFieldChange} value={this.state.title}/>
                         </div>
                         <div className="field">
                             <label> Description </label>
-                            <textarea rows="2" name="description" onChange={ev => this.handleFieldChange(ev)} value={this.state.description}/>
+                            <textarea rows="2" name="description" onChange={this.handleFieldChange} value={this.state.description}/>
                         </div>
                         <div className="ui right aligned grid">
                             <div className="row"><div className="column"><div className="actions">

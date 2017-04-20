@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import { Action } from '../../actions'
 import Nav from '../nav/nav'
 import NavReports from '../nav/nav-reports'
-// import ReporItem from './report-item'
 import TaskItem from '../taskmanager/task-item'
 
 class Reports extends React.Component {

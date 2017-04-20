@@ -11,6 +11,16 @@ class NavAlgo extends React.Component {
         createTask: PropTypes.func.isRequired
     }
 
+    taskPrepare = ev => {
+        const algoName = ev.target.attributes['data-val'].value
+        const algo = this.props.algosDef[algoName]
+        if (algo.inputParam === 'INPUT_GID') {
+            this.props.createTask({algo, params: {gid: this.props.gid}})
+        } else {
+            this.props.taskPrepare(algo)
+        }
+    }
+
     render() {
         return (
             <div className="ui simple dropdown item">
@@ -20,7 +30,7 @@ class NavAlgo extends React.Component {
                         <div className="vertical menu">
                             {
                                 Reflect.ownKeys(this.props.algosDef).map(alg =>
-                                    <div key={alg} className="item" onClick={() => this.taskPrepare(alg)}>
+                                    <div key={alg} className="item" data-val={alg} onClick={this.taskPrepare}>
                                         { `${alg}${this.props.algosDef[alg].inputParam === AlgoInputType.G ? '' : '...'}` }
                                     </div>
                                 )
@@ -31,15 +41,6 @@ class NavAlgo extends React.Component {
                 }
             </div>
         )
-    }
-
-    taskPrepare(algoName) {
-        const algo = this.props.algosDef[algoName]
-        if (algo.inputParam === 'INPUT_GID') {
-            this.props.createTask({algo, params: {gid: this.props.gid}})
-        } else {
-            this.props.taskPrepare(algo)
-        }
     }
 }
 

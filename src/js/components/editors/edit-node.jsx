@@ -21,14 +21,22 @@ import { connect } from 'react-redux'
 import { Action, NodeType, NodeTypeInverted, NodeRole } from '../../actions'
 import { uuid } from '../../helpers'
 
+const DefNewNodeState = { label: '', note: '', type: NodeType.SUBJECT, ifNew: true }
 
 class EditNode extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = {
-            type: NodeType.SUBJECT
+        this.state = DefNewNodeState
+        if (props.node) {
+            this.state = {
+                label: props.node.data('label'),
+                note: props.node.data('note'),
+                type: props.node.data('type'),
+                ifNew: false
+            }
         }
+        this.state.position = props.position
     }
 
     static propTypes = {
@@ -42,87 +50,11 @@ class EditNode extends React.Component {
         nodeTypeChange: PropTypes.func.isRequired
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.node !== this.props.node && nextProps.node) {
-            const type = nextProps.node.data('type')
-            this.setState({
-                label: nextProps.node.data('label'),
-                note: nextProps.node.data('note'),
-                type
-            })
-            $(this.ref).find('.ui.dropdown').dropdown('set selected', type)
-        } else {
-            this.setState({label: '', note: ''})
-        }
-        if (nextProps.position !== this.props.position && nextProps.position) {
-            this.setState({
-                position: nextProps.position
-            })
-        }
-    }
-
-    componentDidMount() {
-        $(this.ref)
-        .modal({
-            blurring: true,
-            transition: 'fly up',
-            onHidden: this.props.nodeDialogClose
-        })
-        .find('.ui.dropdown')
-        .dropdown({
-            on: 'hover',
-            onChange: value => this.setState({type: value})
-        })
-    }
-
-    componentDidUpdate(prevProps) {
-        if (!prevProps.onScreen && this.props.onScreen) {
-            $(this.ref)
-            .modal('show')
-        }
-    }
-
-    render() {
-        return (
-            <div className="ui small modal" ref={r => this.ref = r}>
-                <div className="ui header">{ this.props.node ? 'Edit' : 'Create new' + ' asset' }</div>
-                <form className="ui content form" onSubmit={ev => this.submit(ev)}>
-                    <div className="field required">
-                        <label> Label </label>
-                        <input type="text" name="label" onChange={ev => this.handleFieldChange(ev)} value={this.state.label}/>
-                    </div>
-                    <div className="field">
-                        <label> Note </label>
-                        <textarea rows="2" name="note" onChange={ev => this.handleFieldChange(ev)} value={this.state.note}/>
-                    </div>
-                    <div className="field inline required">
-                        <label> Type </label>
-                        <select className="ui dropdown">
-                            {
-                                Reflect.ownKeys(NodeTypeInverted).map((t,i) =>
-                                    <option key={i} value={t}>
-                                        { `${t.charAt(0).toUpperCase()}${t.slice(1)}` }
-                                    </option>
-                                )
-                            }
-                        </select>
-                    </div>
-                    <div className="ui right aligned grid"><div className="row"><div className="column"><div className="actions">
-                        <div className="ui black cancel button"> Cancel </div>
-                        <button className="ui green ok right labeled icon button" type="submit">
-                            Save <i className="save icon"/>
-                        </button>
-                    </div></div></div></div>
-                </form>
-            </div>
-        )
-    }
-
-    handleFieldChange(ev) {
+    handleFieldChange = ev => {
         this.setState({[ev.target.name]: ev.target.value})
     }
 
-    submit(ev) {
+    submit = ev => {
         if (this.props.node) {
             const id = this.props.node.id()
             if (this.state.label !== this.props.node.data('label') ||
@@ -148,6 +80,86 @@ class EditNode extends React.Component {
             })
         }
         ev.preventDefault()
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.node !== this.props.node) {
+            const nextState = nextProps.node ?
+                {
+                    label: nextProps.node.data('label'),
+                    note: nextProps.node.data('note'),
+                    type: nextProps.node.data('type'),
+                    ifNew: false
+                } : DefNewNodeState
+            this.setState(nextState)
+            $(this.ref).find('.ui.dropdown').dropdown('set selected', nextState.type)
+        }
+        if (nextProps.position !== this.props.position && nextProps.position) {
+            this.setState({
+                position: nextProps.position
+            })
+        }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextState !== this.state
+    }
+
+    componentDidMount() {
+        $(this.ref)
+        .modal({
+            blurring: true,
+            transition: 'fly up',
+            onHidden: this.props.nodeDialogClose
+        })
+        .find('.ui.dropdown')
+        .dropdown({
+            on: 'hover'//,
+            //onChange: value => this.setState({type: value})
+        })
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!prevProps.onScreen && this.props.onScreen) {
+            $(this.ref)
+            .modal('show')
+        }
+    }
+
+    render() {
+        return (
+            <div className="ui small modal" ref={r => this.ref = r}>
+                <div className="ui header">{ (this.state.ifNew ? 'Create new' : 'Edit') + ' asset' }</div>
+                <form className="ui content form" onSubmit={this.submit}>
+                    <div className="field required">
+                        <label> Label </label>
+                        <input type="text" name="label" onChange={this.handleFieldChange} value={this.state.label}/>
+                    </div>
+                    <div className="field">
+                        <label> Note </label>
+                        <textarea rows="2" name="note" onChange={this.handleFieldChange} value={this.state.note}/>
+                    </div>
+                    <div className="field inline required">
+                        <label> Type </label>
+                        <select className="ui dropdown" name="type" onChange={this.handleFieldChange} value={this.state.type}>
+                            {
+                                Reflect.ownKeys(NodeTypeInverted).map(t =>
+                                    <option key={t} value={t}>
+                                        { `${t.charAt(0).toUpperCase()}${t.slice(1)}` }
+                                    </option>
+                                )
+                            }
+                        </select>
+                    </div>
+                    <div className="ui right aligned grid"><div className="row"><div className="column"><div className="actions">
+                        <div className="ui black cancel button"> Cancel </div>
+                        <button className="ui green ok right labeled icon button" type="submit">
+                            Save <i className="save icon"/>
+                        </button>
+                    </div></div></div></div>
+                </form>
+            </div>
+        )
     }
 }
 

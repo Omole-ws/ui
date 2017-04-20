@@ -10,6 +10,17 @@ class NavReports extends React.Component {
         createTask: PropTypes.func.isRequired
     }
 
+    reportPrepare = ev => {
+        const reportName = ev.target.attributes['data-val'].value
+        const report = this.props.reportsDef[reportName]
+        if (report.inputParam === 'INPUT_GID') {
+            this.props.createTask({algo: report, params: {gid: this.props.gid}})
+        } else {
+            // TODO: Here should go launching form for report
+            console.log('Reports with parameters still unimplemented')
+        }
+    }
+
     render() {
         return (
             <div className="ui simple dropdown item">
@@ -19,7 +30,7 @@ class NavReports extends React.Component {
                         <div className="vertical menu">
                             {
                                 Reflect.ownKeys(this.props.reportsDef).map(rep =>
-                                    <div key={rep} className="item" onClick={() => this.reportPrepare(rep)}>
+                                    <div key={rep} className="item" data-val={rep} onClick={this.reportPrepare}>
                                         { `${rep}${this.props.reportsDef[rep].inputParam === AlgoInputType.G ? '' : '...'}` }
                                     </div>
                                 )
@@ -30,16 +41,6 @@ class NavReports extends React.Component {
                 }
             </div>
         )
-    }
-
-    reportPrepare(reportName) {
-        const report = this.props.reportsDef[reportName]
-        if (report.inputParam === 'INPUT_GID') {
-            this.props.createTask({algo: report, params: {gid: this.props.gid}})
-        } else {
-            // TODO: Here should go launching form for report
-            console.log('Reports with parameters still unimplemented')
-        }
     }
 }
 

@@ -1,9 +1,3 @@
-/* global $ */
-
-// import loadCytoscape from 'promise?bluebird!cytoscape'
-// import loadCxtMenu from 'promise?bluebird!cytoscape-cxtmenu'
-// import loadEdgeHandles from 'promise?bluebird!cytoscape-edgehandles'
-
 import _ from 'lodash/fp'
 
 import { store } from '../../../../index'
@@ -18,8 +12,8 @@ import CySelectFromTo from './cy-select-from-to'
 
 const cytoscape = import('./cytoscape-bundled')
     .then(module => {
-        module.cxtmenu(module.cytoscape, $)
-        module.edgehandles(module.cytoscape, $)
+        module.cxtmenu(module.cytoscape)
+        module.edgehandles(module.cytoscape)
         return module.cytoscape
     })
     .catch(err => {
@@ -38,7 +32,7 @@ export default class Cy {
             container: elem,
             style,
             selectionType: 'additive',
-            motionBlur: true
+            motionBlur: true // TODO: seems to be excess
         })
 
         this.cy.edgehandles({
@@ -55,15 +49,18 @@ export default class Cy {
                 data: {
                     id: uuid(),
                     source: srcNode.id(),
-                    target: tgtNode.id()
+                    target: tgtNode.id(),
+                    label: '',
+                    note: ''//,
+                    // type: this.menus.type
                 },
                 classes: this.menus.type
             }),
-            complete: (sourceNode, targetNodes, addedEntities) => {
+            complete: (srcNode, tgtNodes, addedEntities) => {
                 this.edgeCreate({
                     id: addedEntities.id(),
-                    source: sourceNode.id(),
-                    target: targetNodes.id(),
+                    source: srcNode.id(),
+                    target: tgtNodes.id(),
                     cclabel: EdgeTypeInverted[this.menus.type],
                     weight: 1.0
                 })
@@ -128,12 +125,12 @@ export default class Cy {
         })
         this.positionHandleID = {}
         this.cy.on('position', 'node', ev => {
-            if (ev.cyTarget.hasClass('edgehandles-ghost')) {
+            if (ev.target.hasClass('edgehandles-ghost')) { // TODO: seems to be useless, as this class has removed
                 return
             }
-            const nid = ev.cyTarget.id()
+            const nid = ev.target.id()
             clearTimeout(this.positionHandleID[nid])
-            this.positionHandleID[nid] = setTimeout(() => this.nodePositionChange(nid, ev.cyTarget.position()), 2000)
+            this.positionHandleID[nid] = setTimeout(() => this.nodePositionChange(nid, ev.target.position()), 1000)
         })
     }
 
@@ -209,7 +206,7 @@ export default class Cy {
             Reflect.ownKeys(correction.nodeUpdates)
                 .map(nid => {
                     const node = correction.nodeUpdates[nid]
-                    return [node, Cy.nodeConverter(node), this.cy.$(`#${node.id}`)]
+                    return [node, Cy.nodeConverter(node), this.cy.nodes(`#${node.id}`)]
                 })
                 .forEach(([node, convertedNode, cyNode]) => {
                     cyNode.data(convertedNode.data)
@@ -218,7 +215,7 @@ export default class Cy {
             Reflect.ownKeys(correction.edgeUpdates)
                 .map(eid => {
                     const edge = correction.edgeUpdates[eid]
-                    return [Cy.edgeConverter(edge), this.cy.$(`#${edge.id}`)]
+                    return [Cy.edgeConverter(edge), this.cy.edges(`#${edge.id}`)]
                 })
                 .forEach(([convertedEdge, cyEdge]) => {
                     cyEdge.data(convertedEdge.data)
@@ -268,7 +265,7 @@ export default class Cy {
     hideGroups(groups) {
         const gRepresentation = Reflect.ownKeys(groups)
             .reduce((acc, g) => {
-                const groupRoot = this.cy.$(`#${g.replace(/:/g, '-')}`)
+                const groupRoot = this.cy.nodes(`#${g.replace(/:/g, '-')}`)
                 return {
                     parents: acc.parents.add(groupRoot),
                     children: acc.children.add(groupRoot.children())
@@ -290,11 +287,10 @@ export default class Cy {
 
     showPaths(paths) {
         const selector = Cy.buildPathsEdgeSelector(paths)
-        let pathEles = this.cy.$(selector)
+        let pathEles = this.cy.edges(selector)
         pathEles = pathEles.add(pathEles.connectedNodes())
         this.cy.startBatch()
-        this.cy.elements()
-            .addClass('dim')
+        this.cy.elements().addClass('dim')
         pathEles.removeClass('dim')
         this.cy.nodes('.group').removeClass('dim')
         this.cy.endBatch()
@@ -302,8 +298,7 @@ export default class Cy {
 
     hidePaths() {
         this.cy.startBatch()
-        this.cy.elements()
-            .removeClass('dim')
+        this.cy.elements().removeClass('dim')
         this.cy.endBatch()
     }
 
@@ -311,13 +306,13 @@ export default class Cy {
         this.cy.startBatch()
         path.edges
             .forEach((eid, i) => {
-                this.cy.$(`#${eid}`)
+                this.cy.edges(`#${eid}`)
                     .addClass('path-hl')
                     .data('plabel', i + 1)
             })
-        this.cy.$(`#${path.from}`)
+        this.cy.nodes(`#${path.from}`)
             .addClass('path-from')
-        this.cy.$(`#${path.to}`)
+        this.cy.nodes(`#${path.to}`)
             .addClass('path-to')
         this.cy.endBatch()
     }
@@ -326,13 +321,13 @@ export default class Cy {
         this.cy.startBatch()
         path.edges
             .forEach(eid => {
-                this.cy.$(`#${eid}`)
+                this.cy.edges(`#${eid}`)
                     .removeClass('path-hl')
                     .data('plabel', null)
             })
-        this.cy.$(`#${path.from}`)
+        this.cy.nodes(`#${path.from}`)
             .removeClass('path-from')
-        this.cy.$(`#${path.to}`)
+        this.cy.nodes(`#${path.to}`)
             .removeClass('path-to')
         this.cy.endBatch()
     }
@@ -346,10 +341,15 @@ export default class Cy {
         preview: true, // whether to show added edges preview before releasing selection
         stackOrder: 50, // Controls stack order of edgehandles canvas element by setting it's z-index
         handleSize: 10, // the size of the edge handle put on nodes
-        handleColor: '#f00', // the colour of the handle and the line drawn from it
+        handleHitThreshold: 6, // a threshold for hit detection that makes it easier to grab the handle
+        handleIcon: false, // an image to put on the handle
+        handleColor: '#ff0000', // the colour of the handle and the line drawn from it
         handleLineType: 'ghost', // can be 'ghost' for real edge, 'straight' for a straight line, or 'draw' for a draw-as-you-go line
         handleLineWidth: 1, // width of handle line in pixels
-        handleNodes: (i, node) => node.isNode() && !node.isParent(), // selector/filter function for whether edges can be made from a given node
+        handleOutlineColor: '#000000', // the colour of the handle outline
+        handleOutlineWidth: 0, // the width of the handle outline in pixels
+        handleNodes: node => !node.isParent(), // selector/filter function for whether edges can be made from a given node
+        handlePosition: 'middle top', // sets the position of the handle in the format of "X-AXIS Y-AXIS" such as "left top", "middle top"
         hoverDelay: 150, // time spend over a target node before it is considered a target selection
         cxt: false, // whether cxt events trigger edgehandles (useful on touch)
         enabled: false, // whether to start the extension in the enabled state
@@ -381,6 +381,9 @@ export default class Cy {
         complete( /*sourceNode, targetNodes, addedEntities*/ ) {},
         stop( /*sourceNode*/ ) {
             // fired when edgehandles interaction is stopped (either complete with added edges or incomplete)
+        },
+        cancel: function( sourceNode, renderedPosition ) {
+            // fired when edgehandles are cancelled ( incomplete - nothing has been added ) - renderedPosition is where the edgehandle was released
         }
     }
 
@@ -425,11 +428,11 @@ export default class Cy {
         const converted = {
             data: {
                 id: edge.id,
-                label: edge.label,
-                note: edge.comment,
+                label: edge.label || '',
+                note: edge.comment || '',
                 source: edge.source,
-                target: edge.target,
-                cclabel: edge.cclabel
+                target: edge.target//,
+                // cclabel: EdgeType[edge.cclabel]
             }
         }
         converted.data.weight = _.isNumber(edge.weight) && edge.weight >= 0 && edge.weight <= 1 ? edge.weight : 1.0

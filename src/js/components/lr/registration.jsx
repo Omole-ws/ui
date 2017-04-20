@@ -39,7 +39,7 @@ class Register extends React.Component {
      * @arg {object} ev event triggered
      * @return {void}
      */
-    handleFieldChange(ev) {
+    handleFieldChange = ev => {
         this.setState({[ev.target.name]: ev.target.value})
     }
 
@@ -48,7 +48,7 @@ class Register extends React.Component {
      * @arg {Object} ev submit event that have triggered login action
      * @return {void}
      */
-    register(ev) {
+    register = ev => {
         this.props.register(this.state)
         ev.preventDefault()
     }
@@ -56,8 +56,8 @@ class Register extends React.Component {
     render() {
         const formProps = {
             registration: true,
-            onSubmit: (...a) => this.register(...a),
-            onFieldChange: (...a) => this.handleFieldChange(...a),
+            onSubmit: this.register,
+            onFieldChange: this.handleFieldChange,
             error: this.props.error,
             clearError: this.props.clearError
         }

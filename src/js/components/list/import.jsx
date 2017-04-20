@@ -22,15 +22,13 @@ export default class Import extends React.Component {
         super(props)
 
         this.state = {title: '', description: '', file: ''}
-        // this.activate = () => this._show()
-        // this.show = () => this._show()
     }
 
     static propTypes ={
         importGraph: PropTypes.func.isRequired
     }
 
-    activate() {
+    activate = () => {
         $(this.ref)
             .modal({
                 blurring: true,
@@ -39,7 +37,7 @@ export default class Import extends React.Component {
             .modal('show')
     }
 
-    handleFieldChange(ev) {
+    handleFieldChange = ev => {
         const name = ev.target.name
         if (name === 'data') {
             if (ev.target.files.length > 0) {
@@ -59,17 +57,13 @@ export default class Import extends React.Component {
         }
     }
 
-    submit(ev) {
+    submit = ev => {
         const exp = this.state._export
         exp.graph = _.merge(exp.graph, {
             label: this.state.title,
             comment: this.state.description
         })
         this.props.importGraph(exp)
-        // this.props.createGraph(_.merge(this.state.graph, {
-        //     label: this.state.title,
-        //     comment: this.state.description
-        // }))
         ev.preventDefault()
     }
 
@@ -81,14 +75,14 @@ export default class Import extends React.Component {
             <div className="ui small modal" ref={r => this.ref = r}>
                 <div className="ui header">Import as a new graph</div>
                 <div className="content">
-                    <form className="ui form" onSubmit={ev => this.submit(ev)}>
+                    <form className="ui form" onSubmit={this.submit}>
                         <div className="required field">
                             <label>Title</label>
-                            <input type="text" name="title" onChange={ev => this.handleFieldChange(ev)} value={this.state.title}/>
+                            <input type="text" name="title" onChange={this.handleFieldChange} value={this.state.title}/>
                         </div>
                         <div className="field">
                             <label>Description</label>
-                            <textarea rows="2" name="description" onChange={ev => this.handleFieldChange(ev)} value={this.state.description}/>
+                            <textarea rows="2" name="description" onChange={this.handleFieldChange} value={this.state.description}/>
                         </div>
                         <div className="required field">
                             <label>File</label>
@@ -98,7 +92,7 @@ export default class Import extends React.Component {
                                     $(ev.target).find('input').click()
                                 }}>
                                     <i className="ui black outline open folder icon">
-                                        <input type="file" name="data" accept="application/json" hidden onChange={ev => this.handleFieldChange(ev)} onClick={ev => ev.stopPropagation()}/>
+                                        <input type="file" name="data" accept="application/json" hidden onChange={this.handleFieldChange} onClick={ev => ev.stopPropagation()}/>
                                     </i>
                                 </div>
                                 <input type="text" name="fname" readOnly value={this.state.file}/>

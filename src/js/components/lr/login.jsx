@@ -41,7 +41,7 @@ class Login extends React.Component {
      * @arg {object} ev event triggered
      * @return {void}
      */
-    handleFieldChange(ev) {
+    handleFieldChange = ev => {
         this.setState({[ev.target.name]: ev.target.value})
     }
 
@@ -52,7 +52,7 @@ class Login extends React.Component {
      * @arg {Object} ev submit event that have triggered login action
      * @return {void}
      */
-    loginTo(login, password, ev) {
+    loginTo = (login, password, ev) => {
         if (_.isObject(login)) {
             ev = login
             if (ev.type !== 'submit') {
@@ -73,8 +73,8 @@ class Login extends React.Component {
 
     render() {
         const formProps = {
-            onSubmit: (...args) => this.loginTo(...args),
-            onFieldChange: (...args) => this.handleFieldChange(...args),
+            onSubmit: this.loginTo,
+            onFieldChange: this.handleFieldChange,
             error: this.props.error,
             clearError: this.props.clearError
         }
@@ -92,7 +92,7 @@ class Login extends React.Component {
                     <div className="ui horizontal divider">NEW TO US?</div>
                     <div className="ui two column very relaxed row">
                         <div className="column">
-                            <button className="ui blue fluid massive button" onClick={(...args) => this.loginTo('demo', 'demo', ...args)}>
+                            <button className="ui blue fluid massive button" onClick={ev => this.loginTo('demo', 'demo', ev)}>
                                 Try DEMO
                             </button>
                         </div>
