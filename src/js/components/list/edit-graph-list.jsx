@@ -79,7 +79,7 @@ export default class EditGraphList extends React.Component {
                         {
                             timeStamp &&
                                 <div className="ui right aligned grid">
-                                    <div className="row"> <div className="column"> <div className="ui pointing below small basic label">
+                                    <div className="row"> <div className="column"> <div className="ui small basic label">
                                                 Last modified:
                                                 <div className="detail"> {timeStamp} </div>
                                     </div> </div> </div>

@@ -50,7 +50,6 @@ class PrepareTask extends React.Component {
             label: ev.target.value
         })
     }
-    fh = ev => { this.ll = ev.target }
 
     launch = () => {
         let params = { gid: this.props.gid, cclabel: this.state.label }
@@ -58,11 +57,6 @@ class PrepareTask extends React.Component {
             params = { ...params, from: this.props.from.id, to: this.props.to.id }
         }
         this.props.createTask({ algo: this.props.algo, params })
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.props.from.name !== nextProps.from.name && this.setState({from: nextProps.from.name})
-        this.props.to.name !== nextProps.to.name && this.setState({to: nextProps.to.name})
     }
 
     componentDidMount() {
@@ -94,7 +88,7 @@ class PrepareTask extends React.Component {
                         <div className="inline field">
                             <label> Algorythm </label>
                             <div className="ui transparent input">
-                                <input type="text" readOnly value={this.props.algo.name} onChange={this.fh}/>
+                                <input type="text" readOnly value={this.props.algo.name}/>
                             </div>
                         </div>
                         <div className="grouped fields">
@@ -112,19 +106,18 @@ class PrepareTask extends React.Component {
                         </div>
                         {
                             this.props.algo.inputParam === AlgoInputType.GLFT &&
-                                <div className="inline field">
-                                    <label> From </label>
-                                    <div className="ui transparent input">
-                                        <input type="text" value={this.state.from} onChange={this.fh}/>
+                                <div>
+                                    <div className="inline field">
+                                        <label> From </label>
+                                        <div className="ui transparent input">
+                                            <input type="text" readOnly value={this.props.from.name || ''}/>
+                                        </div>
                                     </div>
-                                </div>
-                        }
-                        {
-                            this.props.algo.inputParam === AlgoInputType.GLFT &&
-                                <div className="inline field">
-                                    <label> To </label>
-                                    <div className="ui transparent input">
-                                        <input type="text" value={this.state.to} onChange={this.fh}/>
+                                    <div className="inline field">
+                                        <label> To </label>
+                                        <div className="ui transparent input">
+                                            <input type="text" readOnly value={this.props.to.name || ''}/>
+                                        </div>
                                     </div>
                                 </div>
                         }
