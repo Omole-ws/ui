@@ -3,6 +3,7 @@ import '../../../../../semantic/dist/components/dimmer.css'
 import '../../../../../semantic/dist/components/loader.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import _ from 'lodash/fp'
 
@@ -17,22 +18,27 @@ class Desk extends React.Component {
         this.state = {isDataReady: false, cy: null}
         this.isEmpty = true
         this.cytoscapeElement = null
-        this.loadGraphData = (g, gva) => this._loadGraphData(g, gva)
     }
 
     static propTypes = {
-        gid: React.PropTypes.string.isRequired,
-        graph: React.PropTypes.object,
-        visualAttributes: React.PropTypes.object,
-        tape: React.PropTypes.array,
-        groups: React.PropTypes.object,
-        paths: React.PropTypes.shape({
-            list: React.PropTypes.arrayOf(React.PropTypes.object),
-            idx: React.PropTypes.number
+        gid: PropTypes.string.isRequired,
+        graph: PropTypes.object,
+        visualAttributes: PropTypes.object,
+        tape: PropTypes.array,
+        groups: PropTypes.object,
+        paths: PropTypes.shape({
+            list: PropTypes.arrayOf(PropTypes.object),
+            idx: PropTypes.number
         }),
-        deskMode: React.PropTypes.string.isRequired,
-        getGraph: React.PropTypes.func.isRequired,
-        fetchGVA: React.PropTypes.func.isRequired
+        deskMode: PropTypes.string.isRequired,
+        getGraph: PropTypes.func.isRequired,
+        fetchGVA: PropTypes.func.isRequired
+    }
+
+    loadGraphData = (graph, visualAttributes) => {
+        if (!visualAttributes || !visualAttributes.isFetching) {
+            this.props.fetchGVA(graph ? graph : {id: this.props.gid})
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -63,19 +69,16 @@ class Desk extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextState.isDataReady !== this.state.isDataReady ||
+        return nextState.isDataReady !== this.state.isDataReady ||
             nextState.cy !== this.state.cy ||
             nextProps.deskMode !== this.props.deskMode ||
-            nextProps.tape !== this.props.tape) {
-            return true
-        }
-        return false
+            nextProps.tape !== this.props.tape
+
     }
 
     componentWillUpdate(nextProps, nextState) {
         if (nextState.isDataReady && nextState.cy && this.isEmpty) {
             nextState.cy.populate(nextProps.graph, nextProps.visualAttributes, nextProps.tape)
-            // nextState.cy.applyChanges(nextProps.tape)
             this.isEmpty =false
         }
         if (nextProps.deskMode !== this.props.deskMode) {
@@ -113,20 +116,10 @@ class Desk extends React.Component {
             </div>
         )
     }
-
-    _loadGraphData(graph, visualAttributes) {
-        // if (!graph || !graph.isFetching) {
-        //     this.props.getGraph(graph ? graph : {id: this.props.gid})
-        // }
-        if (!visualAttributes || !visualAttributes.isFetching) {
-            this.props.fetchGVA(graph ? graph : {id: this.props.gid})
-        }
-    }
 }
 
 function mapStateToProps(state, ownProps) {
     return {
-        // graph: state.graphs[ownProps.gid],
         visualAttributes: state.graphsExtra.visualAttributes[ownProps.gid],
         tape: state.tapes[ownProps.gid],
         groups: state.operating.groups,

@@ -1,26 +1,21 @@
 import '../../../../semantic/dist/components/grid.css'
 import '../../../../semantic/dist/components/header.css'
-// import '../../../../semantic/dist/components/image.css'
-// import '../../../../semantic/dist/components/menu.css'
 import '../../../../semantic/dist/components/divider.css'
 import '../../../../semantic/dist/components/segment.css'
 import '../../../../semantic/dist/components/form.css'
 import '../../../../semantic/dist/components/input.css'
 import '../../../../semantic/dist/components/button.css'
-// import '../../../../semantic/dist/components/list.css'
 import '../../../../semantic/dist/components/message.css'
 import '../../../../semantic/dist/components/icon.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import  { Action, Mode } from '../../actions'
 import Nav from '../nav/nav'
 import LRForm from './lrform'
 import logo from '../../../img/logo.png'
-
-// import _ from 'lodash'
-// import cloneDeep from 'lodash-es/cloneDeep'
 
 class Register extends React.Component {
 
@@ -31,14 +26,12 @@ class Register extends React.Component {
             mail: '',
             password: ''
         }
-        this.handleFieldChange = (...args) => this._handleFieldChange(...args)
-        this.register = (...args) => this._register(...args)
     }
 
     static propTypes = {
-        error:      React.PropTypes.string,
-        register:      React.PropTypes.func.isRequired,
-        clearError: React.PropTypes.func.isRequired
+        error:      PropTypes.string,
+        register:      PropTypes.func.isRequired,
+        clearError: PropTypes.func.isRequired
     }
 
     /**
@@ -46,7 +39,7 @@ class Register extends React.Component {
      * @arg {object} ev event triggered
      * @return {void}
      */
-    _handleFieldChange(ev) {
+    handleFieldChange = ev => {
         this.setState({[ev.target.name]: ev.target.value})
     }
 
@@ -55,7 +48,7 @@ class Register extends React.Component {
      * @arg {Object} ev submit event that have triggered login action
      * @return {void}
      */
-    _register(ev) {
+    register = ev => {
         this.props.register(this.state)
         ev.preventDefault()
     }
@@ -63,8 +56,8 @@ class Register extends React.Component {
     render() {
         const formProps = {
             registration: true,
-            onSubmit: (...args) => this.loginTo(...args),
-            onFieldChange: (...args) => this.handleFieldChange(...args),
+            onSubmit: this.register,
+            onFieldChange: this.handleFieldChange,
             error: this.props.error,
             clearError: this.props.clearError
         }

@@ -13,7 +13,6 @@ export function taskCheck() {
 }
 
 function chargeChecker(tid) {
-// function watch(tid) {
     pending[tid] = true
     setTimeout(_tid => {
         store.dispatch(Action.getTask(_tid))

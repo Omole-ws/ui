@@ -3,8 +3,7 @@ import { Action, DeskMode } from '../../../actions'
 
 export default class CySelectFromTo {
     constructor(cy) {
-        cy.nodes()
-            .unselect()
+        cy.nodes().unselect()
 
         this.cy = cy
         this.selected = 0
@@ -24,10 +23,8 @@ export default class CySelectFromTo {
     }
 
     shouldPersist(mode) {
-        if (mode === DeskMode.SELECT_FROM_TO) {
-            return true
-        }
-        return false
+        return mode === DeskMode.SELECT_FROM_TO
+
     }
 
     fromAction(action) {
@@ -39,19 +36,19 @@ export default class CySelectFromTo {
     }
 
     _select(ev) {
-        const [id, name] = [ev.cyTarget.id(), ev.cyTarget.data('label')]
+        const [id, name] = [ev.target.id(), ev.target.data('label')]
         const point = !this.from ? 'from' : 'to'
         switch (this.selected) {
             case 0:
                 this.selected += 1
-                this.from = this.cy.$(`#${id}`)
+                this.from = this.cy.nodes(`#${id}`)
                 this.from.addClass('from')
                 store.dispatch(Action.selectFrom({ id, name }))
                 break
 
             case 1:
                 this.selected += 1
-                this[point] = this.cy.$(`#${id}`)
+                this[point] = this.cy.nodes(`#${id}`)
                 this[point].addClass(point)
                 this[`${point}Action`]({ id, name })
 
@@ -62,7 +59,7 @@ export default class CySelectFromTo {
     }
 
     _unselect(ev) {
-        const [id, name] = [ev.cyTarget.id(), ev.cyTarget.data('label')]
+        const [id, name] = [ev.target.id(), ev.target.data('label')]
         const point = this.from && id === this.from.id() ? 'from' : 'to'
         switch (this.selected) {
             case 1:

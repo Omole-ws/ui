@@ -4,6 +4,7 @@ import '../../../../semantic/dist/components/modal.css'
 import '../../../../semantic/dist/components/modal'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Action } from '../../actions'
@@ -11,17 +12,9 @@ import { Action } from '../../actions'
 class GenError extends React.Component {
 
     static propTypes = {
-        error: React.PropTypes.object,
-        dismiss: React.PropTypes.func.isRequired
+        error: PropTypes.object,
+        dismiss: PropTypes.func.isRequired
     }
-
-    // componentDidMount() {
-    //     $(this.accordion).accordion()
-    // }
-    //
-    // componentDidUpdate() {
-    //     $(this.accordion).accordion()
-    // }
 
     render() {
         return (

@@ -27,14 +27,6 @@ function algo(state = {}, action) {
     }
 }
 
-// function kind(state = '', action) {
-//     if (action.type === ActionType.TASK_PREPARE) {
-//         return action.payload.inputParam
-//     } else {
-//         return state
-//     }
-// }
-
 function from(state = {}, action) {
     switch (action.type) {
         case ActionType.SELECT_FROM:

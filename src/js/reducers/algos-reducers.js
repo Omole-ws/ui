@@ -35,6 +35,3 @@ function definitionsList(state = {}, action) {
 }
 
 export const algos = combineReducers({definitions: definitionsList, isFetching: definitionsFetching})
-
-
-// export const algos = combineReducers({definitions})

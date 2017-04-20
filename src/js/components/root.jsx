@@ -1,18 +1,12 @@
 import '../../../semantic/dist/components/container.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { Mode } from '../actions'
 
 import GenError from './errors/gen-error'
-
-// import loadTaskmanView from 'promise!./taskmanager/taskmanager'
-// import loadLoginView from 'promise?bluebird!./lr/login'
-// import loadRegistrationView from 'promise?bluebird!./lr/registration'
-// import loadListView from 'promise?bluebird!./list/list'
-// import loadOperateView from 'promise?bluebird!./operate/operate'
-// import loadReportsView from 'promise?bluebird!./reports/reports'
 
 const loadTaskmanView = () => import('./taskmanager/taskmanager')
 const loadLoginView = () => import('./lr/login')
@@ -38,7 +32,7 @@ class Root extends React.Component {
     }
 
     static propTypes = {
-        mode: React.PropTypes.string.isRequired,
+        mode: PropTypes.string.isRequired,
     }
 
     static modeViewLoaders = {
@@ -61,7 +55,6 @@ class Root extends React.Component {
     // TODO: debug end
 
     componentWillMount() {
-        // Root.modeViewLoaders[this.props.mode]().then(view => this.setState({mainView: view}))
         Root.modeViewLoaders[this.props.mode]().then(view => this.setState({mainView: view.default}))
         // TODO: remove debug
         // this.setState({mainView: Root.debugModeViews[this.props.mode]})
@@ -69,7 +62,6 @@ class Root extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.mode !== this.props.mode) {
-            // Root.modeViewLoaders[nextProps.mode]().then(view => this.setState({mainView: view}))
             Root.modeViewLoaders[nextProps.mode]().then(view => this.setState({mainView: view.default}))
             // TODO: remove debug
             // this.setState({mainView: Root.debugModeViews[nextProps.mode]})
@@ -77,10 +69,8 @@ class Root extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextState.mainView !== this.state.mainView) {
-            return true
-        }
-        return false
+        return nextState.mainView !== this.state.mainView;
+
     }
 
     render () {
@@ -95,13 +85,21 @@ class Root extends React.Component {
 }
 
 
-//  +-+-+-+-+-+-+-+-+-+
-//  |C|O|N|N|E|C|T|E|D|
-//  +-+-+-+-+-+-+-+-+-+
+//                                                      888
+//                                                      888
+//                                                      888
+//  .d8888b .d88b.  88888b.  88888b.   .d88b.   .d8888b 888888
+// d88P"   d88""88b 888 "88b 888 "88b d8P  Y8b d88P"    888
+// 888     888  888 888  888 888  888 88888888 888      888
+// Y88b.   Y88..88P 888  888 888  888 Y8b.     Y88b.    Y88b.
+//  "Y8888P "Y88P"  888  888 888  888  "Y8888   "Y8888P  "Y888
+//
+//
+//
 
 function mapStateToProps(state) {
     return {
-        mode: state.mode//,
+        mode: state.mode
     }
 }
 

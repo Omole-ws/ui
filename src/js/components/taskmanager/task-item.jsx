@@ -13,6 +13,7 @@ import '../../../../semantic/dist/components/progress.css'
 import '../../../../semantic/dist/components/progress'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import { TaskStatus } from '../../actions'
 
@@ -27,14 +28,14 @@ export default class TaskItem extends React.Component {
     }
 
     static propTypes = {
-        algosDef: React.PropTypes.object,
-        reportsDef: React.PropTypes.object,
-        task: React.PropTypes.object.isRequired,
-        nodesNames: React.PropTypes.array,
-        getTaskResults: React.PropTypes.func,
-        showResults: React.PropTypes.func,
-        hideResults: React.PropTypes.func,
-        highlightPath: React.PropTypes.func
+        algosDef: PropTypes.object,
+        reportsDef: PropTypes.object,
+        task: PropTypes.object.isRequired,
+        nodesNames: PropTypes.array,
+        getTaskResults: PropTypes.func,
+        showResults: PropTypes.func,
+        hideResults: PropTypes.func,
+        highlightPath: PropTypes.func
     }
 
     componentDidMount() {
@@ -146,7 +147,7 @@ export default class TaskItem extends React.Component {
                         {
                             task.status === TaskStatus.TS_LOADED && task.onScreen === 'p' ?
                             task.results.map((v,i) =>
-                                <div className="ui small black compact basic button"
+                                <div key={i} className="ui small black compact basic button"
                                     onClick={ () => this.props.highlightPath(i) }>
                                     { i }
                                 </div>

@@ -4,9 +4,10 @@ import '../../../../semantic/dist/components/dropdown.css'
 import '../../../../semantic/dist/components/image.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { Action, Mode } from '../../actions'
+import { Mode } from '../../actions'
 import logo from '../../../img/logo.png'
 import NavProfile from './nav-profile'
 
@@ -14,45 +15,18 @@ import NavProfile from './nav-profile'
 class Nav extends React.Component {
 
     static propTypes = {
-        children: React.PropTypes.oneOfType([
-            React.PropTypes.node,
-            React.PropTypes.arrayOf(React.PropTypes.node)
+        children: PropTypes.oneOfType([
+            PropTypes.node,
+            PropTypes.arrayOf(PropTypes.node)
         ]),
-        toRight: React.PropTypes.oneOfType([
-            React.PropTypes.node,
-            React.PropTypes.arrayOf(React.PropTypes.node)
+        toRight: PropTypes.oneOfType([
+            PropTypes.node,
+            PropTypes.arrayOf(PropTypes.node)
         ]),
-        mode: React.PropTypes.string.isRequired,
-        showMessageCenter: React.PropTypes.func.isRequired
+        mode: PropTypes.string.isRequired
     }
 
-    // static splitChildren(children) {
-    //     let left = [], right = []
-    //     if (children) {
-    //         if (!Array.isArray(children)) {
-    //             if (children.props.right) {
-    //                 right = [children]
-    //             } else {
-    //                 left = [children]
-    //             }
-    //         } else {
-    //             left = children
-    //                 .filter(e => !e.props.right)
-    //                 .map((e, i) => ({ ...e, key: i }))
-    //             right = children
-    //                 .filter(e => e.props.right)
-    //                 .concat(
-    //                     <a className="item" href="#!/tm">Task Manager</a>,
-    //                     <NavProfile/>
-    //                 )
-    //                 .map((e, i) => ({ ...e, key: i }))
-    //         }
-    //     }
-    //     return [ left, right ]
-    // }
-
     render() {
-        // const  [ leftChildren, rightChildren ] = Nav.splitChildren(this.props.children)
         return (
             <div className="ui menu top fixed inverted">
                 <a className="item header" href="/">
@@ -89,8 +63,4 @@ function mapStateToProps(state) {
     return { mode: state.mode }
 }
 
-const mapDispatchToProps = {
-    showMessageCenter: Action.showMessageCenter
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Nav)
+export default connect(mapStateToProps)(Nav)

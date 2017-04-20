@@ -18,8 +18,8 @@ export default class CyMenus {
                         select: () => {
                             cyObj.setDeskMode(DeskMode.NODE_CREATE)
                             this.cy.on('tap', ev => {
-                                if (ev.cyTarget === this.cy) {
-                                    cyObj.nodeDialog(null, ev.cyPosition)
+                                if (ev.target === this.cy) {
+                                    cyObj.nodeDialog(null, ev.position)
                                 }
                             })
                         }

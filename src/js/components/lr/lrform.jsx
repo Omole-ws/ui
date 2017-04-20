@@ -1,5 +1,9 @@
+import '../../../../semantic/dist/components/form.css'
+import '../../../../semantic/dist/components/input.css'
+import '../../../../semantic/dist/components/icon.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import cs from 'classnames'
 
 const LRForm = props => {
@@ -11,9 +15,8 @@ const LRForm = props => {
             </div>
         </div>
     const submitProps = {
-        className: props.registration ? 'fluid large orange submit button' : '',
+        className: props.registration ? 'ui fluid large orange submit button' : '',
         type: 'submit',
-        value: 'Register',
         hidden: !props.registration
     }
 
@@ -33,7 +36,7 @@ const LRForm = props => {
                     <input type="password" name="password" placeholder="Password" onChange={props.onFieldChange}/>
                 </div>
             </div>
-            <input {...submitProps}/>
+            <button {...submitProps}>Register</button>
             { props.error &&
                 <div className="ui small negative message">
                     <i className="close icon" onClick={props.clearError}/>
@@ -45,10 +48,10 @@ const LRForm = props => {
     )
 }
 LRForm.propTypes = {
-    error: React.PropTypes.string,
-    registration: React.PropTypes.bool,
-    onSubmit: React.PropTypes.func.isRequired,
-    onFieldChange: React.PropTypes.func.isRequired,
-    clearError: React.PropTypes.func.isRequired
+    error: PropTypes.string,
+    registration: PropTypes.bool,
+    onSubmit: PropTypes.func.isRequired,
+    onFieldChange: PropTypes.func.isRequired,
+    clearError: PropTypes.func.isRequired
 }
 export default LRForm

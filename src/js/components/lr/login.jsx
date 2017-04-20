@@ -1,18 +1,13 @@
 import '../../../../semantic/dist/components/grid.css'
 import '../../../../semantic/dist/components/header.css'
-// import '../../../../semantic/dist/components/image.css'
-// import '../../../../semantic/dist/components/menu.css'
+import '../../../../semantic/dist/components/image.css'
 import '../../../../semantic/dist/components/divider.css'
 import '../../../../semantic/dist/components/segment.css'
-import '../../../../semantic/dist/components/form.css'
-// import '../../../../semantic/dist/components/form'
-import '../../../../semantic/dist/components/input.css'
 import '../../../../semantic/dist/components/button.css'
-// import '../../../../semantic/dist/components/list.css'
 import '../../../../semantic/dist/components/message.css'
-import '../../../../semantic/dist/components/icon.css'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import  { Action, Mode } from '../../actions'
@@ -21,7 +16,6 @@ import Nav from '../nav/nav'
 import logo from '../../../img/logo.png'
 
 import _ from 'lodash'
-// import cloneDeep from 'lodash-es/cloneDeep'
 
 class Login extends React.Component {
 
@@ -34,12 +28,12 @@ class Login extends React.Component {
     }
 
     static propTypes = {
-        error:      React.PropTypes.string,
-        lang:      React.PropTypes.string,
-        disclaimer:      React.PropTypes.object,
-        login:      React.PropTypes.func.isRequired,
-        clearError: React.PropTypes.func.isRequired,
-        getDiaclaimer: React.PropTypes.func.isRequired
+        error:      PropTypes.string,
+        lang:      PropTypes.string,
+        disclaimer:      PropTypes.object,
+        login:      PropTypes.func.isRequired,
+        clearError: PropTypes.func.isRequired,
+        getDiaclaimer: PropTypes.func.isRequired
     }
 
     /**
@@ -47,7 +41,7 @@ class Login extends React.Component {
      * @arg {object} ev event triggered
      * @return {void}
      */
-    handleFieldChange(ev) {
+    handleFieldChange = ev => {
         this.setState({[ev.target.name]: ev.target.value})
     }
 
@@ -58,9 +52,7 @@ class Login extends React.Component {
      * @arg {Object} ev submit event that have triggered login action
      * @return {void}
      */
-    loginTo(login, password, ev) {
-        // let ev = args[0]
-        console.warn('KKKKKK')
+    loginTo = (login, password, ev) => {
         if (_.isObject(login)) {
             ev = login
             if (ev.type !== 'submit') {
@@ -81,8 +73,8 @@ class Login extends React.Component {
 
     render() {
         const formProps = {
-            onSubmit: (...args) => this.loginTo(...args),
-            onFieldChange: (...args) => this.handleFieldChange(...args),
+            onSubmit: this.loginTo,
+            onFieldChange: this.handleFieldChange,
             error: this.props.error,
             clearError: this.props.clearError
         }
@@ -92,7 +84,7 @@ class Login extends React.Component {
                 <div className="ui middle aligned center aligned grid">
                     <div className="row"><div className="column">
                         <h2 className="ui orange image header">
-                            <img className="image" src={logo}></img>
+                            <img className="image" src={logo}/>
                             <div className="content">Log-in to your account</div>
                         </h2>
                         <LRForm {...formProps}/>
@@ -100,7 +92,7 @@ class Login extends React.Component {
                     <div className="ui horizontal divider">NEW TO US?</div>
                     <div className="ui two column very relaxed row">
                         <div className="column">
-                            <button className="ui blue fluid massive button" onClick={(...args) => this.loginTo('demo', 'demo', ...args)}>
+                            <button className="ui blue fluid massive button" onClick={ev => this.loginTo('demo', 'demo', ev)}>
                                 Try DEMO
                             </button>
                         </div>

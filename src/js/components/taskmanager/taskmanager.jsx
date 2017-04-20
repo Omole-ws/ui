@@ -4,22 +4,22 @@ import '../../../../semantic/dist/components/accordion.css'
 import '../../../../semantic/dist/components/accordion'
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import ReactTransitionGroup from 'react-addons-transition-group'
 import { connect } from 'react-redux'
 
 import { Action } from '../../actions'
-
 import Nav from '../nav/nav'
 import TaskItem from './task-item'
 
 class TaskManager extends React.Component {
 
     static propTypes = {
-        algosDef: React.PropTypes.object.isRequired,
-        reportsDef: React.PropTypes.object.isRequired,
-        graphs: React.PropTypes.object.isRequired,
-        tasks: React.PropTypes.object.isRequired,
-        getTaskResults: React.PropTypes.func.isRequired
+        algosDef: PropTypes.object.isRequired,
+        reportsDef: PropTypes.object.isRequired,
+        graphs: PropTypes.object.isRequired,
+        tasks: PropTypes.object.isRequired,
+        getTaskResults: PropTypes.func.isRequired
     }
 
     componentDidMount() {
@@ -35,7 +35,7 @@ class TaskManager extends React.Component {
             <div key={ group.name }>
                 <div className="active title">
                     <div className="ui large orange header">
-                        <i className="dropdown icon"></i>
+                        <i className="dropdown icon"/>
                         { group.name }
                     </div>
                 </div>

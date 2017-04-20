@@ -1,21 +1,21 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import ReactTransitionGroup from 'react-addons-transition-group'
 import { connect } from 'react-redux'
 
 import { Action } from '../../actions'
 import Nav from '../nav/nav'
 import NavReports from '../nav/nav-reports'
-// import ReporItem from './report-item'
 import TaskItem from '../taskmanager/task-item'
 
 class Reports extends React.Component {
     static propTypes = {
-        gid: React.PropTypes.string.isRequired,
-        graph: React.PropTypes.object,
-        tape: React.PropTypes.array,
-        reports: React.PropTypes.object.isRequired,
-        rtasks: React.PropTypes.arrayOf(React.PropTypes.object),
-        createTask: React.PropTypes.func.isRequired
+        gid: PropTypes.string.isRequired,
+        graph: PropTypes.object,
+        tape: PropTypes.array,
+        reports: PropTypes.object.isRequired,
+        rtasks: PropTypes.arrayOf(PropTypes.object),
+        createTask: PropTypes.func.isRequired
     }
 
     render() {
