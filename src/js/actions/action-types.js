@@ -65,7 +65,8 @@ const tasksActionType = {
     HIDE_GROUPS:         'HIDE_GROUPS',
     HIDE_PATHS:          'HIDE_PATHS',
     HIDE_RESULTS:        'HIDE_RESULTS',
-    HIGHLIGHT_PATH:      'HIGHLIGHT_PATH'
+    HIGHLIGHT_PATH:      'HIGHLIGHT_PATH',
+    HIGHLIGHT_GROUP:     'HIGHLIGHT_GROUP'
 }
 
 const operateComponentActionType = {

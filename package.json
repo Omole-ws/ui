@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.jsx",
   "scripts": {
-    "serve": "node_modules/.bin/webpack-dev-server -w --progress --inline --hot --host 0.0.0.0 --port 3000 --content-base dist/",
+    "serve": "node_modules/.bin/webpack-dev-server -w --progress --inline --hot --host 0.0.0.0 --port 3000 --public 192.168.111.111:3000 --content-base dist/",
     "build": "NODE_ENV=production node_modules/.bin/webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,13 +17,13 @@
   "devDependencies": {
     "autoprefixer": "^6.7.7",
     "babel-core": "^6.24.0",
-    "babel-loader": "^6.4.1",
+    "babel-loader": "^7.0.0",
     "babel-plugin-lodash": "^3.2.11",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.4.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
-    "css-loader": "^0.28.0",
+    "css-loader": "^0.28.1",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.11.1",
     "html-webpack-plugin": "^2.28.0",
@@ -33,16 +33,16 @@
     "raw-loader": "^0.5.1",
     "resolve-url-loader": "^2.0.2",
     "sass-loader": "^6.0.3",
-    "style-loader": "^0.16.1",
+    "style-loader": "^0.17.0",
     "url-loader": "^0.5.8",
     "webpack": "^2.4.1",
-    "webpack-dev-server": "^2.4.2"
+    "webpack-dev-server": "^2.4.5"
   },
   "dependencies": {
     "classnames": "^2.2.5",
     "cytoscape": "^3.0.0",
     "cytoscape-cxtmenu": "^2.10.2",
-    "cytoscape-edgehandles": "^2.11.0",
+    "cytoscape-edgehandles": "^2.11.1",
     "jquery": "^3.2.1",
     "page": "^1.7.1",
     "prop-types": "^15.5.8",

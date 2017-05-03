@@ -26,10 +26,13 @@ class  ResultBoard extends React.Component {
         graph: PropTypes.object,
         algosDef: PropTypes.object.isRequired,
         tasks: PropTypes.arrayOf(PropTypes.object),
+        sgroups: PropTypes.object,
+        spaths: PropTypes.object,
         getTaskResults: PropTypes.func.isRequired,
         showResults: PropTypes.func.isRequired,
         hideResults: PropTypes.func.isRequired,
-        highlightPath: PropTypes.func.isRequired
+        highlightPath: PropTypes.func.isRequired,
+        highlightGroup: PropTypes.func.isRequired
     }
 
     static icon = {
@@ -87,10 +90,13 @@ class  ResultBoard extends React.Component {
                                     <TaskItem key={ task.tid }
                                         algosDef={ this.props.algosDef }
                                         task={ task }
+                                        sgroups={ this.props.sgroups }
+                                        spaths={ this.props.spaths }
                                         getTaskResults={ this.props.getTaskResults }
                                         showResults={ this.props.showResults }
                                         hideResults={ this.props.hideResults }
                                         highlightPath={ this.props.highlightPath }
+                                        highlightGroup={ this.props.highlightGroup }
                                         nodesNames={ this.nodeNames(task) }/>
                                 )
                             }
@@ -126,7 +132,9 @@ function mapStateToProps(state) {
             .map(tid => state.tasks[tid])
             .filter(task => task.gid === state.currentGraph)
             .filter(task => Reflect.has(state.algos.definitions, task.name))
-            .filter(task => task.status === TaskStatus.TS_COMPLETED || task.status === TaskStatus.TS_LOADED || task.status === TaskStatus.TS_NOSOLUTION)
+            .filter(task => task.status === TaskStatus.TS_COMPLETED || task.status === TaskStatus.TS_LOADED || task.status === TaskStatus.TS_NOSOLUTION),
+        sgroups: state.operating.groups,
+        spaths: state.operating.paths
     }
 }
 
@@ -134,6 +142,7 @@ const mapDispatchToProps = {
     getTaskResults: Action.getTaskResults,
     showResults: Action.showResults,
     hideResults: Action.hideResults,
-    highlightPath: Action.highlightPath
+    highlightPath: Action.highlightPath,
+    highlightGroup: Action.highlightGroup
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ResultBoard)

@@ -251,8 +251,10 @@ export default class Cy {
         })
     }
 
-    showGroups(groups) {
+    showGroups(groups, id) {
+        this.cy.startBatch()
         Reflect.ownKeys(groups)
+            .filter(g => !id || Array.isArray(id) && id.some(el => el === g) )
             .forEach(g => {
                 const id = g.replace(/:/g, '-')
                 this.cy.add({ group: 'nodes', data: { id, label: g }, classes: 'group' })
@@ -260,9 +262,11 @@ export default class Cy {
                         .join(','))
                     .move({ parent: id })
             })
+        this.cy.endBatch()
     }
 
     hideGroups(groups) {
+        this.cy.startBatch()
         const gRepresentation = Reflect.ownKeys(groups)
             .reduce((acc, g) => {
                 const groupRoot = this.cy.nodes(`#${g.replace(/:/g, '-')}`)
@@ -273,6 +277,7 @@ export default class Cy {
             }, { parents: this.cy.collection(), children: this.cy.collection() })
         gRepresentation.children.move({ parent: null })
         this.cy.remove(gRepresentation.parents)
+        this.cy.endBatch()
     }
 
     static buildPathsEdgeSelector(paths) {
