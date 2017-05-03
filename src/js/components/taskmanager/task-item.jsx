@@ -14,6 +14,7 @@ import '../../../../semantic/dist/components/progress'
 
 import React from 'react'
 import PropTypes from 'prop-types'
+import cs from 'classnames'
 
 import { TaskStatus } from '../../actions'
 
@@ -31,11 +32,14 @@ export default class TaskItem extends React.Component {
         algosDef: PropTypes.object,
         reportsDef: PropTypes.object,
         task: PropTypes.object.isRequired,
+        sgroups: PropTypes.object,
+        spaths: PropTypes.object,
         nodesNames: PropTypes.array,
         getTaskResults: PropTypes.func,
         showResults: PropTypes.func,
         hideResults: PropTypes.func,
-        highlightPath: PropTypes.func
+        highlightPath: PropTypes.func,
+        highlightGroup: PropTypes.func
     }
 
     componentDidMount() {
@@ -128,31 +132,61 @@ export default class TaskItem extends React.Component {
                             task.status === TaskStatus.TS_COMPLETED ? resultsLoad : ''
                         }
                         {
-                            task.status === TaskStatus.TS_LOADED && this.props.showResults ?
-                            (
-                            task.onScreen ?
-                                <div className="ui small blue compact basic icon button"
-                                    onClick={ () => this.props.hideResults(task.tid) }>
-                                    <i className="ui hide icon"></i>
+                            task.status === TaskStatus.TS_LOADED && this.props.showResults &&
+                                <div>
+                                    {
+                                        task.onScreen ?
+                                            <div className="ui small blue compact basic icon button"
+                                                onClick={ () => this.props.hideResults(task.tid) }>
+                                                <i className="ui hide icon"></i>
+                                            </div>
+                                        :
+                                            <div className="ui small blue compact basic icon button"
+                                                onClick={ () => this.props.showResults(task.tid) }>
+                                                <i className="ui unhide icon"></i>
+                                            </div>
+                                    }
+                                    {
+                                        task.onScreen === 'p' &&
+                                        task.results.map((v,i) =>
+                                            <div key={i} className={cs('ui small black compact basic button', { green: this.props.spaths.idx === i}) }
+                                                onClick={ () => this.props.highlightPath(i) }>
+                                                { i }
+                                            </div>
+                                        )
+                                    }
+                                    {
+                                        task.onScreen === 'g' &&
+                                        <div>
+                                            <div className={ cs('ui small black compact basic button', { green: this.props.sgroups.idx === null }) }
+                                                onClick={ () => this.props.highlightGroup(null) }>
+                                                Show all
+                                            </div>
+                                            <div className={ cs('ui small black compact basic button', { green: Array.isArray(this.props.sgroups.idx) && this.props.sgroups.idx.length === 0 }) }
+                                                onClick={ () => this.props.highlightGroup([]) }>
+                                                Hide all
+                                            </div>
+                                            {
+                                                Reflect.ownKeys(task.results.mappings).map(v =>
+                                                    <div key={v} className={ cs('ui small black compact basic button', { green: !this.props.sgroups.idx || this.props.sgroups.idx.some(el => el === v) }) }
+                                                        onClick={ () => {
+                                                            const arr = this.props.sgroups.idx === null ? [...Reflect.ownKeys(task.results.mappings)] : [...this.props.sgroups.idx]
+                                                            const idx = arr.findIndex(el => el === v)
+                                                            if (idx !== -1) {
+                                                                arr.splice(idx,1)
+                                                            } else {
+                                                                arr.push(v)
+                                                            }
+                                                            this.props.highlightGroup(arr)
+                                                        }
+                                                    }>
+                                                        { v }
+                                                    </div>
+                                                )
+                                            }
+                                        </div>
+                                    }
                                 </div>
-                            :
-                                <div className="ui small blue compact basic icon button"
-                                    onClick={ () => this.props.showResults(task.tid) }>
-                                    <i className="ui unhide icon"></i>
-                                </div>
-                            )
-
-                            : ''
-                        }
-                        {
-                            task.status === TaskStatus.TS_LOADED && task.onScreen === 'p' ?
-                            task.results.map((v,i) =>
-                                <div key={i} className="ui small black compact basic button"
-                                    onClick={ () => this.props.highlightPath(i) }>
-                                    { i }
-                                </div>
-                            )
-                            : ''
                         }
 
                     </div>

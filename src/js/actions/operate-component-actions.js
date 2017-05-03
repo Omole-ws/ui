@@ -72,3 +72,7 @@ export function hideResults(tid) {
 export function highlightPath(pn) {
     return { type: ActionType.HIGHLIGHT_PATH, payload: pn }
 }
+
+export function highlightGroup(gi) {
+    return { type: ActionType.HIGHLIGHT_GROUP, payload: gi }
+}

@@ -91,6 +91,9 @@ function rbOnScreen(state = false, action) {
         case ActionType.RB_TOGGLE:
             return !state
 
+        case ActionType.MODE_SET:
+            return false
+
         case `${ActionType.LOGOUT}_OK`:
             return false
 
@@ -116,12 +119,12 @@ function hasNew(state = false, action) {
     }
 }
 
-function groupByType(state = false, action) {
+function groupByType(state = false) {
     // TODO implement RB_GROUP_BY_TYPE reducer
     return state
 }
 
-function filter(state = null, action) {
+function filter(state = null) {
     // TODO implement RB_FILTER reducer
     return state
 }
@@ -131,7 +134,10 @@ const resultBoard = combineReducers({onScreen: rbOnScreen, hasNew, groupByType, 
 function groups(state = null, action) {
     switch (action.type) {
         case ActionType.SHOW_GROUPS:
-            return action.payload.results
+            return { ...action.payload.results, idx: null }
+
+        case ActionType.HIGHLIGHT_GROUP:
+            return { ...state, idx: action.payload }
 
         case ActionType.MODE_SET:
             if (action.payload !== Mode.OPERATE) {

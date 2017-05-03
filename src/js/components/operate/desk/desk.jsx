@@ -51,7 +51,7 @@ class Desk extends React.Component {
 
         if (nextProps.groups !== this.props.groups) {
             this.props.groups && this.state.cy.hideGroups(this.props.groups.mappings)
-            nextProps.groups && this.state.cy.showGroups(nextProps.groups.mappings)
+            nextProps.groups && this.state.cy.showGroups(nextProps.groups.mappings, nextProps.groups.idx)
         }
 
         if (nextProps.paths.list !== this.props.paths.list) {
