@@ -135,13 +135,13 @@ export default class Cy {
     }
 
     destroy() {
-        this.cy.destroy()
         if (this.menus) {
             this.menus.destroy()
         }
         this.modeHandlers.forEach(handler => handler.destroy())
         this.modeHandlers = []
         window.removeEventListener('contextmenu', winMenuPatchHndl)
+        this.cy.destroy()
     }
 
     setMode(mode, oldMode) {

@@ -69,7 +69,7 @@ class ListView extends React.Component {
                         Graph
                         <i className="ui dropdown icon"></i>
                         <div className="ui menu">
-                            <div className="ui link item" onClick={(...a) => this.editComponent.activate(...a)}>
+                            <div className="ui link item" onClick={(...a) => this.editComponent.activate()}>
                                 <i className="ui circle add icon"></i>
                                 New
                             </div>

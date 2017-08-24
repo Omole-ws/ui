@@ -141,10 +141,11 @@ export default class CyMenus {
     destroy(partial) {
         this.core && this.core.destroy()
         this.core = null
-        if (!partial) {
-            this.node.destroy()
-            this.edge.destroy()
-        }
+        // TODO: bring back following when cytoscape bug will be fixed
+        // if (!partial) {
+        //     this.node.destroy()
+        //     this.edge.destroy()
+        // }
     }
 
 

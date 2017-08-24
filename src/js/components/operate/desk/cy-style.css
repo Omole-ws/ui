@@ -147,6 +147,7 @@ edge {
   /*curve-style: segments;*/
   target-arrow-shape: triangle;
   target-arrow-fill: hollow;
+  label: data(weight);
 }
 
 .r-only {
