@@ -16,7 +16,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import cs from 'classnames'
 
-import { TaskStatus } from '../../actions'
+import { TaskStatus, RRReportURL } from '../../actions'
 
 export default class TaskItem extends React.Component {
 
@@ -87,7 +87,7 @@ export default class TaskItem extends React.Component {
                 </div>
             } else {
                 resultsLoad = <a className="ui green compact small basic button"
-                    href={`/app/r/ccgetreport?tid=${task.tid}&repname=${task.results[0]}`}
+                    href={`${RRReportURL}?tid=${task.tid}&repname=${task.results[0]}`}
                                   target="_blank">
                     <i className="ui file pdf outline icon"></i>
                     Download

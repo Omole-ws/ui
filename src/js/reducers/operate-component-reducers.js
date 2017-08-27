@@ -91,8 +91,8 @@ function rbOnScreen(state = false, action) {
         case ActionType.RB_TOGGLE:
             return !state
 
-        case ActionType.MODE_SET:
-            return false
+        // case ActionType.MODE_SET:
+        //     return false
 
         case `${ActionType.LOGOUT}_OK`:
             return false
@@ -139,12 +139,12 @@ function groups(state = null, action) {
         case ActionType.HIGHLIGHT_GROUP:
             return { ...state, idx: action.payload }
 
-        case ActionType.MODE_SET:
-            if (action.payload !== Mode.OPERATE) {
-                return null
-            } else {
-                return state
-            }
+        // case ActionType.MODE_SET:
+        //     if (action.payload !== Mode.OPERATE) {
+        //         return null
+        //     } else {
+        //         return state
+        //     }
 
         case ActionType.HIDE_GROUPS:
         case ActionType.HIDE_RESULTS:
@@ -164,12 +164,12 @@ function paths(state = null, action) {
         case ActionType.HIGHLIGHT_PATH:
             return { ...state, idx: action.payload }
 
-        case ActionType.MODE_SET:
-            if (action.payload !== Mode.OPERATE) {
-                return null
-            } else {
-                return state
-            }
+        // case ActionType.MODE_SET:
+        //     if (action.payload !== Mode.OPERATE) {
+        //         return null
+        //     } else {
+        //         return state
+        //     }
 
         case ActionType.HIDE_PATHS:
         case ActionType.HIDE_RESULTS:

@@ -4,6 +4,9 @@ import { Action, Mode } from './actions'
 
 export default function configureRouter(store) {
     const modeSetter = (mode) => (ctx, next) => {
+        if (store.getState().mode == 'OPERATE' && mode != 'OPERATE') {
+            store.dispatch(Action.hideResults())
+        } 
         store.dispatch(Action.setMode(mode))
         ctx.state.ifModeSet = true
         next(ctx, next)
